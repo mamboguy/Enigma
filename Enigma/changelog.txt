@@ -1,0 +1,7 @@
+Enigma
+    - Created a pair of test cases for testing the rotor functionality
+
+Rotor
+    - Created log file for Rotor that saves to logs folder
+    - Added functionality for each rotor including:
+        - Rotor name, its wiring sequence, notch location, its currently keyed position and whether or not it should step
