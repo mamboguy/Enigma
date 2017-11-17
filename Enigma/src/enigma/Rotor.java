@@ -5,7 +5,6 @@
  */
 package enigma;
 
-import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +37,7 @@ public class Rotor {
             FileHandler fh = new FileHandler("logs/rotorLog.txt");
             LOGGER.addHandler(fh);
             LOGGER.setLevel(Level.SEVERE);
-        } catch (IOException | SecurityException e) {
+        } catch (Exception e) {
             System.out.println("LOG FILE ERROR");
             //Ignore error in log file
         }
