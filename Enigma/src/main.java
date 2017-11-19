@@ -17,15 +17,17 @@ public class main {
 
     public static void main(String[] args) {
         Enigma e = new Enigma();
-
         Scanner s = new Scanner(System.in);
+        String temp;
+        
+        System.out.print("Input label offsets for rotors \"ex:BOL)\" ");
+        temp = s.nextLine();
+        e.changeLabels(temp);
+        
         System.out.print("Input message for encoding: ");
-        String temp = s.nextLine();
-        
-        temp = temp.toUpperCase();
-        temp = temp.replaceAll(" ", "");
-        
+        temp = s.nextLine();        
         e.inputMessage(temp);
+        
     }
 
 }

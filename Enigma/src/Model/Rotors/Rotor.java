@@ -29,7 +29,7 @@ public class Rotor {
 
 //<editor-fold desc="Constructors">
     public Rotor(String rotorName, String wiringSequence, char notchLocation, int usage) {
-        this(rotorName, wiringSequence, notchLocation, usage, 'A', 'A');
+        this(rotorName, wiringSequence, notchLocation, usage, 'C', 'A');
     }
 
     public Rotor(String rotorName, String wiringSequence, char notchLocation, int usage, char labelPosition, char keyPosition) {
@@ -58,26 +58,55 @@ public class Rotor {
         //Assign basic attributes of rotor
         this.rotorName = rotorName;
         this.baseWiringSequence = wiringSequence;
+
+        resetInternalWiring();
+
+        //TODO - Change notchLocation to position on rotor rather than letter
         this.notchLocation = notchLocation;
-        this.currentKeyPosition = keyPosition;
         this.labelPosition = labelPosition;
 
-        String temp = "";
-
-        for (int i = 0; i < baseWiringSequence.length(); i++) {
-            temp += (char) (baseWiringSequence.indexOf(i + 65) + 65);
+        for (int i = 0; i < (labelPosition - 65); i++) {
+            stepRotor();
         }
 
-        for (int i = 0; i < baseWiringSequence.length(); i++) {
-            internalWiringOffsets[LEFT][i] = -1 * ((i + 65) - baseWiringSequence.charAt(i)) % 26;
-            internalWiringOffsets[RIGHT][i] = -1 * ((i + 65) - temp.charAt(i)) % 26;
-        }
+        this.currentKeyPosition = keyPosition;
 
         //Find math for which pin position on the right to left
         //For left to right, its multiplied by -1
         //If the rotor is started on its notch key, then set it to step next time it is used
         if (this.notchLocation == this.currentKeyPosition) {
             this.stepNext = true;
+        }
+    }
+//</editor-fold>
+
+//    //<editor-fold desc="Helpers">
+    private void resetInternalWiring() {
+        setInternalWiring('A');
+    }
+
+    private void setInternalWiring(char labelOffset) {
+        String temp = "";
+
+        //Complicated maths for ensuring offsets proper direction
+        int start = (-1 * (labelOffset - 65) + 26) % 26;
+
+        int j = 0;
+
+        for (int i = 0; i < baseWiringSequence.length(); i++) {
+            temp += (char) (baseWiringSequence.indexOf(i + 65) + 65);
+        }
+
+        for (int i = start; i < baseWiringSequence.length(); i++) {
+            internalWiringOffsets[LEFT][j] = -1 * ((i + 65) - baseWiringSequence.charAt(i)) % 26;
+            internalWiringOffsets[RIGHT][j] = -1 * ((i + 65) - temp.charAt(i)) % 26;
+            j++;
+        }
+
+        for (int i = 0; i < start; i++) {
+            internalWiringOffsets[LEFT][j] = -1 * ((i + 65) - baseWiringSequence.charAt(i)) % 26;
+            internalWiringOffsets[RIGHT][j] = -1 * ((i + 65) - temp.charAt(i)) % 26;
+            j++;
         }
     }
 //</editor-fold>
@@ -144,6 +173,7 @@ public class Rotor {
 
     public void setLabelPosition(char position) {
         this.labelPosition = position;
+        setInternalWiring(position);
     }
 //</editor-fold>
 
@@ -175,6 +205,8 @@ public class Rotor {
         if (this.stepNext) {
             stepNext = false;
             return true;
+
+            //TODO - Fix Me
         } else if (this.notchLocation == currentKeyPosition) {
             this.stepNext = true;
             return false;
@@ -191,9 +223,19 @@ public class Rotor {
                + ", Kriegsmarine =" + usage[0] + ", Luftwaffe = " + usage[1] + ", Wehrmacht = " + usage[2] + "}";
     }
 
+    //<editor-fold desc="Print methods">
     public void printRotor() {
         for (int i = 0; i < 26; i++) {
-            System.out.println((getLeftCharOutput(i)) + ":" + ((char)(i+65)));
+            System.out.println((getLeftCharOutput(i)) + ":" + ((char) (i + 65)));
         }
     }
+
+    public void printWiring() {
+        System.out.println("With A on top, the left:right wiring is:");
+        for (int i = 0; i < 26; i++) {
+            System.out.println(((char) (i + 65)) + " :: " + internalWiringOffsets[LEFT][i] + ":" + internalWiringOffsets[RIGHT][i]);
+        }
+    }
+//</editor-fold>
+
 }

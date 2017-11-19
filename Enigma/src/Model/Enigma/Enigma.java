@@ -67,11 +67,15 @@ public class Enigma {
     }
 
     public String inputMessage(String message) {
+        
+        message = sanitizeInput(message);
 
         String plain = "";
         String cipher = "";
 
         printKeySettings();
+        
+        rotor1.printWiring();
 
         for (int i = 0; i < message.length(); i++) {
             if (i % MESSAGE_SPACING == 0) {
@@ -88,6 +92,8 @@ public class Enigma {
         System.out.println("_____________________________________________");
         System.out.println("");
 
+        rotor1.printWiring();
+        
         return cipher.trim();
     }
 
@@ -95,27 +101,69 @@ public class Enigma {
         int input = charInput - 65;
 
         stepMachine();
+        
+        rotor1.printWiring();
+        
+        System.out.println("charInput = " + charInput);
+        System.out.println("Input = " + input);
 
         input = rotor1.getLeftOutput(input);
+        System.out.println("Left exit of rotor 1 = " + ((char)(input+65)));
+        
         input = rotor2.getLeftOutput(input);
+        System.out.println("Left exit of rotor 2 = " + ((char)(input+65)));
+        
         input = rotor3.getLeftOutput(input);
+        System.out.println("Left exit of rotor 3 = " + ((char)(input+65)));
 
         if (fourthRotorUsed) {
             input = rotor4.getLeftOutput(input);
         }
 
         input = reflector.getReflection(input);
+        System.out.println("Reflection = " + ((char)(input+65)));
 
         if (fourthRotorUsed) {
             input = rotor4.getRightOutput(input);
         }
 
         input = rotor3.getRightOutput(input);
+        System.out.println("Right exit of rotor 3 = " + ((char)(input+65)));
+        
         input = rotor2.getRightOutput(input);
+        System.out.println("Right exit of rotor 2 = " + ((char)(input+65)));
+        System.out.println("Right exit of rotor 2 pin = " + input);
+        
         input = rotor1.getRightCharOutput(input);
+        System.out.println("Right exit of rotor 1 = " + (char) input);
 
         return ((char) input);
     }
+
+    //<editor-fold desc="Adjust settings methods">
+    public void changeLabels(String temp) {
+
+        temp = sanitizeInput(temp);
+
+        if (fourthRotorUsed && temp.length() != 4) {
+            //TODO - IMPLEMENT ERROR?
+        } else if (!fourthRotorUsed && temp.length() != 3) {
+            //TODO - IMPLEMENT ERROR?
+        } else {
+
+            if (fourthRotorUsed) {
+                rotor4.setLabelPosition(temp.charAt(0));
+                rotor3.setLabelPosition(temp.charAt(1));
+                rotor2.setLabelPosition(temp.charAt(2));
+                rotor1.setLabelPosition(temp.charAt(3));
+            } else {
+                rotor3.setLabelPosition(temp.charAt(0));
+                rotor2.setLabelPosition(temp.charAt(1));
+                rotor1.setLabelPosition(temp.charAt(2));
+            }
+        }
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Print methods">
     private void printKeySettings() {
@@ -152,4 +200,11 @@ public class Enigma {
         }
     }
     //</editor-fold>
+
+    private String sanitizeInput(String temp) {
+        temp = temp.toUpperCase();
+        temp = temp.replaceAll(" ", "");
+        
+        return temp;
+    }
 }
