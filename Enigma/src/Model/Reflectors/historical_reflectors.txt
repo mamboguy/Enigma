@@ -1,0 +1,12 @@
+# German Military - Reflectors
+#Reflector - Umkehrwalze (UKW)
+#Reflector A used primarily pre-war
+#Reflector B used during the war
+#Reflector C used during war, but only temporarily
+#Thins only used with M4 model used by Kriegsmarine
+#               ABCDEFGHIJKLMNOPQRSTUVWXYZ
+UKW_A	EJMZALYXVBWFCRQUONTSPIKHGD  111
+UKW_B	YRUHQSLDPXNGOKMIEBFZCWVJAT  111
+UKW_C	FVPJIAOYEDRZXWGCTKUQSBNMHL  111
+UKW_B_Thin	ENKQAUYWJICOPBLMDXZVFTHRGS  100
+UKW_C_Thin	RDOBJNTKVEHMLFCWZAXGYIPSUQ  100

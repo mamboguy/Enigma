@@ -1,5 +1,38 @@
-RotorFileReader
-    - Parser method for rotors to read from new file "historical_rotors.txt"
+Main
+    New main method since creating Enigma as object
 
 Enigma
-    - Added in method to read rotors into main method
+    New object
+    Added constant for message spacing
+    Currently, constructor just gets historical rotors/reflectors without option to get anything else
+        Default setting is: I, II, III and UKW-B
+    Will step and encode messages properly
+    Also includes printable stats about the current key settings, rotor settings and reflector
+
+Reflector
+    Similar to rotors, it holds a name, wiring sequence and usage stats
+    getReflection returns the reflected pin output for a given input
+
+ReflectorFileReader
+    Reads the historical_reflectors.txt file
+    Can be used with other reflectors given a standard file sequence
+
+Rotor
+    Removed logger references
+
+    Reworked rotor class after discovering major problem with implementation
+        Problem: No easy way to track what happens when a rotor steps b/c wiring moves, not results
+        Solution: Use internal wiring mathematics to find outcome of input at a pin position
+        Result: Rotor now takes a pin position, performs quick math based off the current wiring at that position and then gives a resulting output
+    
+    Added constants for left to right and right to left wiring pathing
+    Added label position to rotors (currently defaults to A)
+    Fixed getters - All call single getter that outputs a pin position based on input pin
+                  - Others can use a char input as a pin position though and still function properly
+    Added check for whether rotor will step next use
+    To make getters simpler, stepping rotor changes internalWiringOffsets
+    Print rotor prints current wiring schematic with respect to right side
+
+RotorFileReader
+    Reads the historical_rotors.txt file
+    Can be used with other rotors given a standard file sequence

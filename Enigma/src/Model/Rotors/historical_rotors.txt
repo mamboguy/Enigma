@@ -1,0 +1,20 @@
+#Order of constructor
+#String rotorName
+#String wiringSequence
+#char notchLocation
+#char keyPosition
+#
+# Formatting below:
+#   Name    Wiring Sequence     Notch Location      Kriegsmarine/Luftwaffe/Wehrmacht
+#                               (Mult notches separated by "-")
+#                                                         (1 = used, 0 = unused)
+#       ABCDEFGHIJKLMNOPQRSTUVWXYZ
+# German Military - Rotors
+I	EKMFLGDQVZNTOWYHXUSPAIBRCJ  Q   111
+II	AJDKSIRUXBLHWTMCQGZNPYFVOE  E   111
+III	BDFHJLCPRTXVZNYEIWGAKMUSQO  V   111
+IV	ESOVPZJAYQUIRHXLNFTGKDCMWB  J   111
+V	VZBRGITYUPSDNHLXAWMJQOFECK  Z   111
+VI	JPGVOUMFYQBENHZRDKASXLICTW  M-Z 100
+VII	NZJHGRCXMYSWBOUFAIVLPEKQDT  M-Z 100
+VIII	FKQHTLXOCBJSPDZRAMEWNIUYGV  M-Z 100
