@@ -89,7 +89,7 @@ public class Enigma {
         System.out.println("Output text: " + cipher.trim());
         System.out.println("_____________________________________________");
         System.out.println("");
-        
+
         return cipher.trim();
     }
 
@@ -141,6 +141,51 @@ public class Enigma {
                 rotor2.setLabelPosition(temp.charAt(1));
                 rotor1.setLabelPosition(temp.charAt(2));
             }
+        }
+    }
+
+    public void changeRotors(String temp) {
+        temp = temp.toUpperCase();
+
+        String rotors[] = temp.split(" ");
+
+        //TODO - Implement checking of type/usage
+
+        switch (rotors.length) {
+            case 4:
+                fourthRotorUsed = true;
+
+                for (int i = 0; i < rotorsAvailable.size(); i++) {
+                    if (rotors[0].equalsIgnoreCase(rotorsAvailable.get(i).getRotorName())) {
+                        rotor4 = rotorsAvailable.get(i);
+                    }
+                }
+            case 3:
+                for (int i = 0; i < rotors.length; i++) {
+                    
+                    for (int j = 0; j < rotorsAvailable.size(); j++) {
+                    
+                        if (rotors[i].equalsIgnoreCase(rotorsAvailable.get(j).getRotorName())) {
+
+                            switch (i) {
+                                case 0:
+                                    rotor3 = rotorsAvailable.get(j);
+                                    break;
+                                case 1:
+                                    rotor2 = rotorsAvailable.get(j);
+                                    break;
+                                case 2:
+                                    rotor1 = rotorsAvailable.get(j);
+                                    break;
+                            }
+
+                        }
+                    }
+                }
+
+                break;
+            default:
+                throw new UnsupportedOperationException("Too many/few rotors");
         }
     }
 

@@ -19,6 +19,10 @@ public class main {
         Scanner s = new Scanner(System.in);
         String temp;
 
+        System.out.print("Input what rotors to use \"(ex:I II III)\": ");
+        temp = s.nextLine();
+        e.changeRotors(temp);
+
         System.out.print("Input label offsets for rotors \"(ex:BOL)\": ");
         temp = s.nextLine();
         e.changeLabels(temp);

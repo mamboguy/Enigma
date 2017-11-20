@@ -1,10 +1,2 @@
-Rotor
-    - Removed deprecated code   
-    - setKeyPosition now functions
-
-Main
-    - Now prompts for changes to rotor offsets
-
 Enigma
-    - Now can change rotor starting positions
-    - Overall testing shows working at any key/label positions
+    - Now can change rotor order

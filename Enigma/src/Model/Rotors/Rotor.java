@@ -217,9 +217,7 @@ public class Rotor {
     }
 
     public void printRotor() {
-        for (int i = 0; i < 26; i++) {
-            System.out.println((getLeftCharOutput(i)) + ":" + ((char) (i + 65)));
-        }
+        System.out.println("Rotor = " + this.toString());
     }
 
     public void printWiring() {
