@@ -1,6 +1,6 @@
 
 import Model.Enigma.Enigma;
-//import View.Basic.BasicInputScreen;
+import View.Basic.BasicInputScreen;
 import java.util.Scanner;
 
 /*
@@ -18,7 +18,7 @@ public class main {
     public static void main(String[] args) {
         Enigma e = new Enigma();
 
-//        BasicInputScreen i = new BasicInputScreen();
+        BasicInputScreen i = new BasicInputScreen();
 
 //        Scanner s = new Scanner(System.in);
 //        String temp;

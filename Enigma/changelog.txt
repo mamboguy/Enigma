@@ -1,15 +1,2 @@
-Main
-    - Now prompts for steckered pairs on plugboard
-
-Plugboard
-    - New method that emulates the plugboard on an enigma
-    - Holds a string of the current paired list and an array of the pairings
-    - resetPlugboard clears any connections
-    - getPairedLetter returns the paired letter
-    - steckerPattern sets the plugboard to the steckering input
-    - steckerPair performs actual pairing
-    - sanitize sanitizes any input
-
-Enigma
-    - Renamed many temp variables to be clearer
-    - Added steckerPairs function to set plugboard
+BasicInputScreen
+    Basic input screen creation
