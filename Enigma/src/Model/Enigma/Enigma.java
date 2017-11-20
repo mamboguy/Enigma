@@ -150,7 +150,6 @@ public class Enigma {
         String rotors[] = temp.split(" ");
 
         //TODO - Implement checking of type/usage
-
         switch (rotors.length) {
             case 4:
                 fourthRotorUsed = true;
@@ -162,9 +161,9 @@ public class Enigma {
                 }
             case 3:
                 for (int i = 0; i < rotors.length; i++) {
-                    
+
                     for (int j = 0; j < rotorsAvailable.size(); j++) {
-                    
+
                         if (rotors[i].equalsIgnoreCase(rotorsAvailable.get(j).getRotorName())) {
 
                             switch (i) {
@@ -210,6 +209,16 @@ public class Enigma {
                 rotor2.setKeyPosition(temp.charAt(1));
                 rotor1.setKeyPosition(temp.charAt(2));
             }
+        }
+    }
+
+    public void changeReflector(String temp) {
+        temp = sanitizeInput(temp);
+        
+        for (int i = 0; i < reflectorsAvailable.size(); i++) {
+            if (temp.equalsIgnoreCase(reflectorsAvailable.get(i).getName())){
+                reflector = reflectorsAvailable.get(i);
+            }            
         }
     }
     //</editor-fold>

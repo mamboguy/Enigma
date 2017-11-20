@@ -1,2 +1,5 @@
+Main
+    - Prompts to change reflector
+
 Enigma
-    - Now can change rotor order
+    - Now can change reflector used

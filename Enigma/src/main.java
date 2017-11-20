@@ -23,6 +23,10 @@ public class main {
         temp = s.nextLine();
         e.changeRotors(temp);
 
+        System.out.print("Input what reflector to use \"(ex:UKW-B)\": ");
+        temp = s.nextLine();
+        e.changeReflector(temp);
+
         System.out.print("Input label offsets for rotors \"(ex:BOL)\": ");
         temp = s.nextLine();
         e.changeLabels(temp);
