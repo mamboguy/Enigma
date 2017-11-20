@@ -9,6 +9,7 @@ package Model.Enigma;
  *
  * @author Michael C
  */
+import Model.Plugboard.Plugboard;
 import Model.Reflectors.Reflector;
 import Model.Reflectors.ReflectorFileReader;
 import Model.Rotors.Rotor;
@@ -24,6 +25,7 @@ public class Enigma {
     //<editor-fold desc="Private Variables">
     private ArrayList<Reflector> reflectorsAvailable;
     private ArrayList<Rotor> rotorsAvailable;
+    private Plugboard plugboard;
 
     //Rotor order from left to right is: 4, 3, 2, 1
     private Rotor rotor4;
@@ -40,6 +42,7 @@ public class Enigma {
         //TODO - Fix path
         rotorsAvailable = RotorFileReader.readRotorFile("TODO - fix path");
         reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
+        plugboard = new Plugboard();
 
         rotor3 = rotorsAvailable.get(0);
         rotor2 = rotorsAvailable.get(1);
@@ -94,6 +97,8 @@ public class Enigma {
     }
 
     private char inputCharacter(char charInput) {
+        
+        charInput = plugboard.getPairedLetter(charInput);
         int input = charInput - 65;
 
         stepMachine();
@@ -120,34 +125,34 @@ public class Enigma {
     }
 
     //<editor-fold desc="Adjust settings methods">
-    public void changeLabels(String temp) {
+    public void changeLabels(String labelPositions) {
 
-        temp = sanitizeInput(temp);
+        labelPositions = sanitizeInput(labelPositions);
 
-        if (fourthRotorUsed && temp.length() != 4) {
+        if (fourthRotorUsed && labelPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
-        } else if (!fourthRotorUsed && temp.length() != 3) {
+        } else if (!fourthRotorUsed && labelPositions.length() != 3) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
         } else {
             if (fourthRotorUsed) {
-                rotor4.setLabelPosition(temp.charAt(0));
-                rotor3.setLabelPosition(temp.charAt(1));
-                rotor2.setLabelPosition(temp.charAt(2));
-                rotor1.setLabelPosition(temp.charAt(3));
+                rotor4.setLabelPosition(labelPositions.charAt(0));
+                rotor3.setLabelPosition(labelPositions.charAt(1));
+                rotor2.setLabelPosition(labelPositions.charAt(2));
+                rotor1.setLabelPosition(labelPositions.charAt(3));
             } else {
-                rotor3.setLabelPosition(temp.charAt(0));
-                rotor2.setLabelPosition(temp.charAt(1));
-                rotor1.setLabelPosition(temp.charAt(2));
+                rotor3.setLabelPosition(labelPositions.charAt(0));
+                rotor2.setLabelPosition(labelPositions.charAt(1));
+                rotor1.setLabelPosition(labelPositions.charAt(2));
             }
         }
     }
 
-    public void changeRotors(String temp) {
-        temp = temp.toUpperCase();
+    public void changeRotors(String rotorNames) {
+        rotorNames = rotorNames.toUpperCase();
 
-        String rotors[] = temp.split(" ");
+        String rotors[] = rotorNames.split(" ");
 
         //TODO - Implement checking of type/usage
         switch (rotors.length) {
@@ -188,38 +193,53 @@ public class Enigma {
         }
     }
 
-    public void changeRotorStart(String temp) {
+    public void changeRotorStart(String rotorKeyPositions) {
 
-        temp = sanitizeInput(temp);
+        rotorKeyPositions = sanitizeInput(rotorKeyPositions);
 
-        if (fourthRotorUsed && temp.length() != 4) {
+        if (fourthRotorUsed && rotorKeyPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
-        } else if (!fourthRotorUsed && temp.length() != 3) {
+        } else if (!fourthRotorUsed && rotorKeyPositions.length() != 3) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
         } else {
             if (fourthRotorUsed) {
-                rotor4.setKeyPosition(temp.charAt(0));
-                rotor3.setKeyPosition(temp.charAt(1));
-                rotor2.setKeyPosition(temp.charAt(2));
-                rotor1.setKeyPosition(temp.charAt(3));
+                rotor4.setKeyPosition(rotorKeyPositions.charAt(0));
+                rotor3.setKeyPosition(rotorKeyPositions.charAt(1));
+                rotor2.setKeyPosition(rotorKeyPositions.charAt(2));
+                rotor1.setKeyPosition(rotorKeyPositions.charAt(3));
             } else {
-                rotor3.setKeyPosition(temp.charAt(0));
-                rotor2.setKeyPosition(temp.charAt(1));
-                rotor1.setKeyPosition(temp.charAt(2));
+                rotor3.setKeyPosition(rotorKeyPositions.charAt(0));
+                rotor2.setKeyPosition(rotorKeyPositions.charAt(1));
+                rotor1.setKeyPosition(rotorKeyPositions.charAt(2));
             }
         }
     }
 
-    public void changeReflector(String temp) {
-        temp = sanitizeInput(temp);
-        
+    public void changeReflector(String reflectorName) {
+        reflectorName = sanitizeInput(reflectorName);
+
         for (int i = 0; i < reflectorsAvailable.size(); i++) {
-            if (temp.equalsIgnoreCase(reflectorsAvailable.get(i).getName())){
+            if (reflectorName.equalsIgnoreCase(reflectorsAvailable.get(i).getName())) {
                 reflector = reflectorsAvailable.get(i);
-            }            
+            }
         }
+    }
+
+    public void steckerPairs(String steckeredPairs) {
+        steckeredPairs = sanitizeInput(steckeredPairs);
+        
+        String temp = "";
+        
+        for (int i = 0; i < steckeredPairs.length(); i++) {
+            if (i % 2 == 0){
+                temp += " ";
+            }
+            temp += steckeredPairs.charAt(i);
+        }
+        
+        plugboard.steckerPattern(temp);
     }
     //</editor-fold>
 
