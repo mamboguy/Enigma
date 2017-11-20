@@ -7,7 +7,6 @@ import java.util.Scanner;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  * Date Created Nov 19, 2017
  *
@@ -19,15 +18,19 @@ public class main {
         Enigma e = new Enigma();
         Scanner s = new Scanner(System.in);
         String temp;
-        
-        System.out.print("Input label offsets for rotors \"ex:BOL)\" ");
+
+        System.out.print("Input label offsets for rotors \"(ex:BOL)\": ");
         temp = s.nextLine();
         e.changeLabels(temp);
-        
+
+        System.out.print("Input rotor offset \"(ex:CHG)\": ");
+        temp = s.nextLine();
+        e.changeRotorStart(temp);
+
         System.out.print("Input message for encoding: ");
-        temp = s.nextLine();        
+        temp = s.nextLine();
         e.inputMessage(temp);
-        
+
     }
 
 }

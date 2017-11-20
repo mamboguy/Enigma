@@ -59,15 +59,10 @@ public class Rotor {
         this.rotorName = rotorName;
         this.baseWiringSequence = wiringSequence;
 
-        resetInternalWiring();
+        setInternalWiring(labelPosition);
 
-        //TODO - Change notchLocation to position on rotor rather than letter
         this.notchLocation = notchLocation;
         this.labelPosition = labelPosition;
-
-        for (int i = 0; i < (labelPosition - 65); i++) {
-            stepRotor();
-        }
 
         this.currentKeyPosition = keyPosition;
 
@@ -81,10 +76,6 @@ public class Rotor {
 //</editor-fold>
 
 //    //<editor-fold desc="Helpers">
-    private void resetInternalWiring() {
-        setInternalWiring('A');
-    }
-
     private void setInternalWiring(char labelOffset) {
         String temp = "";
 
@@ -168,7 +159,9 @@ public class Rotor {
     //<editor-fold desc="Setters">
     public void setKeyPosition(char position) {
         //TODO - Sanitize input
-        this.currentKeyPosition = position;
+        while (currentKeyPosition != position) {
+            stepRotor();
+        }
     }
 
     public void setLabelPosition(char position) {
@@ -206,7 +199,6 @@ public class Rotor {
             stepNext = false;
             return true;
 
-            //TODO - Fix Me
         } else if (this.notchLocation == currentKeyPosition) {
             this.stepNext = true;
             return false;
@@ -215,6 +207,7 @@ public class Rotor {
         }
     }
 
+    //<editor-fold desc="Print methods">
     @Override
     public String toString() {
 
@@ -223,7 +216,6 @@ public class Rotor {
                + ", Kriegsmarine =" + usage[0] + ", Luftwaffe = " + usage[1] + ", Wehrmacht = " + usage[2] + "}";
     }
 
-    //<editor-fold desc="Print methods">
     public void printRotor() {
         for (int i = 0; i < 26; i++) {
             System.out.println((getLeftCharOutput(i)) + ":" + ((char) (i + 65)));
