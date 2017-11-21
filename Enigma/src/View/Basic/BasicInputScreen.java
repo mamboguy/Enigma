@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -28,8 +29,7 @@ public class BasicInputScreen
         extends JFrame {
 
     //<editor-fold desc="Constants">
-    private static final Component STANDARD_X_SPACER = Box.createRigidArea(new Dimension(5, 0));
-    private static final Component STANDARD_Y_SPACER = Box.createRigidArea(new Dimension(0, 5));
+    private static final Dimension SPACER = new Dimension(5, 5);
 //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -65,103 +65,115 @@ public class BasicInputScreen
 
     public BasicInputScreen() {
         masterPanel = new JPanel();
-        masterPanel.setLayout(new BorderLayout(5,5));
-
         rotor1Panel = new JPanel();
         rotor2Panel = new JPanel();
         rotor3Panel = new JPanel();
         rotor4Panel = new JPanel();
+        reflectorPanel = new JPanel();
+        textPanel = new JPanel();
+        buttonPanel = new JPanel();
 
         rotor1Panel.setLayout(new BoxLayout(rotor1Panel, BoxLayout.Y_AXIS));
         rotor2Panel.setLayout(new BoxLayout(rotor2Panel, BoxLayout.Y_AXIS));
         rotor3Panel.setLayout(new BoxLayout(rotor3Panel, BoxLayout.Y_AXIS));
         rotor4Panel.setLayout(new BoxLayout(rotor4Panel, BoxLayout.Y_AXIS));
+        reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
 
-        reflectorPanel = new JPanel();
+        //Create combo boxes for settings
+        int comboHeights = 30;
+        int comboWidths = 130;
+        rotor4 = basicJComboBox("rotor4", "Select rotor to use in 4th slot", comboHeights, comboWidths);
+        rotor3 = basicJComboBox("rotor3", "Select rotor to use in 3rd slot", comboHeights, comboWidths);
+        rotor2 = basicJComboBox("rotor2", "Select rotor to use in 2nd slot", comboHeights, comboWidths);
+        rotor1 = basicJComboBox("rotor1", "Select rotor to use in 1st slot", comboHeights, comboWidths);
 
-        int rotorHeights = 30;
-        int rotorWidths = 130;
-        rotor4 = basicJComboBox("rotor4", "Select rotor to use in 4th slot", rotorHeights, rotorWidths);
-        rotor3 = basicJComboBox("rotor3", "Select rotor to use in 3rd slot", rotorHeights, rotorWidths);
-        rotor2 = basicJComboBox("rotor2", "Select rotor to use in 2nd slot", rotorHeights, rotorWidths);
-        rotor1 = basicJComboBox("rotor1", "Select rotor to use in 1st slot", rotorHeights, rotorWidths);
+        labelRotor4 = basicJComboBox("labelRotor4", "Ringstellung setting for rotor in 4th slot", comboHeights, comboWidths);
+        labelRotor3 = basicJComboBox("labelRotor3", "Ringstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
+        labelRotor2 = basicJComboBox("labelRotor2", "Ringstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
+        labelRotor1 = basicJComboBox("labelRotor1", "Ringstellung setting for rotor in 1st slot", comboHeights, comboWidths);
 
-        labelRotor4 = basicJComboBox("labelRotor4", "Ringstellung setting for rotor in 4th slot", rotorHeights, rotorWidths);
-        labelRotor3 = basicJComboBox("labelRotor3", "Ringstellung setting for rotor in 3rd slot", rotorHeights, rotorWidths);
-        labelRotor2 = basicJComboBox("labelRotor2", "Ringstellung setting for rotor in 2nd slot", rotorHeights, rotorWidths);
-        labelRotor1 = basicJComboBox("labelRotor1", "Ringstellung setting for rotor in 1st slot", rotorHeights, rotorWidths);
+        keyRotor4 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 4th slot", comboHeights, comboWidths);
+        keyRotor3 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
+        keyRotor2 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
+        keyRotor1 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 1st slot", comboHeights, comboWidths);
 
-        keyRotor4 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 4th slot", rotorHeights, rotorWidths);
-        keyRotor3 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 3rd slot", rotorHeights, rotorWidths);
-        keyRotor2 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 2nd slot", rotorHeights, rotorWidths);
-        keyRotor1 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 1st slot", rotorHeights, rotorWidths);
+        reflector = basicJComboBox("reflector", "Selector reflector to use", comboHeights, comboWidths);
 
-        //Adjust text areas
+        //Create text areas
         plaintext = createTextArea("Enter plaintext to encode here");
         ciphertext = createTextArea("Encoded plaintext appears here");
 
-        reflector = basicJComboBox("reflector", "Selector reflector to use", rotorHeights, rotorWidths);
-
+        //Create buttons
         reset = initializeJButton("resetButton", "Reset", "Resets the plaintext and ciphertext fields");
         translate = initializeJButton("translateButton", "Encode", "Takes the plaintext and translates into ciphertext");
 
+        rotor1Panel.add(centeredLabel("Rotor 1"));
+        rotor1Panel.add(standardSpacer());
         rotor1Panel.add(rotor1);
-        rotor1Panel.add(STANDARD_Y_SPACER);
+        rotor1Panel.add(standardSpacer());
         rotor1Panel.add(labelRotor1);
-        rotor1Panel.add(STANDARD_Y_SPACER);
+        rotor1Panel.add(standardSpacer());
         rotor1Panel.add(keyRotor1);
 
+        rotor2Panel.add(centeredLabel("Rotor 2"));
+        rotor2Panel.add(standardSpacer());
         rotor2Panel.add(rotor2);
-        rotor2Panel.add(STANDARD_Y_SPACER);
+        rotor2Panel.add(standardSpacer());
         rotor2Panel.add(labelRotor2);
-        rotor2Panel.add(STANDARD_Y_SPACER);
+        rotor2Panel.add(standardSpacer());
         rotor2Panel.add(keyRotor2);
 
+        rotor3Panel.add(centeredLabel("Rotor 3"));
+        rotor3Panel.add(standardSpacer());
         rotor3Panel.add(rotor3);
-        rotor3Panel.add(STANDARD_Y_SPACER);
+        rotor3Panel.add(standardSpacer());
         rotor3Panel.add(labelRotor3);
-        rotor3Panel.add(STANDARD_Y_SPACER);
+        rotor3Panel.add(standardSpacer());
         rotor3Panel.add(keyRotor3);
 
+        rotor4Panel.add(centeredLabel("Rotor 4"));
+        rotor4Panel.add(standardSpacer());
         rotor4Panel.add(rotor4);
-        rotor4Panel.add(STANDARD_Y_SPACER);
+        rotor4Panel.add(standardSpacer());
         rotor4Panel.add(labelRotor4);
-        rotor4Panel.add(STANDARD_Y_SPACER);
+        rotor4Panel.add(standardSpacer());
         rotor4Panel.add(keyRotor4);
 
+        reflectorPanel.add(centeredLabel("Reflector"));
+        reflectorPanel.add(standardSpacer());
         reflectorPanel.add(reflector);
 
-        JPanel rotorPanels = new JPanel();
-        rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
-        rotorPanels.add(reflector);
-        rotorPanels.add(STANDARD_X_SPACER);
-        rotorPanels.add(rotor3);
-        rotorPanels.add(STANDARD_X_SPACER);
-        rotorPanels.add(rotor2);
-        rotorPanels.add(STANDARD_X_SPACER);
-        rotorPanels.add(rotor1);
-
-        textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
         textPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         textPanel.add(plaintext);
-        textPanel.add(STANDARD_X_SPACER);
+        textPanel.add(standardSpacer());
         textPanel.add(ciphertext);
 
-        buttonPanel = new JPanel();
         buttonPanel.add(translate);
-        rotor1Panel.add(STANDARD_X_SPACER);
+        buttonPanel.add(standardSpacer());
         buttonPanel.add(reset);
 
         JPanel textbuttons = new JPanel();
         textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
         textbuttons.setAlignmentY(CENTER_ALIGNMENT);
-        textbuttons.setAlignmentX(LEFT_ALIGNMENT);
+//        textbuttons.setAlignmentX(LEFT_ALIGNMENT);
         textbuttons.add(textPanel);
-        textbuttons.add(Box.createRigidArea(new Dimension(0, 5)));
         textbuttons.add(buttonPanel);
 
+        JPanel rotorPanels = new JPanel();
+        rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
+        rotorPanels.add(reflectorPanel);
+        rotorPanels.add(standardSpacer());
+        rotorPanels.add(rotor4Panel);
+        rotorPanels.add(standardSpacer());
+        rotorPanels.add(rotor3Panel);
+        rotorPanels.add(standardSpacer());
+        rotorPanels.add(rotor2Panel);
+        rotorPanels.add(standardSpacer());
+        rotorPanels.add(rotor1Panel);
+
         //Add panels to master
+        masterPanel.setLayout(new BorderLayout(5, 5));
         masterPanel.add(rotorPanels, BorderLayout.CENTER);
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
 
@@ -170,7 +182,7 @@ public class BasicInputScreen
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
-//        this.setResizable(false);
+        this.setResizable(false);
     }
 
     private JButton initializeJButton(String buttonName, String buttonText, String toolTip) {
@@ -201,5 +213,16 @@ public class BasicInputScreen
         temp.setToolTipText(toolTipText);
 
         return temp;
+    }
+
+    private JLabel centeredLabel(String name) {
+        JLabel temp = new JLabel(name);
+        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        return temp;
+    }
+
+    private Component standardSpacer() {
+        return Box.createRigidArea(SPACER);
     }
 }

@@ -1,2 +1,5 @@
-BasicInputScreen
-    Basic input screen creation
+Basic input panel
+    - Properly spaced out components
+    - Few bug fixes made
+    - Standardized spacer dimension created with method to create rigid boxes of spacer size
+    - Created a centered label maker
