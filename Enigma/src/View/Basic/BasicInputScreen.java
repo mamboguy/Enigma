@@ -34,15 +34,6 @@ public class BasicInputScreen
 //</editor-fold>
 
     //<editor-fold desc="Private Variables">
-    private JPanel masterPanel;
-    private JPanel rotor1Panel;
-    private JPanel rotor2Panel;
-    private JPanel rotor3Panel;
-    private JPanel rotor4Panel;
-    private JPanel reflectorPanel;
-    private JPanel textPanel;
-    private JPanel buttonPanel;
-
     private JButton reset;
     private JButton translate;
     private JButton exit;
@@ -66,14 +57,14 @@ public class BasicInputScreen
     //</editor-fold>
 
     public BasicInputScreen() {
-        masterPanel = new JPanel();
-        rotor1Panel = new JPanel();
-        rotor2Panel = new JPanel();
-        rotor3Panel = new JPanel();
-        rotor4Panel = new JPanel();
-        reflectorPanel = new JPanel();
-        textPanel = new JPanel();
-        buttonPanel = new JPanel();
+        JPanel masterPanel = new JPanel();
+        JPanel rotor1Panel = new JPanel();
+        JPanel rotor2Panel = new JPanel();
+        JPanel rotor3Panel = new JPanel();
+        JPanel rotor4Panel = new JPanel();
+        JPanel reflectorPanel = new JPanel();
+        JPanel textPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
 
         rotor1Panel.setLayout(new BoxLayout(rotor1Panel, BoxLayout.Y_AXIS));
         rotor2Panel.setLayout(new BoxLayout(rotor2Panel, BoxLayout.Y_AXIS));
@@ -245,6 +236,10 @@ public class BasicInputScreen
         exit.addActionListener(al);
         reset.addActionListener(al);
         translate.addActionListener(al);
+        rotor1.addActionListener(al);
+        rotor2.addActionListener(al);
+        rotor3.addActionListener(al);
+        rotor4.addActionListener(al);
     }
 
     public void updateReflectorCombos(String[] reflectorsAvailable) {
@@ -340,5 +335,17 @@ public class BasicInputScreen
         this.keyRotor2.setText(keys[i]);
         i--;
         this.keyRotor3.setText(keys[i]);
+    }
+
+    public void checkUniqueSelection(String sourceName) {
+
+        String selection1 = (String) rotor1.getSelectedItem();
+        String selection2 = (String) rotor2.getSelectedItem();
+        String selection3 = (String) rotor3.getSelectedItem();
+        String selection4 = (String) rotor4.getSelectedItem();
+
+        if (sourceName.equalsIgnoreCase(selection1)) {
+            
+        }
     }
 }

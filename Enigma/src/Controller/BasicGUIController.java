@@ -10,6 +10,7 @@ import View.Basic.BasicInputScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 
 /**
  *
@@ -32,11 +33,17 @@ public class BasicGUIController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JButton temp = (JButton) e.getSource();
-        String buttonName = temp.getName();
-        String holder;
+        JComponent temp = (JComponent) e.getSource();
+        String sourceName = temp.getName();
 
-        switch (buttonName) {
+        switch (sourceName) {
+            
+            case "rotor1":
+            case "rotor2":
+            case "rotor3":
+            case "rotor4":
+                
+                gui.checkUniqueSelection(sourceName);
 
             case "encodeButton":
 
