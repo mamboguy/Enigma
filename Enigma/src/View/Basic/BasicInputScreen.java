@@ -10,15 +10,16 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  * Date Created Nov 19, 2017
@@ -44,6 +45,7 @@ public class BasicInputScreen
 
     private JButton reset;
     private JButton translate;
+    private JButton exit;
 
     private JTextArea plaintext;
     private JTextArea ciphertext;
@@ -53,14 +55,14 @@ public class BasicInputScreen
     private JComboBox rotor3;
     private JComboBox rotor4;
     private JComboBox reflector;
-    private JComboBox labelRotor4;
-    private JComboBox labelRotor3;
-    private JComboBox labelRotor2;
-    private JComboBox labelRotor1;
-    private JComboBox keyRotor4;
-    private JComboBox keyRotor3;
-    private JComboBox keyRotor2;
-    private JComboBox keyRotor1;
+    private JTextField labelRotor4;
+    private JTextField labelRotor3;
+    private JTextField labelRotor2;
+    private JTextField labelRotor1;
+    private JTextField keyRotor4;
+    private JTextField keyRotor3;
+    private JTextField keyRotor2;
+    private JTextField keyRotor1;
     //</editor-fold>
 
     public BasicInputScreen() {
@@ -87,15 +89,15 @@ public class BasicInputScreen
         rotor2 = basicJComboBox("rotor2", "Select rotor to use in 2nd slot", comboHeights, comboWidths);
         rotor1 = basicJComboBox("rotor1", "Select rotor to use in 1st slot", comboHeights, comboWidths);
 
-        labelRotor4 = basicJComboBox("labelRotor4", "Ringstellung setting for rotor in 4th slot", comboHeights, comboWidths);
-        labelRotor3 = basicJComboBox("labelRotor3", "Ringstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
-        labelRotor2 = basicJComboBox("labelRotor2", "Ringstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
-        labelRotor1 = basicJComboBox("labelRotor1", "Ringstellung setting for rotor in 1st slot", comboHeights, comboWidths);
+        labelRotor4 = basicJTextField("labelRotor4", "Ringstellung setting for rotor in 4th slot", comboHeights, comboWidths);
+        labelRotor3 = basicJTextField("labelRotor3", "Ringstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
+        labelRotor2 = basicJTextField("labelRotor2", "Ringstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
+        labelRotor1 = basicJTextField("labelRotor1", "Ringstellung setting for rotor in 1st slot", comboHeights, comboWidths);
 
-        keyRotor4 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 4th slot", comboHeights, comboWidths);
-        keyRotor3 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
-        keyRotor2 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
-        keyRotor1 = basicJComboBox("keyRotor4", "Grundstellung setting for rotor in 1st slot", comboHeights, comboWidths);
+        keyRotor4 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 4th slot", comboHeights, comboWidths);
+        keyRotor3 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
+        keyRotor2 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
+        keyRotor1 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 1st slot", comboHeights, comboWidths);
 
         reflector = basicJComboBox("reflector", "Selector reflector to use", comboHeights, comboWidths);
 
@@ -106,6 +108,7 @@ public class BasicInputScreen
         //Create buttons
         reset = initializeJButton("resetButton", "Reset", "Resets the plaintext and ciphertext fields");
         translate = initializeJButton("translateButton", "Encode", "Takes the plaintext and translates into ciphertext");
+        exit = initializeJButton("exitButton", "Exit", "Exits the application");
 
         rotor1Panel.add(centeredLabel("Rotor 1"));
         rotor1Panel.add(standardSpacer());
@@ -131,13 +134,13 @@ public class BasicInputScreen
         rotor3Panel.add(standardSpacer());
         rotor3Panel.add(keyRotor3);
 
-        rotor4Panel.add(centeredLabel("Rotor 4"));
-        rotor4Panel.add(standardSpacer());
-        rotor4Panel.add(rotor4);
-        rotor4Panel.add(standardSpacer());
-        rotor4Panel.add(labelRotor4);
-        rotor4Panel.add(standardSpacer());
-        rotor4Panel.add(keyRotor4);
+//        rotor4Panel.add(centeredLabel("Rotor 4"));
+//        rotor4Panel.add(standardSpacer());
+//        rotor4Panel.add(rotor4);
+//        rotor4Panel.add(standardSpacer());
+//        rotor4Panel.add(labelRotor4);
+//        rotor4Panel.add(standardSpacer());
+//        rotor4Panel.add(keyRotor4);
 
         reflectorPanel.add(centeredLabel("Reflector"));
         reflectorPanel.add(standardSpacer());
@@ -152,6 +155,8 @@ public class BasicInputScreen
         buttonPanel.add(translate);
         buttonPanel.add(standardSpacer());
         buttonPanel.add(reset);
+        buttonPanel.add(standardSpacer());
+        buttonPanel.add(exit);
 
         JPanel textbuttons = new JPanel();
         textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
@@ -215,6 +220,17 @@ public class BasicInputScreen
         return temp;
     }
 
+    private JTextField basicJTextField(String name, String toolTipText, int height, int width) {
+        JTextField temp = new JTextField();
+
+        temp.setName(name);
+        temp.setPreferredSize(new Dimension(width, height));
+        temp.setMinimumSize(new Dimension(width, height));
+        temp.setToolTipText(toolTipText);
+
+        return temp;
+    }
+
     private JLabel centeredLabel(String name) {
         JLabel temp = new JLabel(name);
         temp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -224,5 +240,31 @@ public class BasicInputScreen
 
     private Component standardSpacer() {
         return Box.createRigidArea(SPACER);
+    }
+
+    public void registerListeners(ActionListener al) {
+        exit.addActionListener(al);
+        reset.addActionListener(al);
+        translate.addActionListener(al);
+    }
+    
+    public void updateReflectorCombos(String[] reflectorsAvailable){
+        reflector.removeAllItems();
+        
+        for (int i = 0; i < reflectorsAvailable.length; i++) {
+            reflector.addItem(reflectorsAvailable[i]);
+        }
+    }
+
+    public void updateRotorCombos(String[] rotorsAvailable) {
+
+        rotor1.removeAllItems();
+
+        for (int i = 0; i < rotorsAvailable.length; i++) {
+            rotor1.addItem(rotorsAvailable[i]);
+            rotor2.addItem(rotorsAvailable[i]);
+            rotor3.addItem(rotorsAvailable[i]);
+            rotor4.addItem(rotorsAvailable[i]);
+        }
     }
 }
