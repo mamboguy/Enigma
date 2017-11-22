@@ -75,18 +75,17 @@ public class Enigma {
         if (rotor3.willStepNextUse()) {
             if (fourthRotorUsed) {
                 rotor4.stepRotor();
+                rotor3.stepRotor();
             }
-        }
-
-        if (rotor2.willStepNextUse()) {
+        } else if (rotor2.willStepNextUse()) {
             rotor3.stepRotor();
-        }
-
-        if (rotor1.willStepNextUse()) {
+            rotor2.stepRotor();
+        } else if (rotor1.willStepNextUse()) {
             rotor2.stepRotor();
         }
 
         rotor1.stepRotor();
+        printRotorKeyPositions();
     }
 
     public String inputMessage(String message) {
@@ -148,6 +147,8 @@ public class Enigma {
     public void changeLabels(String labelPositions) {
 
         labelPositions = sanitizeInput(labelPositions);
+        
+        System.out.println("Change labels: " + labelPositions);
 
         if (fourthRotorUsed && labelPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
@@ -156,15 +157,36 @@ public class Enigma {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
         } else {
+
+            int i = 0;
+
             if (fourthRotorUsed) {
-                rotor4.setLabelPosition(labelPositions.charAt(0));
-                rotor3.setLabelPosition(labelPositions.charAt(1));
-                rotor2.setLabelPosition(labelPositions.charAt(2));
-                rotor1.setLabelPosition(labelPositions.charAt(3));
-            } else {
-                rotor3.setLabelPosition(labelPositions.charAt(0));
-                rotor2.setLabelPosition(labelPositions.charAt(1));
-                rotor1.setLabelPosition(labelPositions.charAt(2));
+
+                if (rotor4.getLabelPosition() == labelPositions.charAt(0)) {
+                    rotor4.setLabelPosition(labelPositions.charAt(0));
+                }
+
+                i = 1;
+            }
+            
+            System.out.println("rotor3 label = " + rotor3.getLabelPosition());
+            System.out.println("label position.charAt(" + i + ") = " + labelPositions.charAt(i));
+            System.out.println("equivalent? " + (rotor3.getLabelPosition() == labelPositions.charAt(i)));
+            if (rotor3.getLabelPosition() != labelPositions.charAt(i)) {
+                System.out.println("Rotor 3 label mismatch");
+                rotor3.setLabelPosition(labelPositions.charAt(i));
+            }
+            i++;
+
+            if (rotor2.getLabelPosition() != labelPositions.charAt(i)) {
+                System.out.println("Rotor 2 label mismatch");
+                rotor2.setLabelPosition(labelPositions.charAt(i));
+            }
+            i++;
+
+            if (rotor1.getLabelPosition() != labelPositions.charAt(i)) {
+                System.out.println("Rotor 1 label mismatch");
+                rotor1.setLabelPosition(labelPositions.charAt(i));
             }
         }
     }
@@ -291,6 +313,16 @@ public class Enigma {
         }
     }
 
+    public void printRotorKeyPositions() {
+        String rotorKeyPositions = "" + rotor3.getKeyPosition() + rotor2.getKeyPosition() + rotor1.getKeyPosition();
+
+        if (fourthRotorUsed) {
+            rotorKeyPositions = rotor4.getKeyPosition() + rotorKeyPositions;
+        }
+
+        System.out.println("Rotor keys = " + rotorKeyPositions);
+    }
+
     public void printAvailableRotorStats() {
         for (int i = 0; i < rotorsAvailable.size(); i++) {
             System.out.println("Rotor " + i + " = " + rotorsAvailable.get(i));
@@ -323,6 +355,7 @@ public class Enigma {
 
         rotors = rotors.trim();
 
+        System.out.println("Label making");
         for (int i = 5; i <= 7; i++) {
             labels += settings[i];
         }
@@ -332,14 +365,11 @@ public class Enigma {
         }
 
         if (this.fourthRotorUsed) {
-            System.out.println("4th rotor used");
             rotors += " " + settings[0];
             labels += settings[4];
             labels += settings[8];
         }
-
-        System.out.println("Rotors = " + rotors);
-        System.out.println("Keys = " + keys);
+        
         System.out.println("Labels = " + labels);
 
         this.changeRotors(rotors);
@@ -348,5 +378,21 @@ public class Enigma {
         this.changeRotorStart(keys);
 
         //TODO - stecker plugboard
+    }
+
+    public boolean usingFourthRotor() {
+        return fourthRotorUsed;
+    }
+
+    public String[] getCurrentKeyPositions() {
+        String rotorKeyPositions = rotor3.getKeyPosition() + " " + rotor2.getKeyPosition() + " " + rotor1.getKeyPosition();
+
+        if (fourthRotorUsed) {
+            rotorKeyPositions = rotor4.getKeyPosition() + " " + rotorKeyPositions;
+        }
+
+        String[] temp = rotorKeyPositions.split(" ");
+
+        return temp;
     }
 }
