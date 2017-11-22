@@ -50,6 +50,26 @@ public class Enigma {
         reflector = reflectorsAvailable.get(1);
     }
 
+    public String[] getRotorsAvailable() {
+        String[] temp = new String[rotorsAvailable.size()];
+
+        for (int i = 0; i < rotorsAvailable.size(); i++) {
+            temp[i] = rotorsAvailable.get(i).getRotorName();
+        }
+
+        return temp;
+    }
+
+    public String[] getReflectorsAvailable() {
+        String[] temp = new String[reflectorsAvailable.size()];
+
+        for (int i = 0; i < reflectorsAvailable.size(); i++) {
+            temp[i] = reflectorsAvailable.get(i).getReflectorName();
+        }
+
+        return temp;
+    }
+
     public void stepMachine() {
 
         if (rotor3.willStepNextUse()) {
@@ -97,7 +117,7 @@ public class Enigma {
     }
 
     private char inputCharacter(char charInput) {
-        
+
         charInput = plugboard.getPairedLetter(charInput);
         int input = charInput - 65;
 
@@ -221,7 +241,7 @@ public class Enigma {
         reflectorName = sanitizeInput(reflectorName);
 
         for (int i = 0; i < reflectorsAvailable.size(); i++) {
-            if (reflectorName.equalsIgnoreCase(reflectorsAvailable.get(i).getName())) {
+            if (reflectorName.equalsIgnoreCase(reflectorsAvailable.get(i).getReflectorName())) {
                 reflector = reflectorsAvailable.get(i);
             }
         }
@@ -229,16 +249,16 @@ public class Enigma {
 
     public void steckerPairs(String steckeredPairs) {
         steckeredPairs = sanitizeInput(steckeredPairs);
-        
+
         String temp = "";
-        
+
         for (int i = 0; i < steckeredPairs.length(); i++) {
-            if (i % 2 == 0){
+            if (i % 2 == 0) {
                 temp += " ";
             }
             temp += steckeredPairs.charAt(i);
         }
-        
+
         plugboard.steckerPattern(temp);
     }
     //</editor-fold>
@@ -258,7 +278,7 @@ public class Enigma {
         System.out.println("_____________________________________________");
         System.out.println("_____________________________________________");
         System.out.println("KEY SETTINGS: ");
-        System.out.println("Reflector: " + reflector.getName());
+        System.out.println("Reflector: " + reflector.getReflectorName());
         System.out.println("Rotors: " + rotorString);
         System.out.println("Label Positions: " + rotorLabels);
         //TODO - Implement plugboard
