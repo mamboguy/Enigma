@@ -16,28 +16,43 @@ import javax.swing.JButton;
  * @author Mamboguy
  */
 public class BasicGUIController implements ActionListener {
-    
+
     BasicInputScreen gui;
-    Enigma e;
-    
-    public BasicGUIController(){
-        e = new Enigma();
-        
+    Enigma model;
+
+    public BasicGUIController() {
+        model = new Enigma();
+
         gui = new BasicInputScreen();
         gui.registerListeners(this);
-        gui.updateRotorCombos(e.getRotorsAvailable());
-        gui.updateReflectorCombos(e.getReflectorsAvailable());
+        gui.updateRotorCombos(model.getRotorsAvailable());
+        gui.updateReflectorCombos(model.getReflectorsAvailable());
+        gui.resetToDefault();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton temp = (JButton) e.getSource();
         String buttonName = temp.getName();
-        
+
         System.out.println("Action");
 
         switch (buttonName) {
 
+            case "encodeButton":
+
+                String[] settings = gui.getCurrentKeySettings();
+                model.setSettings(settings);
+                String ciphertext = model.inputMessage(gui.getPlaintext());
+                gui.setCiphertext(ciphertext);
+
+                break;
+
+            case "resetButton":
+
+                gui.resetToDefault();
+
+                break;
             case "exitButton":
 
                 String[] options = new String[]{"Exit", "Cancel"};
@@ -50,8 +65,7 @@ public class BasicGUIController implements ActionListener {
 //                        null,
 //                        options,
 //                        options[1]) == JOptionPane.YES_OPTION) {
-
-                    System.exit(0);
+                System.exit(0);
 //                }
 
                 break;

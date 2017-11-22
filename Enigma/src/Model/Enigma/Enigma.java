@@ -225,6 +225,7 @@ public class Enigma {
             throw new UnsupportedOperationException();
         } else {
             if (fourthRotorUsed) {
+                System.out.println("4th");
                 rotor4.setKeyPosition(rotorKeyPositions.charAt(0));
                 rotor3.setKeyPosition(rotorKeyPositions.charAt(1));
                 rotor2.setKeyPosition(rotorKeyPositions.charAt(2));
@@ -282,8 +283,12 @@ public class Enigma {
         System.out.println("Rotors: " + rotorString);
         System.out.println("Label Positions: " + rotorLabels);
         //TODO - Implement plugboard
-        System.out.println("Plugboard Settings: ");
+        System.out.println("Plugboard Settings: " + plugboard.toString());
         System.out.println("Key Positions: " + rotorKeyPositions);
+
+        for (int i = 0; i < 26; i++) {
+            System.out.println(((char) (i + 65)) + ":" + plugboard.getPairedLetter(((char) (i + 65))));
+        }
     }
 
     public void printAvailableRotorStats() {
@@ -304,5 +309,44 @@ public class Enigma {
         temp = temp.replaceAll(" ", "");
 
         return temp;
+    }
+
+    public void setSettings(String[] settings) {
+
+        String rotors = "";
+        String labels = "";
+        String keys = "";
+
+        for (int i = 1; i <= 3; i++) {
+            rotors = rotors + " " + settings[i];
+        }
+
+        rotors = rotors.trim();
+
+        for (int i = 5; i <= 7; i++) {
+            labels += settings[i];
+        }
+
+        for (int i = 9; i <= 11; i++) {
+            keys += settings[i];
+        }
+
+        if (this.fourthRotorUsed) {
+            System.out.println("4th rotor used");
+            rotors += " " + settings[0];
+            labels += settings[4];
+            labels += settings[8];
+        }
+
+        System.out.println("Rotors = " + rotors);
+        System.out.println("Keys = " + keys);
+        System.out.println("Labels = " + labels);
+
+        this.changeRotors(rotors);
+        this.changeReflector(settings[12]);
+        this.changeLabels(labels);
+        this.changeRotorStart(keys);
+
+        //TODO - stecker plugboard
     }
 }

@@ -47,7 +47,7 @@ public class Reflector {
         return (wiringSequence.charAt(input) - 65);
     }
 
-    public String getName() {
+    public String getReflectorName() {
         return name;
     }
 

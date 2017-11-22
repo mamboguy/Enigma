@@ -107,7 +107,7 @@ public class BasicInputScreen
 
         //Create buttons
         reset = initializeJButton("resetButton", "Reset", "Resets the plaintext and ciphertext fields");
-        translate = initializeJButton("translateButton", "Encode", "Takes the plaintext and translates into ciphertext");
+        translate = initializeJButton("encodeButton", "Encode", "Takes the plaintext and translates into ciphertext");
         exit = initializeJButton("exitButton", "Exit", "Exits the application");
 
         rotor1Panel.add(centeredLabel("Rotor 1"));
@@ -266,5 +266,64 @@ public class BasicInputScreen
             rotor3.addItem(rotorsAvailable[i]);
             rotor4.addItem(rotorsAvailable[i]);
         }
+    }
+
+    public void resetToDefault() {
+        rotor1.setSelectedIndex(2);
+        rotor2.setSelectedIndex(1);
+        rotor3.setSelectedIndex(0);
+        rotor4.setSelectedIndex(0);
+        reflector.setSelectedIndex(1);
+        
+        keyRotor1.setText("A");
+        keyRotor2.setText("A");
+        keyRotor3.setText("A");
+        keyRotor4.setText("A");
+        
+        labelRotor1.setText("A");
+        labelRotor2.setText("A");
+        labelRotor3.setText("A");
+        labelRotor4.setText("A");
+        
+        ciphertext.setText("");
+        plaintext.setText("");
+    }
+    
+    //TODO - limit labels and keys to 1 char
+    //TODO - remove rotor from other comboboxes upon selection
+    //TODO - space out plaintext
+    //TODO - add setting for plaintext spacing
+    //TODO - add plugboard steckering
+    
+    public String[] getCurrentKeySettings(){
+        
+        String[] settings = new String[13];
+        
+        settings[0] = (String) rotor4.getSelectedItem();
+        settings[1] = (String) rotor3.getSelectedItem();
+        settings[2] = (String) rotor2.getSelectedItem();
+        settings[3] = (String) rotor1.getSelectedItem();
+        
+        settings[4] = labelRotor4.getText();
+        settings[5] = labelRotor3.getText();
+        settings[6] = labelRotor2.getText();
+        settings[7] = labelRotor1.getText();
+        
+        settings[8] = keyRotor4.getText();
+        settings[9] = keyRotor3.getText();
+        settings[10] = keyRotor2.getText();
+        settings[11] = keyRotor1.getText();
+        
+        settings[12] = (String) reflector.getSelectedItem();
+        
+        return settings;
+    }
+    
+    public String getPlaintext(){
+        return plaintext.getText();
+    }
+    
+    public void setCiphertext(String ciphertext){
+        this.ciphertext.setText(ciphertext);
     }
 }
