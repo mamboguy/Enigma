@@ -34,23 +34,22 @@ public class BasicGUIController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton temp = (JButton) e.getSource();
         String buttonName = temp.getName();
-
-        System.out.println("Action");
+        String holder;
 
         switch (buttonName) {
 
             case "encodeButton":
 
-                String[] settings = gui.getCurrentKeySettings();
-                model.setSettings(settings);
-                String ciphertext = model.inputMessage(gui.getPlaintext());
-                gui.setCiphertext(ciphertext);
+                model.setSettings(gui.getCurrentKeySettings());
+                gui.setCiphertext(model.inputMessage(gui.getPlaintext()));
+                gui.setCurrentKeyPosition(model.usingFourthRotor(), model.getCurrentKeyPositions());
 
                 break;
 
             case "resetButton":
 
                 gui.resetToDefault();
+                model.setSettings(gui.getCurrentKeySettings());
 
                 break;
             case "exitButton":

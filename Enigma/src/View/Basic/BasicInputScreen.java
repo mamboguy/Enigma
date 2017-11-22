@@ -329,13 +329,12 @@ public class BasicInputScreen
     public void setCurrentKeyPosition(boolean fourthRotor, String[] keys) {
 
         int i = 2;
-        
-        if (fourthRotor){
+
+        if (fourthRotor) {
             i = 3;
             this.keyRotor4.setText(keys[0]);
         }
 
-        
         this.keyRotor1.setText(keys[i]);
         i--;
         this.keyRotor2.setText(keys[i]);
