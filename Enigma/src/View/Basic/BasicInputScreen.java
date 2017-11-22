@@ -141,7 +141,6 @@ public class BasicInputScreen
 //        rotor4Panel.add(labelRotor4);
 //        rotor4Panel.add(standardSpacer());
 //        rotor4Panel.add(keyRotor4);
-
         reflectorPanel.add(centeredLabel("Reflector"));
         reflectorPanel.add(standardSpacer());
         reflectorPanel.add(reflector);
@@ -247,10 +246,10 @@ public class BasicInputScreen
         reset.addActionListener(al);
         translate.addActionListener(al);
     }
-    
-    public void updateReflectorCombos(String[] reflectorsAvailable){
+
+    public void updateReflectorCombos(String[] reflectorsAvailable) {
         reflector.removeAllItems();
-        
+
         for (int i = 0; i < reflectorsAvailable.length; i++) {
             reflector.addItem(reflectorsAvailable[i]);
         }
@@ -258,6 +257,7 @@ public class BasicInputScreen
 
     public void updateRotorCombos(String[] rotorsAvailable) {
 
+        //todo - fix for other combo boxes
         rotor1.removeAllItems();
 
         for (int i = 0; i < rotorsAvailable.length; i++) {
@@ -274,56 +274,72 @@ public class BasicInputScreen
         rotor3.setSelectedIndex(0);
         rotor4.setSelectedIndex(0);
         reflector.setSelectedIndex(1);
-        
-        keyRotor1.setText("A");
-        keyRotor2.setText("A");
+
+        keyRotor1.setText("L");
+        keyRotor2.setText("E");
         keyRotor3.setText("A");
         keyRotor4.setText("A");
-        
-        labelRotor1.setText("A");
-        labelRotor2.setText("A");
-        labelRotor3.setText("A");
+
+        labelRotor1.setText("C");
+        labelRotor2.setText("N");
+        labelRotor3.setText("C");
         labelRotor4.setText("A");
-        
+
         ciphertext.setText("");
         plaintext.setText("");
     }
-    
+
     //TODO - limit labels and keys to 1 char
     //TODO - remove rotor from other comboboxes upon selection
     //TODO - space out plaintext
     //TODO - add setting for plaintext spacing
     //TODO - add plugboard steckering
-    
-    public String[] getCurrentKeySettings(){
-        
+    public String[] getCurrentKeySettings() {
+
         String[] settings = new String[13];
-        
+
         settings[0] = (String) rotor4.getSelectedItem();
         settings[1] = (String) rotor3.getSelectedItem();
         settings[2] = (String) rotor2.getSelectedItem();
         settings[3] = (String) rotor1.getSelectedItem();
-        
+
         settings[4] = labelRotor4.getText();
         settings[5] = labelRotor3.getText();
         settings[6] = labelRotor2.getText();
         settings[7] = labelRotor1.getText();
-        
+
         settings[8] = keyRotor4.getText();
         settings[9] = keyRotor3.getText();
         settings[10] = keyRotor2.getText();
         settings[11] = keyRotor1.getText();
-        
+
         settings[12] = (String) reflector.getSelectedItem();
-        
+
         return settings;
     }
-    
-    public String getPlaintext(){
+
+    public String getPlaintext() {
         return plaintext.getText();
     }
-    
-    public void setCiphertext(String ciphertext){
+
+    public void setCiphertext(String ciphertext) {
         this.ciphertext.setText(ciphertext);
+    }
+
+    public void setCurrentKeyPosition(boolean fourthRotor, String[] keys) {
+
+        int i = 2;
+        
+        if (fourthRotor){
+            i = 3;
+            this.keyRotor4.setText(keys[0]);
+        }
+
+        
+        this.keyRotor1.setText(keys[i]);
+        i--;
+        this.keyRotor2.setText(keys[i]);
+        i--;
+        this.keyRotor3.setText(keys[i]);
     }
 }
