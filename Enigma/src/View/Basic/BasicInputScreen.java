@@ -11,6 +11,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -31,6 +32,15 @@ public class BasicInputScreen
 
     //<editor-fold desc="Constants">
     private static final Dimension SPACER = new Dimension(5, 5);
+    private static final int MAX_ROTORS = 4;
+    private static final ArrayList<Integer> ROTOR_DEFAULTS = new ArrayList<Integer>() {
+        {
+            add(2);
+            add(1);
+            add(0);
+            add(0);
+        }
+    };
 //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -54,6 +64,10 @@ public class BasicInputScreen
     private JTextField keyRotor3;
     private JTextField keyRotor2;
     private JTextField keyRotor1;
+
+    private ArrayList<JComboBox> rotorCombos = new ArrayList<JComboBox>();
+    private ArrayList<Integer> rotorSelectionHistory = new ArrayList<Integer>();
+    private ArrayList<Boolean> rotorsInUse = new ArrayList<Boolean>();
     //</editor-fold>
 
     public BasicInputScreen() {
@@ -172,6 +186,18 @@ public class BasicInputScreen
         masterPanel.add(rotorPanels, BorderLayout.CENTER);
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
 
+        rotorCombos.add(rotor1);
+        rotorCombos.add(rotor2);
+        rotorCombos.add(rotor3);
+        rotorCombos.add(rotor4);
+
+        for (int i = 0; i < ROTOR_DEFAULTS.size(); i++) {
+            rotorSelectionHistory.add(ROTOR_DEFAULTS.get(i));
+            rotorsInUse.add(true);
+        }
+
+        rotorsInUse.set(3, false);
+
         this.add(masterPanel);
         this.setTitle("Enigma v0.01");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -252,22 +278,22 @@ public class BasicInputScreen
 
     public void updateRotorCombos(String[] rotorsAvailable) {
 
-        //todo - fix for other combo boxes
-        rotor1.removeAllItems();
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            rotorCombos.get(i).removeAllItems();
+        }
 
         for (int i = 0; i < rotorsAvailable.length; i++) {
-            rotor1.addItem(rotorsAvailable[i]);
-            rotor2.addItem(rotorsAvailable[i]);
-            rotor3.addItem(rotorsAvailable[i]);
-            rotor4.addItem(rotorsAvailable[i]);
+
+            for (int j = 0; j < rotorCombos.size(); j++) {
+                rotorCombos.get(j).addItem(rotorsAvailable[i]);
+            }
         }
     }
 
     public void resetToDefault() {
-        rotor1.setSelectedIndex(2);
-        rotor2.setSelectedIndex(1);
-        rotor3.setSelectedIndex(0);
-        rotor4.setSelectedIndex(0);
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            rotorCombos.get(i).setSelectedIndex(ROTOR_DEFAULTS.get(i));
+        }
         reflector.setSelectedIndex(1);
 
         keyRotor1.setText("L");
@@ -282,6 +308,10 @@ public class BasicInputScreen
 
         ciphertext.setText("");
         plaintext.setText("");
+
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            rotorSelectionHistory.set(i, ROTOR_DEFAULTS.get(i));
+        }
     }
 
     //TODO - limit labels and keys to 1 char
@@ -337,15 +367,39 @@ public class BasicInputScreen
         this.keyRotor3.setText(keys[i]);
     }
 
-    public void checkUniqueSelection(String sourceName) {
+    /**
+     * Checks to see if a rotor name is in use and if so, returns which rotor is
+     * using it
+     *
+     * @param name - The name of the rotor that needs to be checked if in use
+     * @return - The location of the rotor using that name - Returns 0 if not in
+     * use
+     */
+    public int isRotorAlreadySelected(int selectionIndex) {
+        int i = 0;
 
-        String selection1 = (String) rotor1.getSelectedItem();
-        String selection2 = (String) rotor2.getSelectedItem();
-        String selection3 = (String) rotor3.getSelectedItem();
-        String selection4 = (String) rotor4.getSelectedItem();
+        for (int j = 0; j < rotorSelectionHistory.size(); j++) {
+            if (rotorSelectionHistory.get(j) == selectionIndex && rotorsInUse.get(j)) {
+                i = j + 1;
+            }
+        }
 
-        if (sourceName.equalsIgnoreCase(selection1)) {
-            
+        return i;
+    }
+
+    public void swapRotorCombos(int rotorSelectedByUser, int duplicateRotor) {
+        rotorSelectedByUser--;
+        duplicateRotor--;
+
+        int swappedSelection = rotorCombos.get(duplicateRotor).getSelectedIndex();
+
+        rotorCombos.get(duplicateRotor).setSelectedIndex(rotorSelectionHistory.get(rotorSelectedByUser));
+        rotorCombos.get(rotorSelectedByUser).setSelectedIndex(swappedSelection);
+    }
+
+    public void updateSelectionHistory() {
+        for (int i = 0; i < rotorSelectionHistory.size(); i++) {
+            rotorSelectionHistory.set(i,rotorCombos.get(i).getSelectedIndex());
         }
     }
 }
