@@ -9,7 +9,7 @@ import Model.Enigma.Enigma;
 import View.Basic.BasicInputScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
 /**
@@ -20,15 +20,16 @@ public class BasicGUIController implements ActionListener {
 
     BasicInputScreen gui;
     Enigma model;
+    private boolean secondCall = false;
 
     public BasicGUIController() {
         model = new Enigma();
 
         gui = new BasicInputScreen();
-        gui.registerListeners(this);
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
         gui.resetToDefault();
+        gui.registerListeners(this);
     }
 
     @Override
@@ -37,14 +38,26 @@ public class BasicGUIController implements ActionListener {
         String sourceName = temp.getName();
 
         switch (sourceName) {
-            
+
             case "rotor1":
             case "rotor2":
             case "rotor3":
             case "rotor4":
-                
-                gui.checkUniqueSelection(sourceName);
+                JComboBox rotor = (JComboBox) e.getSource();
+                String rotorName = (String) rotor.getName();
+                int rotorDuplicateLocation = gui.isRotorAlreadySelected(rotor.getSelectedIndex());
+                String rotorComboBoxSelectedName = "rotor" + rotorDuplicateLocation;
+                int rotorCurrentlySelected = Integer.parseInt(rotorName.replaceAll("rotor", ""));
 
+                if (rotorDuplicateLocation != 0 && !rotorComboBoxSelectedName.equalsIgnoreCase(sourceName)) {
+                    if (rotor.hasFocus()) {
+                        gui.swapRotorCombos(rotorCurrentlySelected, rotorDuplicateLocation);
+                    }
+                }
+                
+                gui.updateSelectionHistory();
+
+                break;
             case "encodeButton":
 
                 model.setSettings(gui.getCurrentKeySettings());
