@@ -14,14 +14,17 @@ import javax.swing.text.DocumentFilter;
  * @author Mamboguy
  */
 public class PlugboardDocumentFilter extends DocumentFilter {
-    
-    public PlugboardDocumentFilter(){
+
+    public PlugboardDocumentFilter() {
         super();
     }
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-         fb.replace(offset, length, text.toUpperCase(), attrs);
+        text = text.toUpperCase();
+        text = text.replaceAll("[^a-zA-Z]", "");
+        
+        fb.replace(offset, length, text, attrs);
     }
-    
+
 }
