@@ -385,7 +385,7 @@ public class BasicInputScreen
     //TODO - add plugboard steckering
     public String[] getCurrentKeySettings() {
 
-        String[] settings = new String[13];
+        String[] settings = new String[14];
 
         settings[0] = (String) rotor4.getSelectedItem();
         settings[1] = (String) rotor3.getSelectedItem();
@@ -403,6 +403,8 @@ public class BasicInputScreen
         settings[11] = keyRotor1.getText();
 
         settings[12] = (String) reflector.getSelectedItem();
+        
+        settings[13] = getPlugboardString();
 
         return settings;
     }
@@ -533,5 +535,25 @@ public class BasicInputScreen
                 }
             }
         }
+    }
+
+    private String getPlugboardString() {
+        
+        String steckerBoardPattern = "";
+        
+        boolean[] temp = new boolean[plugboardFields.size()];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = true;
+        }
+        
+        for (int i = 0; i < plugboardFields.size(); i++) {
+            if (temp[i] && !plugboardFields.get(i).getText().isEmpty()){
+                steckerBoardPattern += "" + ((char)(i+65)) + plugboardFields.get(i).getText() + " ";
+                temp[i] = false;
+                temp[plugboardFields.get(i).getText().charAt(0)-65] = false;
+            }
+        }
+        
+        return steckerBoardPattern.trim();
     }
 }
