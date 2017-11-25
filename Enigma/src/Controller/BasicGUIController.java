@@ -62,7 +62,6 @@ public class BasicGUIController implements ActionListener, KeyListener {
 
                 break;
             case "encodeButton":
-                //todo - get plugboard settings
                 model.setSettings(gui.getCurrentKeySettings());
                 gui.setCiphertext(model.inputMessage(gui.getPlaintext()));
                 gui.setCurrentKeyPosition(model.usingFourthRotor(), model.getCurrentKeyPositions());

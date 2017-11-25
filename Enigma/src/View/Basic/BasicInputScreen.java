@@ -378,11 +378,8 @@ public class BasicInputScreen
         }
     }
 
-    //TODO - limit labels and keys to 1 char
-    //TODO - remove rotor from other comboboxes upon selection
     //TODO - space out plaintext
     //TODO - add setting for plaintext spacing
-    //TODO - add plugboard steckering
     public String[] getCurrentKeySettings() {
 
         String[] settings = new String[14];
