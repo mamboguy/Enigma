@@ -98,22 +98,25 @@ public class BasicGUIController implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+        JTextField temp = (JTextField) e.getSource();
+        char name = temp.getName().replaceAll("Field", "").charAt(0);
 
-        if (e.getComponent().hasFocus()) {
-            JTextField temp = (JTextField) e.getSource();
-            char name = temp.getName().replaceAll("Field", "").charAt(0);
+        char inputField = Character.toUpperCase(e.getKeyChar());
+        int location = name - 65;
 
-            char inputField = Character.toUpperCase(e.getKeyChar());
-            int location = name - 65;
-
-            if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
-                gui.deletePairing(temp.getName());
+        //If delete or backspace key is used
+        if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+            //Delete the key and its pairing
+            gui.deletePairing(temp.getName());
+        } else if (gui.locationHasMultipleChars(location)) {
+            gui.eraseLastLetter(location);
+        } else {
+            //If the typed character is different from the field, set the other field in the pair to reflect the pairing
+            if (inputField != name) {
+                gui.pairLetters(inputField - 65, name);
             } else {
-                if (inputField != name) {
-                    gui.pairLetters(inputField - 65, name);
-                } else {
-                    gui.eraseLetter(location);
-                }
+                //If the char is the same as the field, delete the input
+                gui.eraseLetter(location);
             }
         }
     }
