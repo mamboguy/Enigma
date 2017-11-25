@@ -146,9 +146,7 @@ public class Enigma {
     //<editor-fold desc="Adjust settings methods">
     public void changeLabels(String labelPositions) {
 
-        labelPositions = sanitizeInput(labelPositions);
-        
-        System.out.println("Change labels: " + labelPositions);
+        labelPositions = sanitizeInput(labelPositions);        
 
         if (fourthRotorUsed && labelPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
@@ -169,23 +167,17 @@ public class Enigma {
                 i = 1;
             }
             
-            System.out.println("rotor3 label = " + rotor3.getLabelPosition());
-            System.out.println("label position.charAt(" + i + ") = " + labelPositions.charAt(i));
-            System.out.println("equivalent? " + (rotor3.getLabelPosition() == labelPositions.charAt(i)));
             if (rotor3.getLabelPosition() != labelPositions.charAt(i)) {
-                System.out.println("Rotor 3 label mismatch");
                 rotor3.setLabelPosition(labelPositions.charAt(i));
             }
             i++;
 
             if (rotor2.getLabelPosition() != labelPositions.charAt(i)) {
-                System.out.println("Rotor 2 label mismatch");
                 rotor2.setLabelPosition(labelPositions.charAt(i));
             }
             i++;
 
             if (rotor1.getLabelPosition() != labelPositions.charAt(i)) {
-                System.out.println("Rotor 1 label mismatch");
                 rotor1.setLabelPosition(labelPositions.charAt(i));
             }
         }
@@ -355,7 +347,6 @@ public class Enigma {
 
         rotors = rotors.trim();
 
-        System.out.println("Label making");
         for (int i = 5; i <= 7; i++) {
             labels += settings[i];
         }
@@ -369,8 +360,6 @@ public class Enigma {
             labels += settings[4];
             labels += settings[8];
         }
-        
-        System.out.println("Labels = " + labels);
 
         this.changeRotors(rotors);
         this.changeReflector(settings[12]);
