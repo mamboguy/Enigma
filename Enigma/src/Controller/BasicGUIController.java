@@ -9,14 +9,17 @@ import Model.Enigma.Enigma;
 import View.Basic.BasicInputScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Mamboguy
  */
-public class BasicGUIController implements ActionListener {
+public class BasicGUIController implements ActionListener, KeyListener {
 
     BasicInputScreen gui;
     Enigma model;
@@ -29,7 +32,7 @@ public class BasicGUIController implements ActionListener {
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
         gui.resetToDefault();
-        gui.registerListeners(this);
+        gui.registerListeners(this, this);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class BasicGUIController implements ActionListener {
                         gui.swapRotorCombos(rotorCurrentlySelected, rotorDuplicateLocation);
                     }
                 }
-                
+
                 gui.updateSelectionHistory();
 
                 break;
@@ -91,6 +94,38 @@ public class BasicGUIController implements ActionListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+        if (e.getComponent().hasFocus()) {
+            JTextField temp = (JTextField) e.getSource();
+            char name = temp.getName().replaceAll("Field", "").charAt(0);
+
+            char inputField = Character.toUpperCase(e.getKeyChar());
+            int location = name - 65;
+
+            if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+                gui.deletePairing(temp.getName());
+            } else {
+                if (inputField != name) {
+                    gui.pairLetters(inputField - 65, name);
+                } else {
+                    gui.eraseLetter(location);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        //Ignore
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //Ignore
     }
 
 }
