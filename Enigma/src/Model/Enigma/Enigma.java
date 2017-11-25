@@ -297,13 +297,9 @@ public class Enigma {
         System.out.println("Reflector: " + reflector.getReflectorName());
         System.out.println("Rotors: " + rotorString);
         System.out.println("Label Positions: " + rotorLabels);
-        //TODO - Implement plugboard
         System.out.println("Plugboard Settings: " + plugboard.toString());
         System.out.println("Key Positions: " + rotorKeyPositions);
 
-        for (int i = 0; i < 26; i++) {
-            System.out.println(((char) (i + 65)) + ":" + plugboard.getPairedLetter(((char) (i + 65))));
-        }
     }
 
     public void printRotorKeyPositions() {
