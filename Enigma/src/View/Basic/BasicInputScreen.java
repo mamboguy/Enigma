@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package View.Basic;
 
 import Controller.Filters.PlugboardDocumentFilter;
@@ -23,9 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.Document;
 
 /**
  * Date Created Nov 19, 2017
@@ -38,39 +31,45 @@ public class BasicInputScreen
     //<editor-fold desc="Constants">
     private static final Dimension SPACER = new Dimension(5, 5);
     private static final int MAX_ROTORS = 4;
-    private static final ArrayList<Integer> ROTOR_DEFAULTS = new ArrayList<Integer>() {
-        {
-            add(2);
-            add(1);
-            add(0);
-            add(0);
-        }
-    };
+    private static final int DEFAULT_ROTORS = 3;
+//    private static final ArrayList<Integer> ROTOR_DEFAULTS = new ArrayList<Integer>() {
+//        {
+//            add(2);
+//            add(1);
+//            add(0);
+//            add(0);
+//        }
+//    };
     private static final int VALID_CHARS = 26;
-//</editor-fold>
+    public static String[] DEFAULT_SETTINGS = {"2", "1", "0", "L", "E", "A", "G", "H", "C", "1", ""};
+    //</editor-fold>
 
     //<editor-fold desc="Private Variables">
     private JButton reset;
     private JButton translate;
-    private JButton exit;
+    private JButton saveSettings;
+    private JButton reloadSavedSettings;
 
     private JTextArea plaintext;
     private JTextArea ciphertext;
 
-    private JComboBox rotor1;
-    private JComboBox rotor2;
-    private JComboBox rotor3;
-    private JComboBox rotor4;
     private JComboBox reflector;
-    private JTextField labelRotor4;
-    private JTextField labelRotor3;
-    private JTextField labelRotor2;
-    private JTextField labelRotor1;
-    private JTextField keyRotor4;
-    private JTextField keyRotor3;
-    private JTextField keyRotor2;
-    private JTextField keyRotor1;
 
+//    //TODO - Lump into ArrayLists
+//    private JComboBox rotor1;
+//    private JComboBox rotor2;
+//    private JComboBox rotor3;
+//    private JComboBox rotor4;
+//    private JTextField labelRotor4;
+//    private JTextField labelRotor3;
+//    private JTextField labelRotor2;
+//    private JTextField labelRotor1;
+//    private JTextField keyRotor4;
+//    private JTextField keyRotor3;
+//    private JTextField keyRotor2;
+//    private JTextField keyRotor1;
+    private ArrayList<JTextField> keyFields = new ArrayList<JTextField>();
+    private ArrayList<JTextField> labelFields = new ArrayList<JTextField>();
     private ArrayList<JComboBox> rotorCombos = new ArrayList<JComboBox>();
     private ArrayList<Integer> rotorSelectionHistory = new ArrayList<Integer>();
     private ArrayList<Boolean> rotorsInUse = new ArrayList<Boolean>();
@@ -79,110 +78,48 @@ public class BasicInputScreen
     //</editor-fold>
 
     public BasicInputScreen() {
-        JPanel masterPanel = new JPanel();
-        JPanel rotor1Panel = new JPanel();
-        JPanel rotor2Panel = new JPanel();
-        JPanel rotor3Panel = new JPanel();
-        JPanel rotor4Panel = new JPanel();
-        JPanel reflectorPanel = new JPanel();
-        JPanel textPanel = new JPanel();
-        JPanel buttonPanel = new JPanel();
-        JPanel plugboardPanel = new JPanel();
-        JPanel plugboardTopRow = new JPanel();
-        JPanel plugboardBotRow = new JPanel();
-
-        rotor1Panel.setLayout(new BoxLayout(rotor1Panel, BoxLayout.Y_AXIS));
-        rotor2Panel.setLayout(new BoxLayout(rotor2Panel, BoxLayout.Y_AXIS));
-        rotor3Panel.setLayout(new BoxLayout(rotor3Panel, BoxLayout.Y_AXIS));
-        rotor4Panel.setLayout(new BoxLayout(rotor4Panel, BoxLayout.Y_AXIS));
-        reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
-        plugboardPanel.setLayout(new BoxLayout(plugboardPanel, BoxLayout.Y_AXIS));
-        plugboardTopRow.setLayout(new BoxLayout(plugboardTopRow, BoxLayout.X_AXIS));
-        plugboardBotRow.setLayout(new BoxLayout(plugboardBotRow, BoxLayout.X_AXIS));
-
         //Create combo boxes for settings
         int comboHeights = 30;
         int comboWidths = 130;
-        rotor4 = basicJComboBox("rotor4", "Select rotor to use in 4th slot", comboHeights, comboWidths);
-        rotor3 = basicJComboBox("rotor3", "Select rotor to use in 3rd slot", comboHeights, comboWidths);
-        rotor2 = basicJComboBox("rotor2", "Select rotor to use in 2nd slot", comboHeights, comboWidths);
-        rotor1 = basicJComboBox("rotor1", "Select rotor to use in 1st slot", comboHeights, comboWidths);
 
-        labelRotor4 = basicJTextField("labelRotor4", "Ringstellung setting for rotor in 4th slot", comboHeights, comboWidths);
-        labelRotor3 = basicJTextField("labelRotor3", "Ringstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
-        labelRotor2 = basicJTextField("labelRotor2", "Ringstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
-        labelRotor1 = basicJTextField("labelRotor1", "Ringstellung setting for rotor in 1st slot", comboHeights, comboWidths);
+        for (int i = 0; i < DEFAULT_ROTORS; i++) {
+            String formattedNumber = getFormattedNumber(i);
+            rotorCombos.add(basicJComboBox("rotor" + i, "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
+            labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
+            keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
+        }
 
-        keyRotor4 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 4th slot", comboHeights, comboWidths);
-        keyRotor3 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 3rd slot", comboHeights, comboWidths);
-        keyRotor2 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 2nd slot", comboHeights, comboWidths);
-        keyRotor1 = basicJTextField("keyRotor4", "Grundstellung setting for rotor in 1st slot", comboHeights, comboWidths);
+        //<editor-fold desc="Reflector Panel Creation">       
+        JPanel reflectorPanel = new JPanel();
+        reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
 
         reflector = basicJComboBox("reflector", "Selector reflector to use", comboHeights, comboWidths);
 
-        //Create text areas
-        plaintext = createTextArea("Enter plaintext to encode here");
-        ciphertext = createTextArea("Encoded plaintext appears here");
-
-        //Create buttons
-        reset = initializeJButton("resetButton", "Reset", "Resets the plaintext and ciphertext fields");
-        translate = initializeJButton("encodeButton", "Encode", "Takes the plaintext and translates into ciphertext");
-        exit = initializeJButton("exitButton", "Exit", "Exits the application");
-
-        //todo - Add to for loop using ArrayLists for scalability
-        rotor1Panel.add(centeredLabel("Rotor 1"));
-        rotor1Panel.add(standardSpacer());
-        rotor1Panel.add(rotor1);
-        rotor1Panel.add(standardSpacer());
-        rotor1Panel.add(labelRotor1);
-        rotor1Panel.add(standardSpacer());
-        rotor1Panel.add(keyRotor1);
-
-        rotor2Panel.add(centeredLabel("Rotor 2"));
-        rotor2Panel.add(standardSpacer());
-        rotor2Panel.add(rotor2);
-        rotor2Panel.add(standardSpacer());
-        rotor2Panel.add(labelRotor2);
-        rotor2Panel.add(standardSpacer());
-        rotor2Panel.add(keyRotor2);
-
-        rotor3Panel.add(centeredLabel("Rotor 3"));
-        rotor3Panel.add(standardSpacer());
-        rotor3Panel.add(rotor3);
-        rotor3Panel.add(standardSpacer());
-        rotor3Panel.add(labelRotor3);
-        rotor3Panel.add(standardSpacer());
-        rotor3Panel.add(keyRotor3);
-
-//        rotor4Panel.add(centeredLabel("Rotor 4"));
-//        rotor4Panel.add(standardSpacer());
-//        rotor4Panel.add(rotor4);
-//        rotor4Panel.add(standardSpacer());
-//        rotor4Panel.add(labelRotor4);
-//        rotor4Panel.add(standardSpacer());
-//        rotor4Panel.add(keyRotor4);
         reflectorPanel.add(centeredLabel("Reflector"));
         reflectorPanel.add(standardSpacer());
         reflectorPanel.add(reflector);
+        //</editor-fold>
 
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
-        textPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        textPanel.add(plaintext);
-        textPanel.add(standardSpacer());
-        textPanel.add(ciphertext);
+        //<editor-fold desc="Rotor Panel Creation">
+        JPanel rotorPanels = new JPanel();
+        rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
+        rotorPanels.add(reflectorPanel);
+        rotorPanels.add(standardSpacer());
 
-        buttonPanel.add(translate);
-        buttonPanel.add(standardSpacer());
-        buttonPanel.add(reset);
-        buttonPanel.add(standardSpacer());
-        buttonPanel.add(exit);
+        for (int i = rotorCombos.size() - 1; i >= 0; i--) {
+            //TODO - Add Document Listener to force uppercase
+            rotorPanels.add(standardRotorPanel(i));
+            rotorPanels.add(standardSpacer());
+        }
+        //</editor-fold>
 
-        JPanel textbuttons = new JPanel();
-        textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
-        textbuttons.setAlignmentY(CENTER_ALIGNMENT);
-//        textbuttons.setAlignmentX(LEFT_ALIGNMENT);
-        textbuttons.add(textPanel);
-        textbuttons.add(buttonPanel);
+        //<editor-fold desc="Plugboard GUI Creation">
+        JPanel plugboardPanel = new JPanel();
+        JPanel plugboardTopRow = new JPanel();
+        JPanel plugboardBotRow = new JPanel();
+        plugboardPanel.setLayout(new BoxLayout(plugboardPanel, BoxLayout.Y_AXIS));
+        plugboardTopRow.setLayout(new BoxLayout(plugboardTopRow, BoxLayout.X_AXIS));
+        plugboardBotRow.setLayout(new BoxLayout(plugboardBotRow, BoxLayout.X_AXIS));
 
         for (int i = 0; i < VALID_CHARS; i++) {
             String name = (char) (i + 65) + "Field";
@@ -213,18 +150,45 @@ public class BasicInputScreen
         plugboardPanel.add(plugboardTopRow);
         plugboardPanel.add(standardSpacer());
         plugboardPanel.add(plugboardBotRow);
+        //</editor-fold>
 
-        JPanel rotorPanels = new JPanel();
-        rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
-        rotorPanels.add(reflectorPanel);
-        rotorPanels.add(standardSpacer());
-        rotorPanels.add(rotor4Panel);
-        rotorPanels.add(standardSpacer());
-        rotorPanels.add(rotor3Panel);
-        rotorPanels.add(standardSpacer());
-        rotorPanels.add(rotor2Panel);
-        rotorPanels.add(standardSpacer());
-        rotorPanels.add(rotor1Panel);
+        //<editor-fold desc="Text Area Panel Creation">
+        JPanel textPanel = new JPanel();
+
+        //Create text areas
+        plaintext = createTextArea("Enter plaintext to encode here");
+        ciphertext = createTextArea("Encoded plaintext appears here");
+
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
+        textPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        textPanel.add(plaintext);
+        textPanel.add(standardSpacer());
+        textPanel.add(ciphertext);
+        //</editor-fold>
+
+        //<editor-fold desc="Button Panel Creation">
+        JPanel buttonPanel = new JPanel();
+
+        //Create buttons
+        reset = initializeJButton("resetButton", "Reset", "Resets the plaintext and ciphertext fields");
+        translate = initializeJButton("encodeButton", "Encode", "Takes the plaintext and translates into ciphertext");
+        saveSettings = initializeJButton("saveButton", "Save Key", "Saves the current key settings, allowing reload later");
+        reloadSavedSettings = initializeJButton("reloadButton", "Reload Key", "Reload the last saved key");
+
+        buttonPanel.add(translate);
+        buttonPanel.add(standardSpacer());
+        buttonPanel.add(reset);
+        buttonPanel.add(standardSpacer());
+        buttonPanel.add(saveSettings);
+        buttonPanel.add(standardSpacer());
+        buttonPanel.add(reloadSavedSettings);
+        //</editor-fold>
+
+        JPanel textbuttons = new JPanel();
+        textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
+        //textbuttons.setAlignmentY(CENTER_ALIGNMENT);
+        textbuttons.add(textPanel);
+        textbuttons.add(buttonPanel);
 
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
@@ -233,22 +197,16 @@ public class BasicInputScreen
         settingsPanel.add(standardSpacer());
         settingsPanel.add(plugboardPanel);
 
+        JPanel masterPanel = new JPanel();
         //Add panels to master
         masterPanel.setLayout(new BorderLayout(5, 5));
         masterPanel.add(settingsPanel, BorderLayout.CENTER);
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
 
-        rotorCombos.add(rotor1);
-        rotorCombos.add(rotor2);
-        rotorCombos.add(rotor3);
-        rotorCombos.add(rotor4);
-
-        for (int i = 0; i < ROTOR_DEFAULTS.size(); i++) {
-            rotorSelectionHistory.add(ROTOR_DEFAULTS.get(i));
+        for (int i = 0; i < DEFAULT_ROTORS; i++) {
+            rotorSelectionHistory.add(Integer.parseInt(DEFAULT_SETTINGS[i]));
             rotorsInUse.add(true);
         }
-
-        rotorsInUse.set(3, false);
 
         this.add(masterPanel);
         this.setTitle("Enigma v0.01");
@@ -311,7 +269,8 @@ public class BasicInputScreen
     }
 
     public void registerListeners(ActionListener al, KeyListener kl) {
-        exit.addActionListener(al);
+        saveSettings.addActionListener(al);
+        reloadSavedSettings.addActionListener(al);
         reset.addActionListener(al);
         translate.addActionListener(al);
 
@@ -350,27 +309,40 @@ public class BasicInputScreen
         }
     }
 
-    public void resetToDefault() {
+    public void resetToDefault(String[] settings) {
+
+        int j = 0;
+
+        System.out.println("rotorCombos.size = " + rotorCombos.size());
+        System.out.println("keyFields.size = " + keyFields.size());
+        System.out.println("labelFields.size = " + labelFields.size());
+
         for (int i = 0; i < rotorCombos.size(); i++) {
-            rotorCombos.get(i).setSelectedIndex(ROTOR_DEFAULTS.get(i));
+            rotorCombos.get(i).setSelectedIndex(Integer.parseInt(settings[j]));
+            j++;
         }
-        reflector.setSelectedIndex(1);
+        System.out.println("j = " + j);
 
-        keyRotor1.setText("L");
-        keyRotor2.setText("E");
-        keyRotor3.setText("A");
-        keyRotor4.setText("A");
+        for (int i = 0; i < keyFields.size(); i++) {
+            keyFields.get(i).setText(settings[j]);
+            j++;
+        }
+        System.out.println("j = " + j);
 
-        labelRotor1.setText("C");
-        labelRotor2.setText("N");
-        labelRotor3.setText("C");
-        labelRotor4.setText("A");
+        for (int i = 0; i < labelFields.size(); i++) {
+            labelFields.get(i).setText(settings[j]);
+            j++;
+        }
+        System.out.println("j = " + j);
+        System.out.println("settings.length = " + settings.length);
+
+        reflector.setSelectedIndex(Integer.parseInt(settings[j]));
 
         ciphertext.setText("");
         plaintext.setText("");
 
         for (int i = 0; i < rotorCombos.size(); i++) {
-            rotorSelectionHistory.set(i, ROTOR_DEFAULTS.get(i));
+            rotorSelectionHistory.set(i, Integer.parseInt(DEFAULT_SETTINGS[i]));
         }
 
         for (int i = 0; i < plugboardFields.size(); i++) {
@@ -382,26 +354,30 @@ public class BasicInputScreen
     //TODO - add setting for plaintext spacing
     public String[] getCurrentKeySettings() {
 
-        String[] settings = new String[14];
+        //TODO - Implement Arraylist
+        String[] settings = new String[rotorCombos.size() * 3 + 2];
 
-        settings[0] = (String) rotor4.getSelectedItem();
-        settings[1] = (String) rotor3.getSelectedItem();
-        settings[2] = (String) rotor2.getSelectedItem();
-        settings[3] = (String) rotor1.getSelectedItem();
+        int j = 0;
 
-        settings[4] = labelRotor4.getText();
-        settings[5] = labelRotor3.getText();
-        settings[6] = labelRotor2.getText();
-        settings[7] = labelRotor1.getText();
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            settings[j] = (String) rotorCombos.get(i).getSelectedItem();
+            j++;
+        }
 
-        settings[8] = keyRotor4.getText();
-        settings[9] = keyRotor3.getText();
-        settings[10] = keyRotor2.getText();
-        settings[11] = keyRotor1.getText();
+        for (int i = 0; i < labelFields.size(); i++) {
+            settings[j] = labelFields.get(i).getText();
+            j++;
+        }
 
-        settings[12] = (String) reflector.getSelectedItem();
-        
-        settings[13] = getPlugboardString();
+        for (int i = 0; i < keyFields.size(); i++) {
+            settings[j] = keyFields.get(i).getText();
+            j++;
+        }
+
+        settings[j] = (String) reflector.getSelectedItem();
+        j++;
+
+        settings[j] = getPlugboardString();
 
         return settings;
     }
@@ -414,20 +390,13 @@ public class BasicInputScreen
         this.ciphertext.setText(ciphertext);
     }
 
-    public void setCurrentKeyPosition(boolean fourthRotor, String[] keys) {
+    public void setCurrentKeyPosition(String[] keys) {
+        int j = 0;
 
-        int i = 2;
-
-        if (fourthRotor) {
-            i = 3;
-            this.keyRotor4.setText(keys[0]);
+        for (int i = keys.length - 1; i >= 0; i--) {
+            keyFields.get(i).setText(keys[j]);
+            j++;
         }
-
-        this.keyRotor1.setText(keys[i]);
-        i--;
-        this.keyRotor2.setText(keys[i]);
-        i--;
-        this.keyRotor3.setText(keys[i]);
     }
 
     /**
@@ -435,8 +404,9 @@ public class BasicInputScreen
      * using it
      *
      * @param name - The name of the rotor that needs to be checked if in use
+     *
      * @return - The location of the rotor using that name - Returns 0 if not in
-     * use
+     *         use
      */
     public int isRotorAlreadySelected(int selectionIndex) {
         int i = 0;
@@ -512,18 +482,18 @@ public class BasicInputScreen
 
             //If the letter was just typed and is to be ignored, then skip
             if (i != ignoreLocation && i != ignoreLocation2) {
-                
+
                 //Temporarily store the plugboards text
                 String temp = plugboardFields.get(i).getText();
                 int pairedLocation = -1;
-                
+
                 //If the location has valid text
                 if (temp.length() > 0) {
-                    
+
                     //Get the character at that location
                     pairedLocation = (temp.charAt(0)) - 65;
                 }
-                
+
                 //If the a;
                 if (pairedLocation < 26 && pairedLocation >= 0) {
                     if (!plugboardFields.get(pairedLocation).getText().equalsIgnoreCase("" + ((char) (i + 65)))) {
@@ -535,22 +505,60 @@ public class BasicInputScreen
     }
 
     private String getPlugboardString() {
-        
+
         String steckerBoardPattern = "";
-        
+
         boolean[] temp = new boolean[plugboardFields.size()];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = true;
         }
-        
+
         for (int i = 0; i < plugboardFields.size(); i++) {
-            if (temp[i] && !plugboardFields.get(i).getText().isEmpty()){
-                steckerBoardPattern += "" + ((char)(i+65)) + plugboardFields.get(i).getText() + " ";
+            if (temp[i] && !plugboardFields.get(i).getText().isEmpty()) {
+                steckerBoardPattern += "" + ((char) (i + 65)) + plugboardFields.get(i).getText() + " ";
                 temp[i] = false;
-                temp[plugboardFields.get(i).getText().charAt(0)-65] = false;
+                temp[plugboardFields.get(i).getText().charAt(0) - 65] = false;
             }
         }
-        
+
         return steckerBoardPattern.trim();
+    }
+
+    private String getFormattedNumber(int i) {
+        String end = "th";
+
+        switch (i) {
+            case 1:
+                end = "st";
+                break;
+            case 2:
+                end = "nd";
+                break;
+            case 3:
+                end = "rd";
+                break;
+            default:
+        }
+
+        return (i + end);
+    }
+
+    private JPanel standardRotorPanel(int i) {
+        JPanel temp = new JPanel();
+        temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+        temp.add(centeredLabel("Rotor " + i));
+        temp.add(standardSpacer());
+        temp.add(rotorCombos.get(i));
+        temp.add(standardSpacer());
+        temp.add(labelFields.get(i));
+        temp.add(standardSpacer());
+        temp.add(keyFields.get(i));
+
+        return temp;
+    }
+
+    public void setKeySettings(String[] savedKey) {
+        //TODO - Implement method setKeySettings()
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
