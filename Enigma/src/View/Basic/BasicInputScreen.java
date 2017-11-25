@@ -507,4 +507,31 @@ public class BasicInputScreen
         temp = temp.substring(0, 0);
         plugboardFields.get(location).setText(temp);
     }
+
+    public void checkForLoners(int ignoreLocation, int ignoreLocation2) {
+        for (int i = 0; i < VALID_CHARS; i++) {
+
+            //If the letter was just typed and is to be ignored, then skip
+            if (i != ignoreLocation && i != ignoreLocation2) {
+                
+                //Temporarily store the plugboards text
+                String temp = plugboardFields.get(i).getText();
+                int pairedLocation = -1;
+                
+                //If the location has valid text
+                if (temp.length() > 0) {
+                    
+                    //Get the character at that location
+                    pairedLocation = (temp.charAt(0)) - 65;
+                }
+                
+                //If the a;
+                if (pairedLocation < 26 && pairedLocation >= 0) {
+                    if (!plugboardFields.get(pairedLocation).getText().equalsIgnoreCase("" + ((char) (i + 65)))) {
+                        plugboardFields.get(i).setText("");
+                    }
+                }
+            }
+        }
+    }
 }
