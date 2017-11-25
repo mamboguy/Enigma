@@ -98,26 +98,34 @@ public class BasicGUIController implements ActionListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
+
         JTextField temp = (JTextField) e.getSource();
         char name = temp.getName().replaceAll("Field", "").charAt(0);
 
         char inputField = Character.toUpperCase(e.getKeyChar());
         int location = name - 65;
 
-        //If delete or backspace key is used
-        if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
-            //Delete the key and its pairing
-            gui.deletePairing(temp.getName());
-        } else if (gui.locationHasMultipleChars(location)) {
-            gui.eraseLastLetter(location);
-        } else {
-            //If the typed character is different from the field, set the other field in the pair to reflect the pairing
-            if (inputField != name) {
-                gui.pairLetters(inputField - 65, name);
-            } else {
-                //If the char is the same as the field, delete the input
-                gui.eraseLetter(location);
+        //If the typed character is different from the field
+        if (inputField != name) {
+
+            //If delete or backspace key is used
+            if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+
+                //Delete the key and its pairing
+                gui.deletePairing(temp.getName());
+
+                //If the typed location is the location's second letter
+            } else if (gui.locationHasMultipleChars(location)) {
+                //Erase the last letter pressed to prevent multiple characters in the space
+                gui.eraseLastLetter(location);
+                gui.deletePairing(temp.getName());
             }
+            //If it passes the test, set the other field in the pair to reflect the pairing
+            gui.pairLetters(inputField - 65, name);
+
+        } else {
+            //Consume the event since the same key as the field was pressed
+            e.consume();
         }
     }
 
@@ -130,5 +138,4 @@ public class BasicGUIController implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
         //Ignore
     }
-
 }
