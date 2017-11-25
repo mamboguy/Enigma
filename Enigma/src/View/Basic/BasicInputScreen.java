@@ -5,6 +5,7 @@
  */
 package View.Basic;
 
+import Controller.Filters.PlugboardDocumentFilter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -22,6 +23,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.Document;
 
 /**
  * Date Created Nov 19, 2017
@@ -315,7 +319,11 @@ public class BasicInputScreen
             rotorCombos.get(i).addActionListener(al);
         }
 
+        PlugboardDocumentFilter myFilter = new PlugboardDocumentFilter();
+
         for (int i = 0; i < plugboardFields.size(); i++) {
+            AbstractDocument d = (AbstractDocument) plugboardFields.get(i).getDocument();
+            d.setDocumentFilter(myFilter);
             plugboardFields.get(i).addKeyListener(kl);
         }
     }
@@ -364,7 +372,7 @@ public class BasicInputScreen
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorSelectionHistory.set(i, ROTOR_DEFAULTS.get(i));
         }
-        
+
         for (int i = 0; i < plugboardFields.size(); i++) {
             plugboardFields.get(i).setText("");
         }
@@ -482,9 +490,9 @@ public class BasicInputScreen
 
     public void deletePairing(String originalLocation) {
         originalLocation = originalLocation.replaceAll("Field", "");
-        
+
         for (int i = 0; i < plugboardFields.size(); i++) {
-            if (plugboardFields.get(i).getText().equalsIgnoreCase(originalLocation)){
+            if (plugboardFields.get(i).getText().equalsIgnoreCase(originalLocation)) {
                 eraseLetter(i);
             }
         }
