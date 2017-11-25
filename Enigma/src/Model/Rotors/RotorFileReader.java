@@ -39,7 +39,7 @@ public class RotorFileReader {
                     //Pull each part of the read line
                     String name = lineReader.next();
                     String sequence = lineReader.next();
-                    char notch = lineReader.next().charAt(0);
+                    String notch = lineReader.next();
                     int usage = lineReader.nextInt();
 
                     //Add the new rotor to the list
