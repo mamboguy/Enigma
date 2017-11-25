@@ -489,4 +489,14 @@ public class BasicInputScreen
             }
         }
     }
+
+    public boolean locationHasMultipleChars(int location) {
+        return (plugboardFields.get(location).getText().length() > 0);
+    }
+
+    public void eraseLastLetter(int location) {
+        String temp = plugboardFields.get(location).getText();
+        temp = temp.substring(0, 0);
+        plugboardFields.get(location).setText(temp);
+    }
 }
