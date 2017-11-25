@@ -173,7 +173,6 @@ public class Rotor {
         return temp;
     }
 
-//TODO - change variable names
     /**
      * Gives the right pin output for a given left pin input
      *
@@ -198,28 +197,19 @@ public class Rotor {
      * return - character at the output position on the right side of the rotor
      * given a left pin input
      */
-    public char getRightCharOutput(int position) {
-        return ((char) (65 + getRightOutput(position)));
+    public char getRightCharOutput(int leftPinInput) {
+        return ((char) (65 + getRightOutput(leftPinInput)));
     }
 
     /**
      *
      * return - character at the output position on the right side of the rotor
-     * given a left character input
+     * given a left pin input
      */
-//TODO - USED?  actually works?
-    public char getRightCharOutput(char input) {
-        return getRightCharOutput(input - 65);
+    public char getLeftCharOutput(int rightPinInput) {
+        return ((char) (65 + getLeftOutput(rightPinInput)));
     }
-
-    public char getLeftCharOutput(int position) {
-        return ((char) (65 + getLeftOutput(position)));
-    }
-
-    public char getLeftCharOutput(char input) {
-        return getLeftCharOutput(input - 65);
-    }
-
+    
 //Returns the current key position
     public char getKeyPosition() {
         return this.currentKeyPosition;
