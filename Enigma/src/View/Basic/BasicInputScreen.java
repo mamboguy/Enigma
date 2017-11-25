@@ -11,6 +11,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -190,6 +191,7 @@ public class BasicInputScreen
             temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
             temp.add(plugboardMiniPanel(i));
             temp.add(plugboardFields.get(i));
+            plugboardFields.get(i).setHorizontalAlignment(JTextField.CENTER);
             plugboardTopRow.add(temp);
         }
 
@@ -198,6 +200,7 @@ public class BasicInputScreen
             temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
             temp.add(plugboardMiniPanel(i));
             temp.add(plugboardFields.get(i));
+            plugboardFields.get(i).setHorizontalAlignment(JTextField.CENTER);
             plugboardBotRow.add(temp);
         }
 
@@ -303,21 +306,17 @@ public class BasicInputScreen
         return Box.createRigidArea(SPACER);
     }
 
-    public void registerListeners(ActionListener al) {
+    public void registerListeners(ActionListener al, KeyListener kl) {
         exit.addActionListener(al);
         reset.addActionListener(al);
         translate.addActionListener(al);
-//        rotor1.addActionListener(al);
-//        rotor2.addActionListener(al);
-//        rotor3.addActionListener(al);
-//        rotor4.addActionListener(al);
 
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorCombos.get(i).addActionListener(al);
         }
 
-        for (int i = 0; i < 10; i++) {
-            plugboardFields.get(i).addActionListener(al);
+        for (int i = 0; i < plugboardFields.size(); i++) {
+            plugboardFields.get(i).addKeyListener(kl);
         }
     }
 
@@ -364,6 +363,10 @@ public class BasicInputScreen
 
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorSelectionHistory.set(i, ROTOR_DEFAULTS.get(i));
+        }
+        
+        for (int i = 0; i < plugboardFields.size(); i++) {
+            plugboardFields.get(i).setText("");
         }
     }
 
@@ -466,6 +469,24 @@ public class BasicInputScreen
     public void updateSelectionHistory() {
         for (int i = 0; i < rotorSelectionHistory.size(); i++) {
             rotorSelectionHistory.set(i, rotorCombos.get(i).getSelectedIndex());
+        }
+    }
+
+    public void pairLetters(int location, char inputField) {
+        plugboardFields.get(location).setText("" + inputField);
+    }
+
+    public void eraseLetter(int location) {
+        plugboardFields.get(location).setText("");
+    }
+
+    public void deletePairing(String originalLocation) {
+        originalLocation = originalLocation.replaceAll("Field", "");
+        
+        for (int i = 0; i < plugboardFields.size(); i++) {
+            if (plugboardFields.get(i).getText().equalsIgnoreCase(originalLocation)){
+                eraseLetter(i);
+            }
         }
     }
 }
