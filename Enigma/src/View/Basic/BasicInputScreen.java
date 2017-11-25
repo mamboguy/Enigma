@@ -41,6 +41,7 @@ public class BasicInputScreen
             add(0);
         }
     };
+    private static final int VALID_CHARS = 26;
 //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -68,6 +69,8 @@ public class BasicInputScreen
     private ArrayList<JComboBox> rotorCombos = new ArrayList<JComboBox>();
     private ArrayList<Integer> rotorSelectionHistory = new ArrayList<Integer>();
     private ArrayList<Boolean> rotorsInUse = new ArrayList<Boolean>();
+
+    private ArrayList<JTextField> plugboardFields = new ArrayList<JTextField>();
     //</editor-fold>
 
     public BasicInputScreen() {
@@ -79,12 +82,18 @@ public class BasicInputScreen
         JPanel reflectorPanel = new JPanel();
         JPanel textPanel = new JPanel();
         JPanel buttonPanel = new JPanel();
+        JPanel plugboardPanel = new JPanel();
+        JPanel plugboardTopRow = new JPanel();
+        JPanel plugboardBotRow = new JPanel();
 
         rotor1Panel.setLayout(new BoxLayout(rotor1Panel, BoxLayout.Y_AXIS));
         rotor2Panel.setLayout(new BoxLayout(rotor2Panel, BoxLayout.Y_AXIS));
         rotor3Panel.setLayout(new BoxLayout(rotor3Panel, BoxLayout.Y_AXIS));
         rotor4Panel.setLayout(new BoxLayout(rotor4Panel, BoxLayout.Y_AXIS));
         reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
+        plugboardPanel.setLayout(new BoxLayout(plugboardPanel, BoxLayout.Y_AXIS));
+        plugboardTopRow.setLayout(new BoxLayout(plugboardTopRow, BoxLayout.X_AXIS));
+        plugboardBotRow.setLayout(new BoxLayout(plugboardBotRow, BoxLayout.X_AXIS));
 
         //Create combo boxes for settings
         int comboHeights = 30;
@@ -115,6 +124,7 @@ public class BasicInputScreen
         translate = initializeJButton("encodeButton", "Encode", "Takes the plaintext and translates into ciphertext");
         exit = initializeJButton("exitButton", "Exit", "Exits the application");
 
+        //todo - Add to for loop using ArrayLists for scalability
         rotor1Panel.add(centeredLabel("Rotor 1"));
         rotor1Panel.add(standardSpacer());
         rotor1Panel.add(rotor1);
@@ -169,6 +179,34 @@ public class BasicInputScreen
         textbuttons.add(textPanel);
         textbuttons.add(buttonPanel);
 
+        for (int i = 0; i < VALID_CHARS; i++) {
+            String name = (char) (i + 65) + "Field";
+            String toolTipText = "Type in letter that will swap with " + (char) (i + 65);
+            plugboardFields.add(basicJTextField(name, toolTipText, 30, 30));
+        }
+
+        for (int i = 0; i < VALID_CHARS / 2; i++) {
+            JPanel temp = new JPanel();
+            temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+            temp.add(plugboardMiniPanel(i));
+            temp.add(plugboardFields.get(i));
+            plugboardTopRow.add(temp);
+        }
+
+        for (int i = VALID_CHARS / 2; i < VALID_CHARS; i++) {
+            JPanel temp = new JPanel();
+            temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+            temp.add(plugboardMiniPanel(i));
+            temp.add(plugboardFields.get(i));
+            plugboardBotRow.add(temp);
+        }
+
+        plugboardPanel.add(centeredLabel("Plugboard Settings"));
+        plugboardPanel.add(standardSpacer());
+        plugboardPanel.add(plugboardTopRow);
+        plugboardPanel.add(standardSpacer());
+        plugboardPanel.add(plugboardBotRow);
+
         JPanel rotorPanels = new JPanel();
         rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
         rotorPanels.add(reflectorPanel);
@@ -181,9 +219,16 @@ public class BasicInputScreen
         rotorPanels.add(standardSpacer());
         rotorPanels.add(rotor1Panel);
 
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+
+        settingsPanel.add(rotorPanels);
+        settingsPanel.add(standardSpacer());
+        settingsPanel.add(plugboardPanel);
+
         //Add panels to master
         masterPanel.setLayout(new BorderLayout(5, 5));
-        masterPanel.add(rotorPanels, BorderLayout.CENTER);
+        masterPanel.add(settingsPanel, BorderLayout.CENTER);
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
 
         rotorCombos.add(rotor1);
@@ -262,10 +307,18 @@ public class BasicInputScreen
         exit.addActionListener(al);
         reset.addActionListener(al);
         translate.addActionListener(al);
-        rotor1.addActionListener(al);
-        rotor2.addActionListener(al);
-        rotor3.addActionListener(al);
-        rotor4.addActionListener(al);
+//        rotor1.addActionListener(al);
+//        rotor2.addActionListener(al);
+//        rotor3.addActionListener(al);
+//        rotor4.addActionListener(al);
+
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            rotorCombos.get(i).addActionListener(al);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            plugboardFields.get(i).addActionListener(al);
+        }
     }
 
     public void updateReflectorCombos(String[] reflectorsAvailable) {
@@ -397,9 +450,22 @@ public class BasicInputScreen
         rotorCombos.get(rotorSelectedByUser).setSelectedIndex(swappedSelection);
     }
 
+    public JPanel plugboardMiniPanel(int value) {
+        JPanel temp = new JPanel();
+
+        temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+
+        String label = "" + (char) (value + 65);
+
+        temp.add(centeredLabel(label));
+        temp.add(standardSpacer());
+
+        return temp;
+    }
+
     public void updateSelectionHistory() {
         for (int i = 0; i < rotorSelectionHistory.size(); i++) {
-            rotorSelectionHistory.set(i,rotorCombos.get(i).getSelectedIndex());
+            rotorSelectionHistory.set(i, rotorCombos.get(i).getSelectedIndex());
         }
     }
 }
