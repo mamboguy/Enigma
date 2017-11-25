@@ -1,5 +1,7 @@
 package Model.Rotors;
 
+import java.util.ArrayList;
+
 /**
  * Date Created Nov 12, 2017
  *
@@ -34,8 +36,8 @@ public class Rotor {
     //Math holding array for what the current internal wiring will adjust an input by
     private int[][] internalWiringOffsets = new int[2][26];
 
-    //The location of the first notch
-    private final char notchLocation;
+    //The location of notches
+    private ArrayList<Character> notchLocation = new ArrayList<Character>();
 
     //The current label starting position (defaults to 'A')
     private char labelPosition;
@@ -54,12 +56,12 @@ public class Rotor {
 
 //<editor-fold desc="Constructors">
     //Basic rotor constructor.  Calls bigger constructor to implement inputs
-    public Rotor(String rotorName, String wiringSequence, char notchLocation, int usage) {
+    public Rotor(String rotorName, String wiringSequence, String notchLocation, int usage) {
         this(rotorName, wiringSequence, notchLocation, usage, 'A', 'A');
     }
 
     //Detailed rotor constructor
-    public Rotor(String rotorName, String wiringSequence, char notchLocation, int usage, char labelPosition, char keyPosition) {
+    public Rotor(String rotorName, String wiringSequence, String notchLocation, int usage, char labelPosition, char keyPosition) {
 
         //Initialize usage to all false
         this.usage = new boolean[3];
@@ -90,8 +92,9 @@ public class Rotor {
         setInternalWiring(labelPosition);
 
         //Set the notch location
-        //TODO - add second notch location
-        this.notchLocation = notchLocation;
+        for (int i = 0; i < notchLocation.length(); i++) {
+            this.notchLocation.add(notchLocation.charAt(i));
+        }
 
         //Set the current label position
         this.labelPosition = labelPosition;
@@ -101,8 +104,10 @@ public class Rotor {
 
         //If the rotor is started on its notch key, then set it to step next time it is used
         //TODO - Adjust for second notch
-        if (this.notchLocation == this.currentKeyPosition) {
-            this.stepNext = true;
+        for (int i = 0; i < this.notchLocation.size(); i++) {
+            if (this.notchLocation.get(i) == this.currentKeyPosition) {
+                this.stepNext = true;
+            }
         }
     }
 //</editor-fold>
@@ -209,7 +214,7 @@ public class Rotor {
     public char getLeftCharOutput(int rightPinInput) {
         return ((char) (65 + getLeftOutput(rightPinInput)));
     }
-    
+
 //Returns the current key position
     public char getKeyPosition() {
         return this.currentKeyPosition;
@@ -269,7 +274,7 @@ public class Rotor {
 
         //Set the last to the original first value, effectively wrapping the values
         internalWiringOffsets[LEFT][internalWiringOffsets[LEFT].length - 1] = tempLeft;
-        internalWiringOffsets[RIGHT][internalWiringOffsets[RIGHT].length - 1] = tempRight;
+        internalWiringOffsets[RIGHT][internalWiringOffsets[RIGHT].length - 1] = tempRight;       
 
         //If the rotor is set to step a nearby rotor
         if (this.stepNext) {
@@ -279,10 +284,14 @@ public class Rotor {
             return true;
 
             //Otherwise, if the notch location equals the current key position
-        } else if (this.notchLocation == currentKeyPosition) {
+        }
 
-            //Set the step flag to be true, but return false so that it steps next pass
-            this.stepNext = true;
+        for (int i = 0; i < notchLocation.size(); i++) {
+            if (this.notchLocation.get(i) == currentKeyPosition) {
+
+                //Set the step flag to be true, but return false so that it steps next pass
+                this.stepNext = true;
+            }
         }
 
         //Otherwise, indicate no stepping needed
@@ -292,10 +301,19 @@ public class Rotor {
 //<editor-fold desc="Print methods">
     @Override
     public String toString() {
+        
+        
+        String notches = "";
+        
+        for (int i = 0; i < notchLocation.size(); i++) {
+            notches += notchLocation.get(i) + ", ";
+        }
+        
+        notches = notches.substring(0, notches.length()-2);
 
         return "Rotor{" + "rotorName=" + rotorName + ", baseWiringSequence=" + baseWiringSequence + ", notchLocation= "
-                + notchLocation + ", currentKeyPosition=" + currentKeyPosition + ", currentLabelPosition" + labelPosition
-                + ", Kriegsmarine =" + usage[0] + ", Luftwaffe = " + usage[1] + ", Wehrmacht = " + usage[2] + "}";
+               + notches + ", currentKeyPosition=" + currentKeyPosition + ", currentLabelPosition" + labelPosition
+               + ", Kriegsmarine =" + usage[0] + ", Luftwaffe = " + usage[1] + ", Wehrmacht = " + usage[2] + "}";
     }
 
     //Simple way to print the rotor with a single call rather than creating a new System.out.println every call
