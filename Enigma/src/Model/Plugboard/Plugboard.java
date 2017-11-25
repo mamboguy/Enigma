@@ -41,24 +41,24 @@ public class Plugboard {
     }
 
     public void steckerPattern(String pattern) {
-
-        pairList = pattern.trim();
-        
-        System.out.println("pairList = " + pairList);
-
-        String[] pairs = pairList.split(" ");
-
+        //Resets plugboard to blank state
         resetPlugboardHelper();
+        
+        //Ignore on empty pattern
+        if (pattern.length() > 0) {
 
-        for (int i = 0; i < pairs.length; i++) {
-            steckerPair(pairs[i]);
+            pairList = pattern.trim();
+
+            String[] pairs = pairList.split(" ");
+
+            for (int i = 0; i < pairs.length; i++) {
+                steckerPair(pairs[i]);
+            }
         }
     }
 
     private void steckerPair(String pair) {
         pair = sanitize(pair);
-        
-        System.out.println("Pair = " + pair);
 
         char first = pair.charAt(0);
         char second = pair.charAt(1);
