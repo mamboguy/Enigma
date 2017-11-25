@@ -239,7 +239,6 @@ public class Enigma {
             throw new UnsupportedOperationException();
         } else {
             if (fourthRotorUsed) {
-                System.out.println("4th");
                 rotor4.setKeyPosition(rotorKeyPositions.charAt(0));
                 rotor3.setKeyPosition(rotorKeyPositions.charAt(1));
                 rotor2.setKeyPosition(rotorKeyPositions.charAt(2));
@@ -311,8 +310,6 @@ public class Enigma {
         if (fourthRotorUsed) {
             rotorKeyPositions = rotor4.getKeyPosition() + rotorKeyPositions;
         }
-
-        System.out.println("Rotor keys = " + rotorKeyPositions);
     }
 
     public void printAvailableRotorStats() {
