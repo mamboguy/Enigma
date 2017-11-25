@@ -140,7 +140,9 @@ public class Enigma {
         input = rotor2.getRightOutput(input);
         input = rotor1.getRightCharOutput(input);
 
-        return ((char) input);
+        charInput = plugboard.getPairedLetter((char) input);
+
+        return (charInput);
     }
 
     //<editor-fold desc="Adjust settings methods">
@@ -360,10 +362,9 @@ public class Enigma {
 
         this.changeRotors(rotors);
         this.changeReflector(settings[12]);
+        this.plugboard.steckerPattern(settings[13]);
         this.changeLabels(labels);
         this.changeRotorStart(keys);
-
-        //TODO - stecker plugboard
     }
 
     public boolean usingFourthRotor() {
