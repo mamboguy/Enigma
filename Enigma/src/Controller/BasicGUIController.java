@@ -62,7 +62,7 @@ public class BasicGUIController implements ActionListener, KeyListener {
 
                 break;
             case "encodeButton":
-
+                //todo - get plugboard settings
                 model.setSettings(gui.getCurrentKeySettings());
                 gui.setCiphertext(model.inputMessage(gui.getPlaintext()));
                 gui.setCurrentKeyPosition(model.usingFourthRotor(), model.getCurrentKeyPositions());
@@ -102,30 +102,34 @@ public class BasicGUIController implements ActionListener, KeyListener {
         JTextField temp = (JTextField) e.getSource();
         char name = temp.getName().replaceAll("Field", "").charAt(0);
 
-        char inputField = Character.toUpperCase(e.getKeyChar());
-        int location = name - 65;
+        //Only continue if alphabetic character
+        if (Character.isAlphabetic(e.getKeyChar())) {
 
-        //If the typed character is different from the field
-        if (inputField != name) {
+            char inputField = Character.toUpperCase(e.getKeyChar());
+            int location = name - 65;
 
-            //If delete or backspace key is used
-            if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+            //If the typed character is different from the field
+            if (inputField != name) {
 
-                //Delete the key and its pairing
-                gui.deletePairing(temp.getName());
+                //If delete or backspace key is used
+                if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
 
-                //If the typed location is the location's second letter
-            } else if (gui.locationHasMultipleChars(location)) {
-                //Erase the last letter pressed to prevent multiple characters in the space
-                gui.eraseLastLetter(location);
-                gui.deletePairing(temp.getName());
+                    //Delete the key and its pairing
+                    gui.deletePairing(temp.getName());
+
+                    //If the typed location is the location's second letter
+                } else if (gui.locationHasMultipleChars(location)) {
+                    //Erase the last letter pressed to prevent multiple characters in the space
+                    gui.eraseLastLetter(location);
+                    gui.deletePairing(temp.getName());
+                }
+                //If it passes the test, set the other field in the pair to reflect the pairing
+                gui.pairLetters(inputField - 65, name);
+                gui.checkForLoners(location, inputField - 65);
+            } else {
+                //Consume the event since the same key as the field was pressed
+                e.consume();
             }
-            //If it passes the test, set the other field in the pair to reflect the pairing
-            gui.pairLetters(inputField - 65, name);
-
-        } else {
-            //Consume the event since the same key as the field was pressed
-            e.consume();
         }
     }
 
