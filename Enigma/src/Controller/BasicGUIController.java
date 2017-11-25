@@ -24,6 +24,7 @@ public class BasicGUIController implements ActionListener, KeyListener {
     BasicInputScreen gui;
     Enigma model;
     private boolean secondCall = false;
+    private String[] savedKey;
 
     public BasicGUIController() {
         model = new Enigma();
@@ -31,7 +32,7 @@ public class BasicGUIController implements ActionListener, KeyListener {
         gui = new BasicInputScreen();
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
-        gui.resetToDefault();
+        gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
         gui.registerListeners(this, this);
     }
 
@@ -64,13 +65,13 @@ public class BasicGUIController implements ActionListener, KeyListener {
             case "encodeButton":
                 model.setSettings(gui.getCurrentKeySettings());
                 gui.setCiphertext(model.inputMessage(gui.getPlaintext()));
-                gui.setCurrentKeyPosition(model.usingFourthRotor(), model.getCurrentKeyPositions());
+                gui.setCurrentKeyPosition(model.getCurrentKeyPositions());
 
                 break;
 
             case "resetButton":
 
-                gui.resetToDefault();
+                gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
                 model.setSettings(gui.getCurrentKeySettings());
 
                 break;
@@ -88,7 +89,12 @@ public class BasicGUIController implements ActionListener, KeyListener {
 //                        options[1]) == JOptionPane.YES_OPTION) {
                 System.exit(0);
 //                }
-
+                break;
+            case "saveButton":
+                savedKey = gui.getCurrentKeySettings();
+                break;
+            case "reloadButton":
+                gui.setKeySettings(savedKey);
                 break;
             default:
                 break;
