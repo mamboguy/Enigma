@@ -25,13 +25,16 @@ public class Enigma {
     //<editor-fold desc="Private Variables">
     private ArrayList<Reflector> reflectorsAvailable;
     private ArrayList<Rotor> rotorsAvailable;
+    private ArrayList<Rotor> rotorsUsed;
     private Plugboard plugboard;
 
     //Rotor order from left to right is: 4, 3, 2, 1
+    //TODO - Convert to arraylist
     private Rotor rotor4;
     private Rotor rotor3;
     private Rotor rotor2;
     private Rotor rotor1;
+
     private Reflector reflector;
 
     //Tracks whether fourth rotor is used
@@ -148,7 +151,7 @@ public class Enigma {
     //<editor-fold desc="Adjust settings methods">
     public void changeLabels(String labelPositions) {
 
-        labelPositions = sanitizeInput(labelPositions);        
+        labelPositions = sanitizeInput(labelPositions);
 
         if (fourthRotorUsed && labelPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
@@ -168,7 +171,7 @@ public class Enigma {
 
                 i = 1;
             }
-            
+
             if (rotor3.getLabelPosition() != labelPositions.charAt(i)) {
                 rotor3.setLabelPosition(labelPositions.charAt(i));
             }
@@ -336,29 +339,35 @@ public class Enigma {
         String labels = "";
         String keys = "";
 
-        for (int i = 1; i <= 3; i++) {
-            rotors = rotors + " " + settings[i];
+        for (int i = 0; i < settings.length; i++) {
+            System.out.println("Settings[" + i + "] = " + settings[i]);
+        }
+
+        int rotorCount = (settings.length - 2) / 3;
+
+        for (int i = 0; i < rotorCount; i++) {
+            rotors = settings[i] + " " + rotors;
         }
 
         rotors = rotors.trim();
 
-        for (int i = 5; i <= 7; i++) {
-            labels += settings[i];
+        for (int i = rotorCount; i < rotorCount * 2; i++) {
+            labels = settings[i] + labels;
         }
 
-        for (int i = 9; i <= 11; i++) {
-            keys += settings[i];
+        for (int i = rotorCount * 2; i < rotorCount * 3; i++) {
+            keys = settings[i] + keys;
         }
 
-        if (this.fourthRotorUsed) {
-            rotors += " " + settings[0];
-            labels += settings[4];
-            labels += settings[8];
-        }
-
+        System.out.println("rotors = " + rotors);
+        System.out.println("reflector = " + settings[rotorCount*3]);
+        System.out.println("stecker pattern = " + settings[rotorCount*3+1]);
+        System.out.println("labels = " + labels);
+        System.out.println("keys = " + keys);
+        
         this.changeRotors(rotors);
-        this.changeReflector(settings[12]);
-        this.plugboard.steckerPattern(settings[13]);
+        this.changeReflector(settings[rotorCount * 3]);
+        this.plugboard.steckerPattern(settings[rotorCount * 3 + 1]);
         this.changeLabels(labels);
         this.changeRotorStart(keys);
     }
