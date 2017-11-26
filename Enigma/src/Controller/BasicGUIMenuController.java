@@ -19,7 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class BasicGUIMenuController
         implements ActionListener {
-    
+
     BasicGUIController parent;
 
     public BasicGUIMenuController(BasicGUIController parent) {
@@ -54,10 +54,25 @@ public class BasicGUIMenuController
                 fc.setFileFilter(myFilter);
 
                 if (fc.showSaveDialog(fc) == JFileChooser.APPROVE_OPTION) {
-                    if (!fc.getSelectedFile().toString().contains(".ekf")){
+                    if (!fc.getSelectedFile().toString().contains(".ekf")) {
                         fc.getSelectedFile();
                     }
                     parent.saveKeyFile(fc.getSelectedFile());
+                }
+
+                break;
+            case "menu_OpenKey":
+
+                fc = new JFileChooser();
+
+                myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
+                fc.setFileFilter(myFilter);
+
+                if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
+                    if (!fc.getSelectedFile().toString().contains(".ekf")) {
+                        fc.getSelectedFile();
+                    }
+                    parent.openKeyFile(fc.getSelectedFile());
                 }
 
                 break;

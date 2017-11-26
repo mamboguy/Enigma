@@ -202,17 +202,24 @@ public class BasicInputScreen
         tab1Exit.setName("menu_Exit");
         tab1Exit.setMnemonic(KeyEvent.VK_X);
         tab1Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
-        
+
         JMenuItem tab1Save = new JMenuItem("Save Enigma Keying");
         tab1Save.setName("menu_SaveKey");
         tab1Save.setMnemonic(KeyEvent.VK_S);
         tab1Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+
+        JMenuItem tab1Open = new JMenuItem("Open Enigma Keying");
+        tab1Open.setName("menu_OpenKey");
+        tab1Open.setMnemonic(KeyEvent.VK_O);
+        tab1Open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
         //</editor-fold>
 
-        //<editor-fold desc="Menu Joining">       
+        //<editor-fold desc="Menu Joining">
+        tab1.add(tab1Open);
         tab1.add(tab1Save);
         tab1.add(tab1Exit);
 
+        menuItems.add(tab1Open);
         menuItems.add(tab1Exit);
         menuItems.add(tab1Save);
 
@@ -439,7 +446,7 @@ public class BasicInputScreen
      * @param name - The name of the rotor that needs to be checked if in use
      *
      * @return - The location of the rotor using that name - Returns 0 if not in
-     *         use
+     * use
      */
     public int isRotorAlreadySelected(int selectionIndex) {
         int i = 0;
@@ -634,11 +641,14 @@ public class BasicInputScreen
     }
 
     public void useSavedKeySettings() {
+        loadKeySetting(savedKeySettings);
+    }
 
-        if (savedKeySettings != null) {
+    private void loadKeySetting(String[] settings) {
+        if (settings != null) {
 
-            resetToDefault(savedKeySettings);
-            String plugboardSetting = savedKeySettings[savedKeySettings.length - 1];
+            resetToDefault(settings);
+            String plugboardSetting = settings[settings.length - 1];
 
             String[] temp = plugboardSetting.split(" ");
 
@@ -653,5 +663,32 @@ public class BasicInputScreen
                 }
             }
         }
+    }
+
+    public void keyGUI(String[] key) {
+        int count = (key.length - 2) / 3;
+        int k = 0;
+        String[] temp = new String[count];
+
+        for (int i = count - 1; i >= 0; i--) {
+            for (int j = 0; j < rotorCombos.get(0).getItemCount(); j++) {
+                if (key[i].equalsIgnoreCase("" + rotorCombos.get(0).getItemAt(j))) {
+                    temp[k] = "" + j;
+                    k++;
+                }
+            }
+        }
+
+        for (int i = 0; i < reflector.getItemCount(); i++) {
+            if (key[key.length - 2].equalsIgnoreCase("" + reflector.getItemAt(i))) {
+                key[key.length - 2] = i + "";
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+            key[i] = temp[i];
+        }
+
+        loadKeySetting(key);
     }
 }

@@ -5,7 +5,7 @@
  */
 package Controller;
 
-import Controller.File.EnigmaFileSaver;
+import Controller.File.EnigmaFileManipulation;
 import Model.Enigma.Enigma;
 import View.Basic.BasicInputScreen;
 import java.awt.event.ActionEvent;
@@ -173,6 +173,16 @@ public class BasicGUIController
     }
 
     public void saveKeyFile(File selectedFile) {
-        EnigmaFileSaver.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
+        EnigmaFileManipulation.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
+    }
+
+    void openKeyFile(File selectedFile) {
+        String[] key = EnigmaFileManipulation.openKeyFile(selectedFile);
+        
+        for (int i = 0; i < key.length; i++) {
+            System.out.println("Key[" + i + "] = " + key[i]);
+        }
+        
+        gui.keyGUI(key);
     }
 }
