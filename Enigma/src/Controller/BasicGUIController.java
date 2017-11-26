@@ -24,12 +24,15 @@ public class BasicGUIController
                    KeyListener {
 
     BasicInputScreen gui;
+    BasicGUIMenuController menuController;
     Enigma model;
 
     public BasicGUIController() {
         model = new Enigma();
+        menuController = new BasicGUIMenuController();
 
         gui = new BasicInputScreen();
+        gui.registerMenuListeners(menuController);
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
         gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
