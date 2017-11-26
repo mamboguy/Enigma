@@ -365,15 +365,13 @@ public class Enigma {
         System.out.println("labels = " + labels);
         System.out.println("keys = " + keys);
         
+        //TODO - Fix for if GUI adds rotor then enigma adds rotor
+        
         this.changeRotors(rotors);
         this.changeReflector(settings[rotorCount * 3]);
         this.plugboard.steckerPattern(settings[rotorCount * 3 + 1]);
         this.changeLabels(labels);
         this.changeRotorStart(keys);
-    }
-
-    public boolean usingFourthRotor() {
-        return fourthRotorUsed;
     }
 
     public String[] getCurrentKeyPositions() {
