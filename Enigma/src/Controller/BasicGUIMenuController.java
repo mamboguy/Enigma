@@ -51,7 +51,7 @@ public class BasicGUIMenuController
                 JFileChooser fc = new JFileChooser();
 
                 FileNameExtensionFilter myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
-                fc.setFileFilter(myFilter);
+                fc.setFileFilter(myFilter); 
 
                 if (fc.showSaveDialog(fc) == JFileChooser.APPROVE_OPTION) {
                     if (!fc.getSelectedFile().toString().contains(".ekf")) {
