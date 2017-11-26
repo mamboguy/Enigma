@@ -103,40 +103,65 @@ public class BasicGUIController
 
     @Override
     public void keyTyped(KeyEvent e) {
-
         JTextField temp = (JTextField) e.getSource();
-        char name = temp.getName().replaceAll("Field", "").charAt(0);
 
-        //Only continue if alphabetic character
-        if (Character.isAlphabetic(e.getKeyChar())) {
+        //If the field is in the plugboard
+        if (temp.getName().contains("Field")) {
 
-            char inputField = Character.toUpperCase(e.getKeyChar());
-            int location = name - 65;
+            char name = temp.getName().replaceAll("Field", "").charAt(0);
 
-            //If the typed character is different from the field
-            if (inputField != name) {
+            //Only continue if alphabetic character
+            if (Character.isAlphabetic(e.getKeyChar())) {
 
-                if (gui.locationHasMultipleChars(location)) {
-                    //Erase the last letter pressed to prevent multiple characters in the space
-                    gui.eraseLastLetter(location);
-                    gui.deletePairing(temp.getName());
+                char inputField = Character.toUpperCase(e.getKeyChar());
+                int location = name - 65;
+
+                //If the typed character is different from the field
+                if (inputField != name) {
+
+                    if (gui.locationHasMultipleChars(location)) {
+                        //Erase the last letter pressed to prevent multiple characters in the space
+                        gui.eraseLastLetter("plugboard", location);
+                        gui.deletePairing(temp.getName());
+                    }
+                    //If it passes the test, set the other field in the pair to reflect the pairing
+                    gui.pairLetters(inputField - 65, name);
+                    gui.checkForLoners(location, inputField - 65);
+                } else {
+                    //Consume the event since the same key as the field was pressed
+                    e.consume();
                 }
-                //If it passes the test, set the other field in the pair to reflect the pairing
-                gui.pairLetters(inputField - 65, name);
-                gui.checkForLoners(location, inputField - 65);
-            } else {
-                //Consume the event since the same key as the field was pressed
-                e.consume();
+
+                //If delete or backspace key is used
+            } else if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+                //Delete the key and its pairing
+                gui.deletePairing(temp.getName());
+
+                //If the typed location is the location's second letter
             }
 
-            //If delete or backspace key is used
-        } else if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+            //Otherwise, it is a key/label field, just need to erase the last typed letter
+        } else {
 
-            System.out.println("Deleting...");
-            //Delete the key and its pairing
-            gui.deletePairing(temp.getName());
+            if (Character.isAlphabetic(e.getKeyChar())) {
+                System.out.println("Key/Label field");
+                String location = temp.getName();
+                location = location.replaceAll("labelRotor", "");
+                location = location.replaceAll("keyRotor", "");
 
-            //If the typed location is the location's second letter
+                int field = Integer.parseInt(location);
+
+                location = temp.getName();
+                location = location.replaceAll("[0-9]", "");
+                location = location.replaceAll("Rotor", "");
+
+                System.out.println("fieldType = " + temp.getName().replaceAll("Rotor", ""));
+                System.out.println("field = " + field);
+
+                gui.eraseLastLetter(location, field);
+            } else if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+                temp.setText("A");
+            }
         }
     }
 
