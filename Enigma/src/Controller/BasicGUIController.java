@@ -19,12 +19,12 @@ import javax.swing.JTextField;
  *
  * @author Mamboguy
  */
-public class BasicGUIController implements ActionListener, KeyListener {
+public class BasicGUIController
+        implements ActionListener,
+                   KeyListener {
 
     BasicInputScreen gui;
     Enigma model;
-    private boolean secondCall = false;
-    private String[] savedKey;
 
     public BasicGUIController() {
         model = new Enigma();
@@ -91,10 +91,10 @@ public class BasicGUIController implements ActionListener, KeyListener {
 //                }
                 break;
             case "saveButton":
-                savedKey = gui.getCurrentKeySettings();
+                gui.saveCurrentKeySettings();
                 break;
             case "reloadButton":
-                gui.setKeySettings(savedKey);
+                gui.useSavedKeySettings();
                 break;
             default:
                 break;
@@ -116,14 +116,7 @@ public class BasicGUIController implements ActionListener, KeyListener {
             //If the typed character is different from the field
             if (inputField != name) {
 
-                //If delete or backspace key is used
-                if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
-
-                    //Delete the key and its pairing
-                    gui.deletePairing(temp.getName());
-
-                    //If the typed location is the location's second letter
-                } else if (gui.locationHasMultipleChars(location)) {
+                if (gui.locationHasMultipleChars(location)) {
                     //Erase the last letter pressed to prevent multiple characters in the space
                     gui.eraseLastLetter(location);
                     gui.deletePairing(temp.getName());
@@ -135,6 +128,15 @@ public class BasicGUIController implements ActionListener, KeyListener {
                 //Consume the event since the same key as the field was pressed
                 e.consume();
             }
+
+            //If delete or backspace key is used
+        } else if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
+
+            System.out.println("Deleting...");
+            //Delete the key and its pairing
+            gui.deletePairing(temp.getName());
+
+            //If the typed location is the location's second letter
         }
     }
 
