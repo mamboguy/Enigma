@@ -30,18 +30,9 @@ public class BasicInputScreen
 
     //<editor-fold desc="Constants">
     private static final Dimension SPACER = new Dimension(5, 5);
-    private static final int MAX_ROTORS = 4;
     private static final int DEFAULT_ROTORS = 3;
-//    private static final ArrayList<Integer> ROTOR_DEFAULTS = new ArrayList<Integer>() {
-//        {
-//            add(2);
-//            add(1);
-//            add(0);
-//            add(0);
-//        }
-//    };
     private static final int VALID_CHARS = 26;
-    public static String[] DEFAULT_SETTINGS = {"2", "1", "0", "L", "E", "A", "G", "H", "C", "1", ""};
+    public static final String[] DEFAULT_SETTINGS = {"2", "1", "0", "G", "H", "C", "L", "E", "A", "1", ""};
     //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -55,25 +46,13 @@ public class BasicInputScreen
 
     private JComboBox reflector;
 
-//    //TODO - Lump into ArrayLists
-//    private JComboBox rotor1;
-//    private JComboBox rotor2;
-//    private JComboBox rotor3;
-//    private JComboBox rotor4;
-//    private JTextField labelRotor4;
-//    private JTextField labelRotor3;
-//    private JTextField labelRotor2;
-//    private JTextField labelRotor1;
-//    private JTextField keyRotor4;
-//    private JTextField keyRotor3;
-//    private JTextField keyRotor2;
-//    private JTextField keyRotor1;
+    private String[] savedKeySettings;
+
     private ArrayList<JTextField> keyFields = new ArrayList<JTextField>();
     private ArrayList<JTextField> labelFields = new ArrayList<JTextField>();
     private ArrayList<JComboBox> rotorCombos = new ArrayList<JComboBox>();
     private ArrayList<Integer> rotorSelectionHistory = new ArrayList<Integer>();
     private ArrayList<Boolean> rotorsInUse = new ArrayList<Boolean>();
-
     private ArrayList<JTextField> plugboardFields = new ArrayList<JTextField>();
     //</editor-fold>
 
@@ -84,7 +63,7 @@ public class BasicInputScreen
 
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i);
-            rotorCombos.add(basicJComboBox("rotor" + i, "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
+            rotorCombos.add(basicJComboBox("rotor" + (i+1), "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
             labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
             keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
         }
@@ -209,7 +188,7 @@ public class BasicInputScreen
         }
 
         this.add(masterPanel);
-        this.setTitle("Enigma v0.01");
+        this.setTitle("Enigma v0.1");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.pack();
         this.setVisible(true);
@@ -313,28 +292,20 @@ public class BasicInputScreen
 
         int j = 0;
 
-        System.out.println("rotorCombos.size = " + rotorCombos.size());
-        System.out.println("keyFields.size = " + keyFields.size());
-        System.out.println("labelFields.size = " + labelFields.size());
-
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorCombos.get(i).setSelectedIndex(Integer.parseInt(settings[j]));
             j++;
         }
-        System.out.println("j = " + j);
-
-        for (int i = 0; i < keyFields.size(); i++) {
-            keyFields.get(i).setText(settings[j]);
-            j++;
-        }
-        System.out.println("j = " + j);
 
         for (int i = 0; i < labelFields.size(); i++) {
             labelFields.get(i).setText(settings[j]);
             j++;
         }
-        System.out.println("j = " + j);
-        System.out.println("settings.length = " + settings.length);
+
+        for (int i = 0; i < keyFields.size(); i++) {
+            keyFields.get(i).setText(settings[j]);
+            j++;
+        }
 
         reflector.setSelectedIndex(Integer.parseInt(settings[j]));
 
@@ -354,7 +325,6 @@ public class BasicInputScreen
     //TODO - add setting for plaintext spacing
     public String[] getCurrentKeySettings() {
 
-        //TODO - Implement Arraylist
         String[] settings = new String[rotorCombos.size() * 3 + 2];
 
         int j = 0;
@@ -411,6 +381,8 @@ public class BasicInputScreen
     public int isRotorAlreadySelected(int selectionIndex) {
         int i = 0;
 
+        System.out.println("selection index = " + selectionIndex);
+        
         for (int j = 0; j < rotorSelectionHistory.size(); j++) {
             if (rotorSelectionHistory.get(j) == selectionIndex && rotorsInUse.get(j)) {
                 i = j + 1;
@@ -546,7 +518,7 @@ public class BasicInputScreen
     private JPanel standardRotorPanel(int i) {
         JPanel temp = new JPanel();
         temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
-        temp.add(centeredLabel("Rotor " + i));
+        temp.add(centeredLabel("Rotor " + (i + 1)));
         temp.add(standardSpacer());
         temp.add(rotorCombos.get(i));
         temp.add(standardSpacer());
@@ -557,8 +529,44 @@ public class BasicInputScreen
         return temp;
     }
 
-    public void setKeySettings(String[] savedKey) {
-        //TODO - Implement method setKeySettings()
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void saveCurrentKeySettings() {
+        savedKeySettings = new String[rotorCombos.size() * 3 + 2];
+
+        int j = 0;
+
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            savedKeySettings[j] = "" + rotorCombos.get(i).getSelectedIndex();
+            j++;
+        }
+
+        for (int i = 0; i < labelFields.size(); i++) {
+            savedKeySettings[j] = labelFields.get(i).getText();
+            j++;
+        }
+
+        for (int i = 0; i < keyFields.size(); i++) {
+            savedKeySettings[j] = keyFields.get(i).getText();
+            j++;
+        }
+
+        savedKeySettings[j] = "" + reflector.getSelectedIndex();
+        j++;
+
+        savedKeySettings[j] = getPlugboardString();
+    }
+
+    public void useSavedKeySettings() {
+        resetToDefault(savedKeySettings);
+        String plugboardSetting = savedKeySettings[savedKeySettings.length - 1];
+
+        String[] temp = plugboardSetting.split(" ");
+
+        for (int i = 0; i < temp.length; i++) {
+            int start = temp[i].charAt(0) - 65;
+            int end = temp[i].charAt(1) - 65;
+
+            plugboardFields.get(start).setText("" + temp[i].charAt(1));
+            plugboardFields.get(end).setText("" + temp[i].charAt(0));
+        }
     }
 }
