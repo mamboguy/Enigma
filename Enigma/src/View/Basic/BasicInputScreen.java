@@ -6,7 +6,9 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.Box;
@@ -15,9 +17,13 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.text.AbstractDocument;
 
 /**
@@ -54,25 +60,28 @@ public class BasicInputScreen
     private ArrayList<Integer> rotorSelectionHistory = new ArrayList<Integer>();
     private ArrayList<Boolean> rotorsInUse = new ArrayList<Boolean>();
     private ArrayList<JTextField> plugboardFields = new ArrayList<JTextField>();
+    private ArrayList<JMenuItem> menuItems = new ArrayList<JMenuItem>();
     //</editor-fold>
 
     public BasicInputScreen() {
         //Create combo boxes for settings
-        int comboHeights = 30;
-        int comboWidths = 130;
+        int rotorFieldHeight = 30;
+        int rotorFieldWidth = 130;
 
+        //<editor-fold desc="Rotor Component Creation">
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i);
-            rotorCombos.add(basicJComboBox("rotor" + (i + 1), "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
-            labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
-            keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
+            rotorCombos.add(basicJComboBox("rotor" + (i + 1), "Select rotor to use in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
+            labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
+            keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
         }
+        //</editor-fold>
 
         //<editor-fold desc="Reflector Panel Creation">       
         JPanel reflectorPanel = new JPanel();
         reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
 
-        reflector = basicJComboBox("reflector", "Selector reflector to use", comboHeights, comboWidths);
+        reflector = basicJComboBox("reflector", "Selector reflector to use", rotorFieldHeight, rotorFieldWidth);
 
         reflectorPanel.add(centeredLabel("Reflector"));
         reflectorPanel.add(standardSpacer());
@@ -162,24 +171,45 @@ public class BasicInputScreen
         buttonPanel.add(reloadSavedSettings);
         //</editor-fold>
 
+        //<editor-fold desc="Text and Button Panel Joining">      
         JPanel textbuttons = new JPanel();
         textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
         //textbuttons.setAlignmentY(CENTER_ALIGNMENT);
         textbuttons.add(textPanel);
         textbuttons.add(buttonPanel);
+        //</editor-fold>
 
+        //<editor-fold desc="Rotor and Plugboard Panel Joining">        
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
 
         settingsPanel.add(rotorPanels);
         settingsPanel.add(standardSpacer());
         settingsPanel.add(plugboardPanel);
+        //</editor-fold>
 
+        JMenuBar menuBar = new JMenuBar();
+        JMenu tab1 = new JMenu("File");
+        JMenu tab2 = new JMenu("About");
+        
+        JMenuItem tab1Exit = new JMenuItem("Exit");
+        tab1Exit.setName("menu_Exit");
+        tab1Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        tab1.add(tab1Exit);
+        
+        menuItems.add(tab1Exit);
+        
+        menuBar.add(tab1);
+        menuBar.add(tab2);
+        
+        //<editor-fold desc="Master Panel Final Joining">        
         JPanel masterPanel = new JPanel();
         //Add panels to master
         masterPanel.setLayout(new BorderLayout(5, 5));
+        masterPanel.add(menuBar, BorderLayout.NORTH);
         masterPanel.add(settingsPanel, BorderLayout.CENTER);
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
+        //</editor-fold>
 
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             rotorSelectionHistory.add(Integer.parseInt(DEFAULT_SETTINGS[i]));
@@ -272,6 +302,12 @@ public class BasicInputScreen
             d = (AbstractDocument) keyFields.get(i).getDocument();
             d.setDocumentFilter(myFilter);
             keyFields.get(i).addKeyListener(kl);
+        }
+    }
+    
+    public void registerMenuListeners(ActionListener al){
+        for (int i = 0; i < menuItems.size(); i++) {
+            menuItems.get(i).addActionListener(al);
         }
     }
 
@@ -580,17 +616,24 @@ public class BasicInputScreen
     }
 
     public void useSavedKeySettings() {
-        resetToDefault(savedKeySettings);
-        String plugboardSetting = savedKeySettings[savedKeySettings.length - 1];
 
-        String[] temp = plugboardSetting.split(" ");
+        if (savedKeySettings != null) {
 
-        for (int i = 0; i < temp.length; i++) {
-            int start = temp[i].charAt(0) - 65;
-            int end = temp[i].charAt(1) - 65;
+            resetToDefault(savedKeySettings);
+            String plugboardSetting = savedKeySettings[savedKeySettings.length - 1];
 
-            plugboardFields.get(start).setText("" + temp[i].charAt(1));
-            plugboardFields.get(end).setText("" + temp[i].charAt(0));
+            String[] temp = plugboardSetting.split(" ");
+
+            if (!plugboardSetting.equalsIgnoreCase("")) {
+
+                for (int i = 0; i < temp.length; i++) {
+                    int start = temp[i].charAt(0) - 65;
+                    int end = temp[i].charAt(1) - 65;
+
+                    plugboardFields.get(start).setText("" + temp[i].charAt(1));
+                    plugboardFields.get(end).setText("" + temp[i].charAt(0));
+                }
+            }
         }
     }
 }
