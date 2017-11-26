@@ -5,12 +5,14 @@
  */
 package Controller;
 
+import Controller.File.EnigmaFileSaver;
 import Model.Enigma.Enigma;
 import View.Basic.BasicInputScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -23,19 +25,25 @@ public class BasicGUIController
         implements ActionListener,
                    KeyListener {
 
-    BasicInputScreen gui;
-    BasicGUIMenuController menuController;
-    Enigma model;
+    private BasicInputScreen gui = new BasicInputScreen();
+    private Enigma model = new Enigma();
+
+    //Sub-controllers
+    private BasicGUIMenuController menuController;
 
     public BasicGUIController() {
         model = new Enigma();
+        gui = new BasicInputScreen();
         menuController = new BasicGUIMenuController();
 
-        gui = new BasicInputScreen();
-        gui.registerMenuListeners(menuController);
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
+
+        //Set the gui to its default state
         gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
+
+        //Register all listeners to proper classes
+        gui.registerMenuListeners(menuController);
         gui.registerListeners(this, this);
     }
 
@@ -77,21 +85,6 @@ public class BasicGUIController
                 gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
                 model.setSettings(gui.getCurrentKeySettings());
 
-                break;
-            case "exitButton":
-
-                String[] options = new String[]{"Exit", "Cancel"};
-
-//                if (JOptionPane.showOptionDialog(null,
-//                        "Are you sure you want to exit?",
-//                        "Exit confirmation",
-//                        JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE,
-//                        null,
-//                        options,
-//                        options[1]) == JOptionPane.YES_OPTION) {
-                System.exit(0);
-//                }
                 break;
             case "saveButton":
                 gui.saveCurrentKeySettings();
@@ -176,5 +169,10 @@ public class BasicGUIController
     @Override
     public void keyReleased(KeyEvent e) {
         //Ignore
+    }
+
+    void saveKeyFile(File selectedFile) {
+        System.out.println("Selected File = " + selectedFile);
+        EnigmaFileSaver.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
     }
 }

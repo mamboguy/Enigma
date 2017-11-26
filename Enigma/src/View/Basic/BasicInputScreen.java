@@ -64,7 +64,7 @@ public class BasicInputScreen
     //</editor-fold>
 
     public BasicInputScreen() {
-        //Create combo boxes for settings
+        //Standard height and width for fields involved with rotors
         int rotorFieldHeight = 30;
         int rotorFieldWidth = 130;
 
@@ -188,20 +188,38 @@ public class BasicInputScreen
         settingsPanel.add(plugboardPanel);
         //</editor-fold>
 
+        //<editor-fold desc="Menu Bar and Menu Creation">       
         JMenuBar menuBar = new JMenuBar();
         JMenu tab1 = new JMenu("File");
+        tab1.setMnemonic(KeyEvent.VK_F);
+
         JMenu tab2 = new JMenu("About");
-        
+        tab2.setMnemonic(KeyEvent.VK_U);
+        //</editor-fold>
+
+        //<editor-fold desc="Menu Item Creation">
         JMenuItem tab1Exit = new JMenuItem("Exit");
         tab1Exit.setName("menu_Exit");
+        tab1Exit.setMnemonic(KeyEvent.VK_X);
         tab1Exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        
+        JMenuItem tab1Save = new JMenuItem("Save Enigma Keying");
+        tab1Save.setName("menu_SaveKey");
+        tab1Save.setMnemonic(KeyEvent.VK_S);
+        tab1Save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        //</editor-fold>
+
+        //<editor-fold desc="Menu Joining">       
+        tab1.add(tab1Save);
         tab1.add(tab1Exit);
-        
+
         menuItems.add(tab1Exit);
-        
+        menuItems.add(tab1Save);
+
         menuBar.add(tab1);
         menuBar.add(tab2);
-        
+        //</editor-fold>
+
         //<editor-fold desc="Master Panel Final Joining">        
         JPanel masterPanel = new JPanel();
         //Add panels to master
@@ -304,8 +322,8 @@ public class BasicInputScreen
             keyFields.get(i).addKeyListener(kl);
         }
     }
-    
-    public void registerMenuListeners(ActionListener al){
+
+    public void registerMenuListeners(ActionListener al) {
         for (int i = 0; i < menuItems.size(); i++) {
             menuItems.get(i).addActionListener(al);
         }

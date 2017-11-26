@@ -7,8 +7,10 @@ package Controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Date Created Nov 26, 2017
@@ -16,10 +18,10 @@ import javax.swing.JOptionPane;
  * @author Michael C
  */
 public class BasicGUIMenuController
+        extends BasicGUIController
         implements ActionListener {
 
     public BasicGUIMenuController() {
-        //Empty constructor
     }
 
     @Override
@@ -41,6 +43,18 @@ public class BasicGUIMenuController
                                                  options[1]) == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
+                break;
+            case "menu_SaveKey":
+
+                JFileChooser fc = new JFileChooser();
+
+                FileNameExtensionFilter myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
+                fc.setFileFilter(myFilter);
+
+                if (fc.showSaveDialog(fc) == JFileChooser.APPROVE_OPTION) {
+                    super.saveKeyFile(fc.getSelectedFile());
+                }
+
                 break;
             default:
                 break;
