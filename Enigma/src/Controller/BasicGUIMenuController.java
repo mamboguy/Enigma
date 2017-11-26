@@ -18,10 +18,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author Michael C
  */
 public class BasicGUIMenuController
-        extends BasicGUIController
         implements ActionListener {
+    
+    BasicGUIController parent;
 
-    public BasicGUIMenuController() {
+    public BasicGUIMenuController(BasicGUIController parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -34,13 +36,13 @@ public class BasicGUIMenuController
                 String[] options = new String[]{"Exit", "Cancel"};
 
                 if (JOptionPane.showOptionDialog(null,
-                                                 "Are you sure you want to exit?",
-                                                 "Exit confirmation",
-                                                 JOptionPane.YES_NO_OPTION,
-                                                 JOptionPane.QUESTION_MESSAGE,
-                                                 null,
-                                                 options,
-                                                 options[1]) == JOptionPane.YES_OPTION) {
+                        "Are you sure you want to exit?",
+                        "Exit confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]) == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
                 break;
@@ -52,7 +54,10 @@ public class BasicGUIMenuController
                 fc.setFileFilter(myFilter);
 
                 if (fc.showSaveDialog(fc) == JFileChooser.APPROVE_OPTION) {
-                    super.saveKeyFile(fc.getSelectedFile());
+                    if (!fc.getSelectedFile().toString().contains(".ekf")){
+                        fc.getSelectedFile();
+                    }
+                    parent.saveKeyFile(fc.getSelectedFile());
                 }
 
                 break;

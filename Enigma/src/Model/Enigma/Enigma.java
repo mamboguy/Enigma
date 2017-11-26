@@ -335,6 +335,7 @@ public class Enigma {
 
     public void setSettings(String[] settings) {
 
+        //todo - put settings reading/writing into own class
         String rotors = "";
         String labels = "";
         String keys = "";

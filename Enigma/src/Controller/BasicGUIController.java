@@ -25,8 +25,8 @@ public class BasicGUIController
         implements ActionListener,
                    KeyListener {
 
-    private BasicInputScreen gui = new BasicInputScreen();
-    private Enigma model = new Enigma();
+    private BasicInputScreen gui;
+    private Enigma model;
 
     //Sub-controllers
     private BasicGUIMenuController menuController;
@@ -34,7 +34,7 @@ public class BasicGUIController
     public BasicGUIController() {
         model = new Enigma();
         gui = new BasicInputScreen();
-        menuController = new BasicGUIMenuController();
+        menuController = new BasicGUIMenuController(this);
 
         gui.updateRotorCombos(model.getRotorsAvailable());
         gui.updateReflectorCombos(model.getReflectorsAvailable());
@@ -45,6 +45,10 @@ public class BasicGUIController
         //Register all listeners to proper classes
         gui.registerMenuListeners(menuController);
         gui.registerListeners(this, this);
+    }
+    
+    public BasicGUIController(boolean a){
+        
     }
 
     @Override
@@ -151,9 +155,6 @@ public class BasicGUIController
                 location = location.replaceAll("[0-9]", "");
                 location = location.replaceAll("Rotor", "");
 
-                System.out.println("fieldType = " + temp.getName().replaceAll("Rotor", ""));
-                System.out.println("field = " + field);
-
                 gui.eraseLastLetter(location, field);
             } else if (e.getKeyChar() == 127 || e.getKeyChar() == 8) {
                 temp.setText("A");
@@ -171,8 +172,7 @@ public class BasicGUIController
         //Ignore
     }
 
-    void saveKeyFile(File selectedFile) {
-        System.out.println("Selected File = " + selectedFile);
+    public void saveKeyFile(File selectedFile) {
         EnigmaFileSaver.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
     }
 }
