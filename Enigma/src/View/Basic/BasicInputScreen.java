@@ -63,7 +63,7 @@ public class BasicInputScreen
 
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i);
-            rotorCombos.add(basicJComboBox("rotor" + (i+1), "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
+            rotorCombos.add(basicJComboBox("rotor" + (i + 1), "Select rotor to use in " + formattedNumber + " slot", comboHeights, comboWidths));
             labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
             keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", comboHeights, comboWidths));
         }
@@ -86,7 +86,6 @@ public class BasicInputScreen
         rotorPanels.add(standardSpacer());
 
         for (int i = rotorCombos.size() - 1; i >= 0; i--) {
-            //TODO - Add Document Listener to force uppercase
             rotorPanels.add(standardRotorPanel(i));
             rotorPanels.add(standardSpacer());
         }
@@ -264,6 +263,16 @@ public class BasicInputScreen
             d.setDocumentFilter(myFilter);
             plugboardFields.get(i).addKeyListener(kl);
         }
+
+        for (int i = 0; i < rotorCombos.size(); i++) {
+            AbstractDocument d = (AbstractDocument) labelFields.get(i).getDocument();
+            d.setDocumentFilter(myFilter);
+            labelFields.get(i).addKeyListener(kl);
+
+            d = (AbstractDocument) keyFields.get(i).getDocument();
+            d.setDocumentFilter(myFilter);
+            keyFields.get(i).addKeyListener(kl);
+        }
     }
 
     public void updateReflectorCombos(String[] reflectorsAvailable) {
@@ -381,8 +390,6 @@ public class BasicInputScreen
     public int isRotorAlreadySelected(int selectionIndex) {
         int i = 0;
 
-        System.out.println("selection index = " + selectionIndex);
-        
         for (int j = 0; j < rotorSelectionHistory.size(); j++) {
             if (rotorSelectionHistory.get(j) == selectionIndex && rotorsInUse.get(j)) {
                 i = j + 1;
@@ -443,10 +450,27 @@ public class BasicInputScreen
         return (plugboardFields.get(location).getText().length() > 0);
     }
 
-    public void eraseLastLetter(int location) {
-        String temp = plugboardFields.get(location).getText();
-        temp = temp.substring(0, 0);
-        plugboardFields.get(location).setText(temp);
+    public void eraseLastLetter(String fieldtype, int location) {
+        String temp = "";
+
+        switch (fieldtype) {
+
+            case "plugboard":
+                temp = plugboardFields.get(location).getText();
+                temp = temp.substring(0, 0);
+                plugboardFields.get(location).setText(temp);
+                break;
+            case "label":
+                temp = labelFields.get(location).getText();
+                temp = temp.substring(0, 0);
+                labelFields.get(location).setText(temp);
+                break;
+            case "key":
+                temp = keyFields.get(location).getText();
+                temp = temp.substring(0, 0);
+                keyFields.get(location).setText(temp);
+                break;
+        }
     }
 
     public void checkForLoners(int ignoreLocation, int ignoreLocation2) {
