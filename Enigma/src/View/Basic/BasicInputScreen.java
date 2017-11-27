@@ -1,5 +1,7 @@
 package View.Basic;
 
+//<editor-fold defaultstate="collapsed" desc="Imports">
+import Controller.BasicGUIController;
 import Controller.Filters.PlugboardDocumentFilter;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.text.AbstractDocument;
+//</editor-fold>
 
 /**
  * Date Created Nov 19, 2017
@@ -35,9 +38,8 @@ public class BasicInputScreen
         extends JFrame {
 
     //<editor-fold desc="Constants">
-    private static final Dimension SPACER = new Dimension(5, 5);
+    private static final Dimension STANDARD_SPACER_SIZE = new Dimension(5, 5);
     private static final int DEFAULT_ROTORS = 3;
-    private static final int VALID_CHARS = 26;
     public static final String[] DEFAULT_SETTINGS = {"2", "1", "0", "G", "H", "C", "L", "E", "A", "1", ""};
     //</editor-fold>
 
@@ -69,6 +71,7 @@ public class BasicInputScreen
         int rotorFieldWidth = 130;
 
         //<editor-fold desc="Rotor Component Creation">
+        //Create a rotor combo box, label and key field for each default rotor
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i);
             rotorCombos.add(basicJComboBox("rotor" + (i + 1), "Select rotor to use in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
@@ -77,23 +80,30 @@ public class BasicInputScreen
         }
         //</editor-fold>
 
-        //<editor-fold desc="Reflector Panel Creation">       
+        //<editor-fold desc="Reflector Panel Creation">      
+        //Create the reflector panel and layout vertically
         JPanel reflectorPanel = new JPanel();
         reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
 
+        //Initialize the combo box for the reflector
         reflector = basicJComboBox("reflector", "Selector reflector to use", rotorFieldHeight, rotorFieldWidth);
 
+        //Setup the layout of the reflector panel
         reflectorPanel.add(centeredLabel("Reflector"));
         reflectorPanel.add(standardSpacer());
         reflectorPanel.add(reflector);
         //</editor-fold>
 
         //<editor-fold desc="Rotor Panel Creation">
+        //Layout the rotor panel from left to right
         JPanel rotorPanels = new JPanel();
         rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        //Add the reflectors to the rotor panel before the rest of the rotors
         rotorPanels.add(reflectorPanel);
         rotorPanels.add(standardSpacer());
 
+        //Add each rotor's panel and a spacer between them
         for (int i = rotorCombos.size() - 1; i >= 0; i--) {
             rotorPanels.add(standardRotorPanel(i));
             rotorPanels.add(standardSpacer());
@@ -104,17 +114,21 @@ public class BasicInputScreen
         JPanel plugboardPanel = new JPanel();
         JPanel plugboardTopRow = new JPanel();
         JPanel plugboardBotRow = new JPanel();
+
+        //Layout the overall panel vertically, but the top and bottom rows horizontally
         plugboardPanel.setLayout(new BoxLayout(plugboardPanel, BoxLayout.Y_AXIS));
         plugboardTopRow.setLayout(new BoxLayout(plugboardTopRow, BoxLayout.X_AXIS));
         plugboardBotRow.setLayout(new BoxLayout(plugboardBotRow, BoxLayout.X_AXIS));
 
-        for (int i = 0; i < VALID_CHARS; i++) {
+        //Create a plugboard field for each letter
+        for (int i = 0; i < BasicGUIController.VALID_CHARS; i++) {
             String name = (char) (i + 65) + "Field";
             String toolTipText = "Type in letter that will swap with " + (char) (i + 65);
             plugboardFields.add(basicJTextField(name, toolTipText, 30, 30));
         }
 
-        for (int i = 0; i < VALID_CHARS / 2; i++) {
+        //For half of the plugboard, add them to tho top row panel
+        for (int i = 0; i < BasicGUIController.VALID_CHARS / 2; i++) {
             JPanel temp = new JPanel();
             temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
             temp.add(plugboardMiniPanel(i));
@@ -123,7 +137,8 @@ public class BasicInputScreen
             plugboardTopRow.add(temp);
         }
 
-        for (int i = VALID_CHARS / 2; i < VALID_CHARS; i++) {
+        //For the other half of the plugboard, add them to the bottom row panel
+        for (int i = BasicGUIController.VALID_CHARS / 2; i < BasicGUIController.VALID_CHARS; i++) {
             JPanel temp = new JPanel();
             temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
             temp.add(plugboardMiniPanel(i));
@@ -132,6 +147,7 @@ public class BasicInputScreen
             plugboardBotRow.add(temp);
         }
 
+        //Set the final layout of the plugboard
         plugboardPanel.add(centeredLabel("Plugboard Settings"));
         plugboardPanel.add(standardSpacer());
         plugboardPanel.add(plugboardTopRow);
@@ -146,8 +162,10 @@ public class BasicInputScreen
         plaintext = createTextArea("Enter plaintext to encode here");
         ciphertext = createTextArea("Encoded plaintext appears here");
 
+        //Layout the text panels horizontally
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
-        textPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+
+        //Set the final layout for the text panel
         textPanel.add(plaintext);
         textPanel.add(standardSpacer());
         textPanel.add(ciphertext);
@@ -162,6 +180,7 @@ public class BasicInputScreen
         saveSettings = initializeJButton("saveButton", "Save Key", "Saves the current key settings, allowing reload later");
         reloadSavedSettings = initializeJButton("reloadButton", "Reload Key", "Reload the last saved key");
 
+        //Set the final layout for the button panel
         buttonPanel.add(translate);
         buttonPanel.add(standardSpacer());
         buttonPanel.add(reset);
@@ -173,16 +192,22 @@ public class BasicInputScreen
 
         //<editor-fold desc="Text and Button Panel Joining">      
         JPanel textbuttons = new JPanel();
+
+        //Layout the panel vertically
         textbuttons.setLayout(new BoxLayout(textbuttons, BoxLayout.Y_AXIS));
-        //textbuttons.setAlignmentY(CENTER_ALIGNMENT);
+
+        //Add the text panels and the buttons to the final panel layout
         textbuttons.add(textPanel);
         textbuttons.add(buttonPanel);
         //</editor-fold>
 
         //<editor-fold desc="Rotor and Plugboard Panel Joining">        
         JPanel settingsPanel = new JPanel();
+
+        //Layout the settings panel vertically
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
 
+        //Set up the settings panel final layout
         settingsPanel.add(rotorPanels);
         settingsPanel.add(standardSpacer());
         settingsPanel.add(plugboardPanel);
@@ -190,6 +215,8 @@ public class BasicInputScreen
 
         //<editor-fold desc="Menu Bar and Menu Creation">       
         JMenuBar menuBar = new JMenuBar();
+
+        //Create both tabs
         JMenu tab1 = new JMenu("File");
         tab1.setMnemonic(KeyEvent.VK_F);
 
@@ -229,6 +256,7 @@ public class BasicInputScreen
 
         //<editor-fold desc="Master Panel Final Joining">        
         JPanel masterPanel = new JPanel();
+
         //Add panels to master
         masterPanel.setLayout(new BorderLayout(5, 5));
         masterPanel.add(menuBar, BorderLayout.NORTH);
@@ -236,6 +264,7 @@ public class BasicInputScreen
         masterPanel.add(textbuttons, BorderLayout.SOUTH);
         //</editor-fold>
 
+        //Set each of the default rotors to being used and set their selection history
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             rotorSelectionHistory.add(Integer.parseInt(DEFAULT_SETTINGS[i]));
             rotorsInUse.add(true);
@@ -249,6 +278,14 @@ public class BasicInputScreen
         this.setResizable(false);
     }
 
+    /**
+     * Creates standardized JButtons using passed inputs
+     *
+     * @param buttonName - Name of the button
+     * @param buttonText - The text to display on the button
+     * @param toolTip - Button's tooltip
+     * @return - Initialized button of a standardized size with above attributes
+     */
     private JButton initializeJButton(String buttonName, String buttonText, String toolTip) {
         JButton temp = new JButton(buttonText);
 
@@ -259,6 +296,12 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Creates standardized JTextAreas using passed inputs
+     *
+     * @param toolTipText - TextArea's tooltip
+     * @return - Initialized JTextArea
+     */
     private JTextArea createTextArea(String toolTipText) {
         JTextArea temp = new JTextArea(5, 20);
         temp.setLineWrap(true);
@@ -268,6 +311,15 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Creates standardized JComboBoxes using passed inputs
+     *
+     * @param name - Name of the comboBox
+     * @param toolTipText - JComboBox's tooltip
+     * @param height - Height of the box
+     * @param width - Width of the box
+     * @return - Initialized JComboBox
+     */
     private JComboBox basicJComboBox(String name, String toolTipText, int height, int width) {
         JComboBox temp = new JComboBox();
 
@@ -279,6 +331,15 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Creates standardized JTextFields using passed inputs
+     *
+     * @param name - Name of the textfield
+     * @param toolTipText - TextField's tooltip
+     * @param height - Height of the textfield
+     * @param width - Width of the textfield
+     * @return - Initialized JTextField
+     */
     private JTextField basicJTextField(String name, String toolTipText, int height, int width) {
         JTextField temp = new JTextField();
 
@@ -290,6 +351,12 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Creates JLabels with a centered alignment preference
+     *
+     * @param name - Label's display title
+     * @return - Initialized JLabel
+     */
     private JLabel centeredLabel(String name) {
         JLabel temp = new JLabel(name);
         temp.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -297,29 +364,48 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Creates a standardized spacer for GUI separation
+     *
+     * @return - Rigid area of size designated by STANDARD_SPACER_SIZE
+     */
     private Component standardSpacer() {
-        return Box.createRigidArea(SPACER);
+        return Box.createRigidArea(STANDARD_SPACER_SIZE);
     }
 
+    /**
+     * Hook to register the rotor's comboBoxes, textfields and the frame's
+     * buttons with the controller
+     *
+     * @param al - ActionListener controller
+     * @param kl - KeyListener controller
+     */
     public void registerListeners(ActionListener al, KeyListener kl) {
+        //Todo - split al and kl into different controllers
+
+        //Add buttons actionlisteners
         saveSettings.addActionListener(al);
         reloadSavedSettings.addActionListener(al);
         reset.addActionListener(al);
         translate.addActionListener(al);
 
+        //Registers all of the rotor combos to the actionListener
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorCombos.get(i).addActionListener(al);
         }
 
+        //Initialize the plugboard filter (forces caps, doesn't accept non A-Z letters
         PlugboardDocumentFilter myFilter = new PlugboardDocumentFilter();
 
+        //Set the document filter to the plugboard and register listeners
         for (int i = 0; i < plugboardFields.size(); i++) {
             AbstractDocument d = (AbstractDocument) plugboardFields.get(i).getDocument();
             d.setDocumentFilter(myFilter);
             plugboardFields.get(i).addKeyListener(kl);
         }
 
-        for (int i = 0; i < rotorCombos.size(); i++) {
+        //Set the document filter to the labels and key fields and register listeners
+        for (int i = 0; i < labelFields.size(); i++) {
             AbstractDocument d = (AbstractDocument) labelFields.get(i).getDocument();
             d.setDocumentFilter(myFilter);
             labelFields.get(i).addKeyListener(kl);
@@ -330,28 +416,50 @@ public class BasicInputScreen
         }
     }
 
+    /**
+     * Hook for controller to register the menu bar listeners
+     *
+     * @param al - ActionListener controller
+     */
     public void registerMenuListeners(ActionListener al) {
         for (int i = 0; i < menuItems.size(); i++) {
             menuItems.get(i).addActionListener(al);
         }
     }
 
+    /**
+     * Removes and adds all reflectors available for selection in the reflector
+     * comboBox
+     *
+     * @param reflectorsAvailable - List of available reflectors to use
+     */
     public void updateReflectorCombos(String[] reflectorsAvailable) {
+        //Clear the combo box
         reflector.removeAllItems();
 
+        //Add a new item for each passed reflector
         for (int i = 0; i < reflectorsAvailable.length; i++) {
             reflector.addItem(reflectorsAvailable[i]);
         }
     }
 
+    /**
+     * Removes and adds all rotors available for selection in the rotor
+     * comboBoxes
+     *
+     * @param rotorsAvailable - List of available rotors to use
+     */
     public void updateRotorCombos(String[] rotorsAvailable) {
 
+        //Clears all rotor combo boxes
         for (int i = 0; i < rotorCombos.size(); i++) {
             rotorCombos.get(i).removeAllItems();
         }
 
+        //For each rotor passed
         for (int i = 0; i < rotorsAvailable.length; i++) {
 
+            //Add it to each rotor selector combo
             for (int j = 0; j < rotorCombos.size(); j++) {
                 rotorCombos.get(j).addItem(rotorsAvailable[i]);
             }
@@ -360,6 +468,8 @@ public class BasicInputScreen
 
     public void resetToDefault(String[] settings) {
 
+        //TODO - rename method
+        //TODO - work into later methods for changing keys
         int j = 0;
 
         for (int i = 0; i < rotorCombos.size(); i++) {
@@ -393,6 +503,7 @@ public class BasicInputScreen
 
     //TODO - space out plaintext
     //TODO - add setting for plaintext spacing
+    //TODO - break out into separate class for standardizing settingss
     public String[] getCurrentKeySettings() {
 
         String[] settings = new String[rotorCombos.size() * 3 + 2];
@@ -422,18 +533,37 @@ public class BasicInputScreen
         return settings;
     }
 
+    /**
+     * Returns the text in the plaintext area
+     *
+     * @return - plaintext area string
+     */
     public String getPlaintext() {
         return plaintext.getText();
     }
 
+    /**
+     * Sets the text in the ciphertext area to the passed value
+     *
+     * @param ciphertext - The string value to set the ciphertext TextArea to
+     */
     public void setCiphertext(String ciphertext) {
         this.ciphertext.setText(ciphertext);
     }
 
+    /**
+     * Updates the keyFields with the current rotor key setting after encoding a
+     * message
+     *
+     * @param keys - the string of current key settings
+     */
     public void setCurrentKeyPosition(String[] keys) {
         int j = 0;
 
+        //Start from leftmost rotor in chain (largest)
         for (int i = keys.length - 1; i >= 0; i--) {
+
+            //Read the keyFields backwards, but the key field forwards
             keyFields.get(i).setText(keys[j]);
             j++;
         }
@@ -443,15 +573,17 @@ public class BasicInputScreen
      * Checks to see if a rotor name is in use and if so, returns which rotor is
      * using it
      *
-     * @param name - The name of the rotor that needs to be checked if in use
-     *
+     * @param selectionIndex - the index to see if multiple rotors have selected
      * @return - The location of the rotor using that name - Returns 0 if not in
      * use
      */
     public int isRotorAlreadySelected(int selectionIndex) {
         int i = 0;
 
+        //For each entry in the selection history
         for (int j = 0; j < rotorSelectionHistory.size(); j++) {
+
+            //Checks the rotor's history to see if it was last at the index and if the rotor is in use
             if (rotorSelectionHistory.get(j) == selectionIndex && rotorsInUse.get(j)) {
                 i = j + 1;
             }
@@ -460,46 +592,90 @@ public class BasicInputScreen
         return i;
     }
 
+    /**
+     * Swaps the selected indexs of two rotors
+     *
+     * @param rotorSelectedByUser - the rotor that was just changed by the user
+     * @param duplicateRotor - the duplicate rotor flagged that needs to change
+     * to user selected rotor's last value
+     */
     public void swapRotorCombos(int rotorSelectedByUser, int duplicateRotor) {
+        //Decrement both to get their arraylist location
         rotorSelectedByUser--;
         duplicateRotor--;
 
-        int swappedSelection = rotorCombos.get(duplicateRotor).getSelectedIndex();
+        //Change the rotor selected by the user to be the duplicate rotor's value
+        rotorCombos.get(rotorSelectedByUser).setSelectedIndex(rotorCombos.get(duplicateRotor).getSelectedIndex());
 
+        //Set the duplicate rotor's value to the last value of the rotor the user just changed
         rotorCombos.get(duplicateRotor).setSelectedIndex(rotorSelectionHistory.get(rotorSelectedByUser));
-        rotorCombos.get(rotorSelectedByUser).setSelectedIndex(swappedSelection);
+
+//        //TODO - delete if no function change
+//        int swappedSelection = rotorCombos.get(duplicateRotor).getSelectedIndex();
+//
+//        rotorCombos.get(duplicateRotor).setSelectedIndex(rotorSelectionHistory.get(rotorSelectedByUser));
+//        rotorCombos.get(rotorSelectedByUser).setSelectedIndex(swappedSelection);
     }
 
+    /**
+     * Creates the top part of an individual plugboard key
+     *
+     * @param value - the integer value of the character it is to represent
+     * @return - The combined panel of a label and spacer
+     */
     public JPanel plugboardMiniPanel(int value) {
         JPanel temp = new JPanel();
 
+        //Layout the panel vertically
         temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
 
-        String label = "" + (char) (value + 65);
-
-        temp.add(centeredLabel(label));
+        //Create the centered label and spacer
+        temp.add(centeredLabel("" + ((char) (value + 65))));
         temp.add(standardSpacer());
 
         return temp;
     }
 
+    //TODO - reorder methods for grouping
+    /**
+     * Updates the selection history with each rotor's currently selected index
+     */
     public void updateSelectionHistory() {
         for (int i = 0; i < rotorSelectionHistory.size(); i++) {
             rotorSelectionHistory.set(i, rotorCombos.get(i).getSelectedIndex());
         }
     }
 
+    /**
+     * Pairs the second letter in the plugboard with the first inputted by the
+     * user
+     *
+     * @param location - the int value of the letter to be paired
+     * @param inputField - the character to pair it with
+     */
     public void pairLetters(int location, char inputField) {
         plugboardFields.get(location).setText("" + inputField);
     }
 
+    /**
+     * Erases the plugboard setting at the designated location
+     *
+     * @param location - the int value of the letter to be erased
+     */
     public void eraseLetter(int location) {
         plugboardFields.get(location).setText("");
     }
 
+    /**
+     * Deletes the pairing at of the designated letter at the passed location
+     *
+     * @param originalLocation - the field name of the letter to be deleted
+     */
     public void deletePairing(String originalLocation) {
+        //Parse the letter to delete from the fieldname
         originalLocation = originalLocation.replaceAll("Field", "");
 
+        //Iterate through all plugboardFields to find the one whose text matches the letter to delete and delete it
         for (int i = 0; i < plugboardFields.size(); i++) {
             if (plugboardFields.get(i).getText().equalsIgnoreCase(originalLocation)) {
                 eraseLetter(i);
@@ -507,15 +683,33 @@ public class BasicInputScreen
         }
     }
 
+    /**
+     * Checks to see if the plugboard location has more than one character. The
+     * reason for 1 being "multiple chars" is that the keylistener acts before
+     * the text is changed on the field. Thus, if the field is already populated
+     * when this check occurs, it was previously filled and adding a new
+     * character will create a multiple character situation
+     *
+     * @param location - the location to check
+     * @return - true if more than 0 chars, false if not
+     */
     public boolean locationHasMultipleChars(int location) {
         return (plugboardFields.get(location).getText().length() > 0);
     }
 
+    /**
+     * Erase the last letter in a textfield
+     *
+     * @param fieldtype - fieldtype to erase
+     * @param location - int value of the location that needs to be deleted
+     */
     public void eraseLastLetter(String fieldtype, int location) {
         String temp = "";
 
         switch (fieldtype) {
 
+            //Each case will get the substring of only the first character of the field
+            //It will then set that field to that substring
             case "plugboard":
                 temp = plugboardFields.get(location).getText();
                 temp = temp.substring(0, 0);
@@ -534,8 +728,19 @@ public class BasicInputScreen
         }
     }
 
+    /**
+     * Checks the plugboard for any fields that do not have an associated pair
+     * (lone stecker)
+     *
+     * @param ignoreLocation - the first location to ignore (the place the user
+     * just inputted a value)
+     * @param ignoreLocation2 - the second location to ignore (the pairing
+     * location with the user inputted value)
+     */
     public void checkForLoners(int ignoreLocation, int ignoreLocation2) {
-        for (int i = 0; i < VALID_CHARS; i++) {
+
+        //For each of the valid chars
+        for (int i = 0; i < BasicGUIController.VALID_CHARS; i++) {
 
             //If the letter was just typed and is to be ignored, then skip
             if (i != ignoreLocation && i != ignoreLocation2) {
@@ -551,9 +756,13 @@ public class BasicInputScreen
                     pairedLocation = (temp.charAt(0)) - 65;
                 }
 
-                //If the a;
+                //If the pairedLocaiton is valid
                 if (pairedLocation < 26 && pairedLocation >= 0) {
+
+                    //If the pairedLocation's text is not reciprocated in its pair
                     if (!plugboardFields.get(pairedLocation).getText().equalsIgnoreCase("" + ((char) (i + 65)))) {
+
+                        //Delete the checked original pair that is now childless
                         plugboardFields.get(i).setText("");
                     }
                 }
@@ -561,18 +770,33 @@ public class BasicInputScreen
         }
     }
 
+    /**
+     * Builds the plugboard setting string based on the current plugboard
+     * values. This is a hook for the controller to get the plugboard settings
+     *
+     * @return - the steckering pattern string of all plugboard pairs
+     */
     private String getPlugboardString() {
 
         String steckerBoardPattern = "";
 
+        //Create a temporary boolean array that tracks whether a position has been
+        //added to the plugboard string or not.  Each starts off as valid (true)
         boolean[] temp = new boolean[plugboardFields.size()];
         for (int i = 0; i < temp.length; i++) {
             temp[i] = true;
         }
 
+        //Iterates through each field
         for (int i = 0; i < plugboardFields.size(); i++) {
+            
+            //If the position hasn't been used as is not empty
             if (temp[i] && !plugboardFields.get(i).getText().isEmpty()) {
+                
+                //Then add the position's char value plus the char in its text field to the steckering pattern
                 steckerBoardPattern += "" + ((char) (i + 65)) + plugboardFields.get(i).getText() + " ";
+                
+                //Set the current position and its pair to false
                 temp[i] = false;
                 temp[plugboardFields.get(i).getText().charAt(0) - 65] = false;
             }
@@ -581,9 +805,17 @@ public class BasicInputScreen
         return steckerBoardPattern.trim();
     }
 
+    /**
+     * Returns the formatted number for allowing proper grammar in dynamically generated tooltips
+     * @param i - the number to format
+     * @return - formatted with its two characters e.g. "1st", "2nd", "3rd", "4th", etc
+     */
     private String getFormattedNumber(int i) {
         String end = "th";
 
+        //TODO - check for > 10 properly
+        //TODO - check for 11-13
+        
         switch (i) {
             case 1:
                 end = "st";
@@ -600,9 +832,20 @@ public class BasicInputScreen
         return (i + end);
     }
 
+    /**
+     * Creates a standardized rotor panel.  Allows for dynamic number of rotors
+     * @param i - The number of the rotor panel being added
+     * @return - The full rotor panel
+     */
+    
+    //TODO - move method
     private JPanel standardRotorPanel(int i) {
         JPanel temp = new JPanel();
+        
+        //Layout the panel vertically
         temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
+        
+        //Create a label and add each field in kind
         temp.add(centeredLabel("Rotor " + (i + 1)));
         temp.add(standardSpacer());
         temp.add(rotorCombos.get(i));
@@ -614,50 +857,80 @@ public class BasicInputScreen
         return temp;
     }
 
+    /**
+     * Saves the currently configured key settings for recall
+     */
+    
+    //TODO - break off into own class?
     public void saveCurrentKeySettings() {
         savedKeySettings = new String[rotorCombos.size() * 3 + 2];
 
         int j = 0;
 
+        //Stores the combo selections
         for (int i = 0; i < rotorCombos.size(); i++) {
             savedKeySettings[j] = "" + rotorCombos.get(i).getSelectedIndex();
             j++;
         }
 
+        //Stores the label values
         for (int i = 0; i < labelFields.size(); i++) {
             savedKeySettings[j] = labelFields.get(i).getText();
             j++;
         }
 
+        //Stores the key values
         for (int i = 0; i < keyFields.size(); i++) {
             savedKeySettings[j] = keyFields.get(i).getText();
             j++;
         }
 
+        //Stores the reflector selection
         savedKeySettings[j] = "" + reflector.getSelectedIndex();
         j++;
 
+        //Stores the plugboard setting
         savedKeySettings[j] = getPlugboardString();
     }
 
+    /**
+     * Reloads the saved key settings
+     */
     public void useSavedKeySettings() {
         loadKeySetting(savedKeySettings);
     }
 
+    /**
+     * Loads the passed key settings into the current key settings
+     * @param settings - the settings to configure
+     */
+    //TODO - move method
     private void loadKeySetting(String[] settings) {
+        
+        //If the settings are valid
         if (settings != null) {
 
+            //Set the combo, label, key and reflector fields
             resetToDefault(settings);
+            
+            //Extract the plugboard setting
+            //TODO - create constand for each value location?
             String plugboardSetting = settings[settings.length - 1];
 
+            //Split the plugboard settings into pairs
             String[] temp = plugboardSetting.split(" ");
 
+            //If the plugboard string wasn't empty
             if (!plugboardSetting.equalsIgnoreCase("")) {
 
+                //For each pair
                 for (int i = 0; i < temp.length; i++) {
+                    
+                    //Get the locations of each char's field
                     int start = temp[i].charAt(0) - 65;
                     int end = temp[i].charAt(1) - 65;
 
+                    //Set each field to be paired with the other
                     plugboardFields.get(start).setText("" + temp[i].charAt(1));
                     plugboardFields.get(end).setText("" + temp[i].charAt(0));
                 }
@@ -665,11 +938,21 @@ public class BasicInputScreen
         }
     }
 
+    /**
+     * Keys the GUI to the passed string
+     * @param key - the passed settings key
+     */
+    
+    //TODO - combine with other methods to simplify code
+    //TODO - break out into class that deals with settings
     public void keyGUI(String[] key) {
+        
+        //Get rotor count
         int count = (key.length - 2) / 3;
         int k = 0;
         String[] temp = new String[count];
 
+        //For each rotor, check to see what index is associated with the passed rotor name
         for (int i = count - 1; i >= 0; i--) {
             for (int j = 0; j < rotorCombos.get(0).getItemCount(); j++) {
                 if (key[i].equalsIgnoreCase("" + rotorCombos.get(0).getItemAt(j))) {
@@ -679,16 +962,19 @@ public class BasicInputScreen
             }
         }
 
+        //For the reflector, check to see what index is associated with the passed reflector name
         for (int i = 0; i < reflector.getItemCount(); i++) {
             if (key[key.length - 2].equalsIgnoreCase("" + reflector.getItemAt(i))) {
                 key[key.length - 2] = i + "";
             }
         }
 
+        //Store the temp values to the key
         for (int i = 0; i < count; i++) {
             key[i] = temp[i];
         }
 
+        //Load the passed settings
         loadKeySetting(key);
     }
 }
