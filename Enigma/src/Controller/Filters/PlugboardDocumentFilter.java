@@ -21,9 +21,13 @@ public class PlugboardDocumentFilter extends DocumentFilter {
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+        //Force uppercase
         text = text.toUpperCase();
+        
+        //Destroy all non-alphabetic characters
         text = text.replaceAll("[^a-zA-Z]", "");
         
+        //Call super method
         fb.replace(offset, length, text, attrs);
     }
 

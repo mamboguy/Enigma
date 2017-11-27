@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import java.awt.event.ActionEvent;
@@ -30,11 +25,22 @@ public class BasicGUIMenuController
     public void actionPerformed(ActionEvent e) {
         String name = ((JMenuItem) e.getSource()).getName();
 
+        //Create a new file chooser
+        JFileChooser fc = new JFileChooser();
+        
+        //Create a file filter for enigma key files (.ekf)
+        //Currently, file is encoded/decoded as simple txt file
+        FileNameExtensionFilter myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
+        
+        //Apply the filter
+        fc.setFileFilter(myFilter);
+
         switch (name) {
             case "menu_Exit":
 
                 String[] options = new String[]{"Exit", "Cancel"};
 
+                //Confirm if the user would like to exit
                 if (JOptionPane.showOptionDialog(null,
                         "Are you sure you want to exit?",
                         "Exit confirmation",
@@ -47,31 +53,19 @@ public class BasicGUIMenuController
                 }
                 break;
             case "menu_SaveKey":
-
-                JFileChooser fc = new JFileChooser();
-
-                FileNameExtensionFilter myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
-                fc.setFileFilter(myFilter); 
-
+                
+                //Open the file chooser dialog option
                 if (fc.showSaveDialog(fc) == JFileChooser.APPROVE_OPTION) {
-                    if (!fc.getSelectedFile().toString().contains(".ekf")) {
-                        fc.getSelectedFile();
-                    }
+                    //If a valid file is chosen, tell the master controller to save the file
                     parent.saveKeyFile(fc.getSelectedFile());
                 }
 
                 break;
             case "menu_OpenKey":
 
-                fc = new JFileChooser();
-
-                myFilter = new FileNameExtensionFilter("Enigma Key Files", "ekf");
-                fc.setFileFilter(myFilter);
-
+                //Open the file chooser dialog option
                 if (fc.showOpenDialog(fc) == JFileChooser.APPROVE_OPTION) {
-                    if (!fc.getSelectedFile().toString().contains(".ekf")) {
-                        fc.getSelectedFile();
-                    }
+                    //If a valid file is chosen, tell the master controller to open the file
                     parent.openKeyFile(fc.getSelectedFile());
                 }
 

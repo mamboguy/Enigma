@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Model.Reflectors;
 
 import java.io.File;
@@ -19,12 +14,13 @@ public class ReflectorFileReader {
     private static final String REFLECTOR_SOURCE_PATH = "src/Model/Reflectors/historical_reflectors.txt";
     
     public static ArrayList<Reflector> readReflectorFile(String path){
-    //TODO - Remove me when implement reading other files
+        //TODO - Remove me when implement reading other files
         path = REFLECTOR_SOURCE_PATH;
 
         ArrayList<Reflector> reflectorList = new ArrayList();
 
         try {
+            //Create a new scanner from the reflector file
             Scanner s = new Scanner(new File(path));
 
             String line;
