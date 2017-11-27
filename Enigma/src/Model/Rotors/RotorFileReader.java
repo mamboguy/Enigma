@@ -20,6 +20,7 @@ public class RotorFileReader {
         ArrayList<Rotor> rotorList = new ArrayList();
 
         try {
+            //Create a scanner from the rotor file
             Scanner s = new Scanner(new File(path));
 
             String line;

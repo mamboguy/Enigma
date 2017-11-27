@@ -1,5 +1,6 @@
 package Model.Rotors;
 
+import Model.Enigma.Enigma;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,7 @@ public class Rotor {
 //		- More than 26 pins (a-z,A-Z,0-9,!@#$%^&*(){}?+][=/\|-_',." <>:; etc)
 //		- Save custom rotors to file
 //		- Import custom rotors
-//TODO - Generate key sheet
+//TODO - Generate random key sheet
     //<editor-fold desc="Constants">
     public static final int KRIEGSMARINE = 0;
     public static final int LUFTWAFFE = 1;
@@ -63,26 +64,8 @@ public class Rotor {
     //Detailed rotor constructor
     public Rotor(String rotorName, String wiringSequence, String notchLocation, int usage, char labelPosition, char keyPosition) {
 
-        //Initialize usage to all false
-        this.usage = new boolean[3];
-        for (int i = 0; i < this.usage.length; i++) {
-            this.usage[i] = false;
-        }
-
-        //Set usage flags
-        if (usage >= 100) {
-            this.usage[KRIEGSMARINE] = true;
-            usage -= 100;
-        }
-
-        if (usage >= 10) {
-            this.usage[LUFTWAFFE] = true;
-            usage -= 10;
-        }
-
-        if (usage == 1) {
-            this.usage[WEHRMACHT] = true;
-        }
+        //Get usage flags
+        this.usage = Enigma.getUsageStats(usage);
 
         //Assign basic attributes of rotor
         this.rotorName = rotorName;

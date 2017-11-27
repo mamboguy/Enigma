@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Model.Reflectors;
 
-import Model.Rotors.Rotor;
+import Model.Enigma.Enigma;
 
 /**
  * Date Created Nov 18, 2017
@@ -14,47 +9,52 @@ import Model.Rotors.Rotor;
  */
 public class Reflector {
 
+    //Name of the rotor
     private final String name;
-    private final String wiringSequence;
-    private boolean[] usage = new boolean[3]; //Kriegsmarine, Luftwaffe, Wehrmacht
 
+    //The reflector's wiring sequence
+    private final String wiringSequence;
+
+    //Kriegsmarine, Luftwaffe, Wehrmacht
+    private boolean[] usage = new boolean[3];
+
+    /**
+     * Constructor for reflectors
+     * @param name - The reflector's name
+     * @param wiringSequence - The reflector's wiring sequence
+     * @param usage - what services the reflector was used by
+     */
     public Reflector(String name, String wiringSequence, int usage) {
+        
+        //Set the name and wiring sequence
         this.name = name;
         this.wiringSequence = wiringSequence;
 
-        //Initialize usage to all false
-        for (int i = 0; i < this.usage.length; i++) {
-            this.usage[i] = false;
-        }
-
-        //Set usage flags
-        if (usage >= 100) {
-            this.usage[Rotor.KRIEGSMARINE] = true;
-            usage -= 100;
-        }
-
-        if (usage >= 10) {
-            this.usage[Rotor.LUFTWAFFE] = true;
-            usage -= 10;
-        }
-
-        if (usage == 1) {
-            this.usage[Rotor.WEHRMACHT] = true;
-        }
+        //Get the usage flags
+        this.usage = Enigma.getUsageStats(usage);
     }
-    
-    public int getReflection(int input){
+
+    /**
+     * Returns the reflected output pin for a given input pin
+     * @param input - the input pin
+     * @return - the reflected output pin
+     */
+    public int getReflection(int input) {
         return (wiringSequence.charAt(input) - 65);
     }
 
+    /**
+     * Gets the reflector's name
+     * @return - the reflector name
+     */
     public String getReflectorName() {
         return name;
     }
 
     @Override
     public String toString() {
-        return "Reflector{" + "name=" + name + ", wiringSequence= " + wiringSequence +
-               ", Kriegsmarine " + usage[0] + ", Luftwaffe = " + usage[1] + 
-               ", Wehrmacht = " + usage[2] + "}";
+        return "Reflector{" + "name=" + name + ", wiringSequence= " + wiringSequence
+                + ", Kriegsmarine " + usage[0] + ", Luftwaffe = " + usage[1]
+                + ", Wehrmacht = " + usage[2] + "}";
     }
 }

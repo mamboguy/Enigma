@@ -37,6 +37,7 @@ public class Enigma {
 
     private Reflector reflector;
 
+    //todo - remove upon conversion to arraylist
     //Tracks whether fourth rotor is used
     private boolean fourthRotorUsed;
     //</editor-fold>
@@ -47,15 +48,26 @@ public class Enigma {
         reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
         plugboard = new Plugboard();
 
+        //Initialize rotors with first three historical rotors
         rotor3 = rotorsAvailable.get(0);
         rotor2 = rotorsAvailable.get(1);
         rotor1 = rotorsAvailable.get(2);
+
+        //Initialize to UKW-B
         reflector = reflectorsAvailable.get(1);
     }
 
+    /**
+     * Used to populate the GUI's combo boxes with all available options for
+     * rotors
+     *
+     * @return - The list of rotor names
+     */
     public String[] getRotorsAvailable() {
+        //Holder for the rotor names
         String[] temp = new String[rotorsAvailable.size()];
 
+        //Get all the available rotor names
         for (int i = 0; i < rotorsAvailable.size(); i++) {
             temp[i] = rotorsAvailable.get(i).getRotorName();
         }
@@ -63,9 +75,17 @@ public class Enigma {
         return temp;
     }
 
+    /**
+     * Used to populate the GUI's combo box with all available options for
+     * reflectors
+     *
+     * @return - The list of reflector names
+     */
     public String[] getReflectorsAvailable() {
+        //Holder for the reflector names
         String[] temp = new String[reflectorsAvailable.size()];
 
+        //Get all the available reflector names
         for (int i = 0; i < reflectorsAvailable.size(); i++) {
             temp[i] = reflectorsAvailable.get(i).getReflectorName();
         }
@@ -75,6 +95,7 @@ public class Enigma {
 
     public void stepMachine() {
 
+        //Todo - rework for conversion to arraylist
         if (rotor3.willStepNextUse()) {
             if (fourthRotorUsed) {
                 rotor4.stepRotor();
@@ -88,43 +109,66 @@ public class Enigma {
         }
 
         rotor1.stepRotor();
-        printRotorKeyPositions();
     }
 
+    /**
+     * Encodes messages into ciphertext
+     *
+     * @param message - plaintext message to encode
+     * @return - ciphertext of plaintext message
+     */
     public String inputMessage(String message) {
 
+        //Sanitize the message input
         message = sanitizeInput(message);
 
         String plain = "";
         String cipher = "";
 
-        printKeySettings();
-
+        //Print out the key settings onto the console
+        //printKeySettings();
+        //Run through the entire message, one char at a time
         for (int i = 0; i < message.length(); i++) {
+            //If the message is at its spacing requirement, add in a space
             if (i % MESSAGE_SPACING == 0) {
                 plain += " ";
                 cipher += " ";
             }
+            //Add plaintext char to the plaintext string
             plain += message.charAt(i);
+
+            //Add encoded char to the ciphertext string
             cipher += inputCharacter(message.charAt(i));
         }
 
-        System.out.println("_____________________________________________");
-        System.out.println("Input text:  " + plain.trim());
-        System.out.println("Output text: " + cipher.trim());
-        System.out.println("_____________________________________________");
-        System.out.println("");
-
+        //Print out plaintext and ciphertext to the console
+//        System.out.println("_____________________________________________");
+//        System.out.println("Input text:  " + plain.trim());
+//        System.out.println("Output text: " + cipher.trim());
+//        System.out.println("_____________________________________________");
+//        System.out.println("");
+        //Return the ciphertext
         return cipher.trim();
     }
 
+    /**
+     * Takes a plaintext char and encodes it
+     *
+     * @param charInput - plaintext char
+     * @return - ciphered char
+     */
     private char inputCharacter(char charInput) {
 
+        //Run the char through the plugboard first
         charInput = plugboard.getPairedLetter(charInput);
+
+        //Convert the plugboard output into a pin input
         int input = charInput - 65;
 
+        //Step the machine
         stepMachine();
 
+        //todo - rework for conversion to arraylist
         input = rotor1.getLeftOutput(input);
         input = rotor2.getLeftOutput(input);
         input = rotor3.getLeftOutput(input);
@@ -143,6 +187,7 @@ public class Enigma {
         input = rotor2.getRightOutput(input);
         input = rotor1.getRightCharOutput(input);
 
+        //Run the final rotor output through the plugboard
         charInput = plugboard.getPairedLetter((char) input);
 
         return (charInput);
@@ -151,8 +196,10 @@ public class Enigma {
     //<editor-fold desc="Adjust settings methods">
     public void changeLabels(String labelPositions) {
 
+        //Sanitize the label input
         labelPositions = sanitizeInput(labelPositions);
 
+        //Todo - rework for conversion to arraylist
         if (fourthRotorUsed && labelPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
@@ -194,6 +241,7 @@ public class Enigma {
         String rotors[] = rotorNames.split(" ");
 
         //TODO - Implement checking of type/usage
+        //Todo - rework for conversion to arraylist
         switch (rotors.length) {
             case 4:
                 fourthRotorUsed = true;
@@ -234,8 +282,10 @@ public class Enigma {
 
     public void changeRotorStart(String rotorKeyPositions) {
 
+        //Sanitize key input
         rotorKeyPositions = sanitizeInput(rotorKeyPositions);
 
+        //todo - rework for conversion to arraylist
         if (fourthRotorUsed && rotorKeyPositions.length() != 4) {
             //TODO - IMPLEMENT ERROR?
             throw new UnsupportedOperationException();
@@ -256,21 +306,39 @@ public class Enigma {
         }
     }
 
+    /**
+     * Changes the reflector used by the enigma based on the passed input
+     *
+     * @param reflectorName - Name of the new reflector to use
+     */
     public void changeReflector(String reflectorName) {
+        //Sanitize reflector input
         reflectorName = sanitizeInput(reflectorName);
 
+        //for all available reflectors
         for (int i = 0; i < reflectorsAvailable.size(); i++) {
+
+            //if the passed reflector name equals the currently iterated reflector
             if (reflectorName.equalsIgnoreCase(reflectorsAvailable.get(i).getReflectorName())) {
+
+                //Set the used reflector to the new reflector
                 reflector = reflectorsAvailable.get(i);
             }
         }
     }
 
-    public void steckerPairs(String steckeredPairs) {
+    /**
+     * Steckers the plugboard based off the passed input
+     *
+     * @param steckeredPairs - String of letter pairs. Formatted "AB CD EF" etc
+     */
+    public void steckerPattern(String steckeredPairs) {
+        //Sanitize input for pattern
         steckeredPairs = sanitizeInput(steckeredPairs);
 
         String temp = "";
 
+        //For the entire pair, re-add the space sanitized earlier
         for (int i = 0; i < steckeredPairs.length(); i++) {
             if (i % 2 == 0) {
                 temp += " ";
@@ -278,63 +346,29 @@ public class Enigma {
             temp += steckeredPairs.charAt(i);
         }
 
+        //Tell the plugboard to stecker the entire string
         plugboard.steckerPattern(temp);
     }
     //</editor-fold>
 
-    //<editor-fold desc="Print methods">
-    private void printKeySettings() {
-        String rotorString = rotor3.getRotorName() + " " + rotor2.getRotorName() + " " + rotor1.getRotorName();
-        String rotorLabels = "" + rotor3.getLabelPosition() + rotor2.getLabelPosition() + rotor1.getLabelPosition();
-        String rotorKeyPositions = "" + rotor3.getKeyPosition() + rotor2.getKeyPosition() + rotor1.getKeyPosition();
-
-        if (fourthRotorUsed) {
-            rotorString = rotor4.getRotorName() + " " + rotorString;
-            rotorLabels = rotor4.getLabelPosition() + rotorLabels;
-            rotorKeyPositions = rotor4.getKeyPosition() + rotorKeyPositions;
-        }
-
-        System.out.println("_____________________________________________");
-        System.out.println("_____________________________________________");
-        System.out.println("KEY SETTINGS: ");
-        System.out.println("Reflector: " + reflector.getReflectorName());
-        System.out.println("Rotors: " + rotorString);
-        System.out.println("Label Positions: " + rotorLabels);
-        System.out.println("Plugboard Settings: " + plugboard.toString());
-        System.out.println("Key Positions: " + rotorKeyPositions);
-
-    }
-
-    public void printRotorKeyPositions() {
-        String rotorKeyPositions = "" + rotor3.getKeyPosition() + rotor2.getKeyPosition() + rotor1.getKeyPosition();
-
-        if (fourthRotorUsed) {
-            rotorKeyPositions = rotor4.getKeyPosition() + rotorKeyPositions;
-        }
-    }
-
-    public void printAvailableRotorStats() {
-        for (int i = 0; i < rotorsAvailable.size(); i++) {
-            System.out.println("Rotor " + i + " = " + rotorsAvailable.get(i));
-        }
-    }
-
-    public void printAvailableReflectorStats() {
-        for (int i = 0; i < reflectorsAvailable.size(); i++) {
-            System.out.println("Reflector " + i + " = " + reflectorsAvailable.get(i));
-        }
-    }
-    //</editor-fold>
-
+    /**
+     * Sanitizes the inputs for each of the enigma inputs
+     *
+     * @param temp - the string to sanitize
+     * @return
+     */
     private String sanitizeInput(String temp) {
+        //Force uppercase and remove all spaces
         temp = temp.toUpperCase();
         temp = temp.replaceAll(" ", "");
 
         return temp;
     }
 
+    //todo - put settings reading/writing into own class
     public void setSettings(String[] settings) {
 
+        //todo - put settings reading/writing into own class
         String rotors = "";
         String labels = "";
         String keys = "";
@@ -360,13 +394,12 @@ public class Enigma {
         }
 
         System.out.println("rotors = " + rotors);
-        System.out.println("reflector = " + settings[rotorCount*3]);
-        System.out.println("stecker pattern = " + settings[rotorCount*3+1]);
+        System.out.println("reflector = " + settings[rotorCount * 3]);
+        System.out.println("stecker pattern = " + settings[rotorCount * 3 + 1]);
         System.out.println("labels = " + labels);
         System.out.println("keys = " + keys);
-        
+
         //TODO - Fix for if GUI adds rotor then enigma adds rotor
-        
         this.changeRotors(rotors);
         this.changeReflector(settings[rotorCount * 3]);
         this.plugboard.steckerPattern(settings[rotorCount * 3 + 1]);
@@ -374,7 +407,14 @@ public class Enigma {
         this.changeRotorStart(keys);
     }
 
+    /**
+     * Get all the key positions for the current selection of rotors on the
+     * enigma
+     *
+     * @return - the string array of all the rotor's key positions
+     */
     public String[] getCurrentKeyPositions() {
+        //todo - rework for conversion to arraylist
         String rotorKeyPositions = rotor3.getKeyPosition() + " " + rotor2.getKeyPosition() + " " + rotor1.getKeyPosition();
 
         if (fourthRotorUsed) {
@@ -383,6 +423,33 @@ public class Enigma {
 
         String[] temp = rotorKeyPositions.split(" ");
 
+        return temp;
+    }
+
+    public static boolean[] getUsageStats(int usage) {
+       
+        boolean[] temp = new boolean[3];
+       
+        //Initialize usage to all false
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = false;
+        }
+
+        //Set usage flags
+        if (usage >= 100) {
+            temp[Rotor.KRIEGSMARINE] = true;
+            usage -= 100;
+        }
+
+        if (usage >= 10) {
+            temp[Rotor.LUFTWAFFE] = true;
+            usage -= 10;
+        }
+
+        if (usage == 1) {
+            temp[Rotor.WEHRMACHT] = true;
+        }
+        
         return temp;
     }
 }
