@@ -28,30 +28,20 @@ public class Enigma {
     private ArrayList<Rotor> rotorsUsed;
     private Plugboard plugboard;
 
-    //Rotor order from left to right is: 4, 3, 2, 1
-    //TODO - Convert to arraylist
-    private Rotor rotor4;
-    private Rotor rotor3;
-    private Rotor rotor2;
-    private Rotor rotor1;
-
     private Reflector reflector;
 
-    //todo - remove upon conversion to arraylist
-    //Tracks whether fourth rotor is used
-    private boolean fourthRotorUsed;
     //</editor-fold>
-
     public Enigma() {
         //TODO - Fix path
         rotorsAvailable = RotorFileReader.readRotorFile("TODO - fix path");
         reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
+        rotorsUsed = new ArrayList<Rotor>();
         plugboard = new Plugboard();
 
-        //Initialize rotors with first three historical rotors
-        rotor3 = rotorsAvailable.get(0);
-        rotor2 = rotorsAvailable.get(1);
-        rotor1 = rotorsAvailable.get(2);
+        //Initialize rotors with first three historical rotors (in left->right order: I II III)
+        rotorsUsed.add(rotorsAvailable.get(2));
+        rotorsUsed.add(rotorsAvailable.get(1));
+        rotorsUsed.add(rotorsAvailable.get(0));
 
         //Initialize to UKW-B
         reflector = reflectorsAvailable.get(1);
@@ -94,27 +84,29 @@ public class Enigma {
     }
 
     public void stepMachine() {
+        //Always step the right-most rotor
+        boolean stepNext = rotorsUsed.get(0).stepRotor();
 
-        //Todo - rework for conversion to arraylist
-        if (rotor3.willStepNextUse()) {
-            if (fourthRotorUsed) {
-                rotor4.stepRotor();
-                rotor3.stepRotor();
+        //Starting at the 2nd from the right rotor, move to each rotor from right to left
+        for (int i = 1; i < rotorsUsed.size(); i++) {
+
+            //If the current rotor will step on the next use (this use) or if the last rotor stepped
+            if (rotorsUsed.get(i).willStepNextUse() || stepNext) {
+
+                //Check to see if the next rotor should step based off this rotor config
+                stepNext = rotorsUsed.get(i).willStepNextUse();
+
+                //Step the current rotor
+                rotorsUsed.get(i).stepRotor();
             }
-        } else if (rotor2.willStepNextUse()) {
-            rotor3.stepRotor();
-            rotor2.stepRotor();
-        } else if (rotor1.willStepNextUse()) {
-            rotor2.stepRotor();
         }
-
-        rotor1.stepRotor();
     }
 
     /**
      * Encodes messages into ciphertext
      *
      * @param message - plaintext message to encode
+     *
      * @return - ciphertext of plaintext message
      */
     public String inputMessage(String message) {
@@ -142,11 +134,12 @@ public class Enigma {
         }
 
         //Print out plaintext and ciphertext to the console
-//        System.out.println("_____________________________________________");
-//        System.out.println("Input text:  " + plain.trim());
-//        System.out.println("Output text: " + cipher.trim());
-//        System.out.println("_____________________________________________");
-//        System.out.println("");
+        System.out.println("_____________________________________________");
+        System.out.println("Input text:  " + plain.trim());
+        System.out.println("Output text: " + cipher.trim());
+        System.out.println("_____________________________________________");
+        System.out.println("");
+
         //Return the ciphertext
         return cipher.trim();
     }
@@ -155,6 +148,7 @@ public class Enigma {
      * Takes a plaintext char and encodes it
      *
      * @param charInput - plaintext char
+     *
      * @return - ciphered char
      */
     private char inputCharacter(char charInput) {
@@ -168,27 +162,23 @@ public class Enigma {
         //Step the machine
         stepMachine();
 
-        //todo - rework for conversion to arraylist
-        input = rotor1.getLeftOutput(input);
-        input = rotor2.getLeftOutput(input);
-        input = rotor3.getLeftOutput(input);
-
-        if (fourthRotorUsed) {
-            input = rotor4.getLeftOutput(input);
+        //Step through the rotors from right to left presenting the last rotors
+        //output as the next rotor's input
+        for (int i = 0; i < rotorsUsed.size(); i++) {
+            input = rotorsUsed.get(i).getLeftOutput(input);
         }
 
+        //Reflect the last rotors output
         input = reflector.getReflection(input);
 
-        if (fourthRotorUsed) {
-            input = rotor4.getRightOutput(input);
+        //Step through the rotors from right to left presenting the last rotor's
+        //output as the next rotor's input
+        for (int i = rotorsUsed.size() - 1; i >= 0; i--) {
+            input = rotorsUsed.get(i).getRightOutput(input);
         }
 
-        input = rotor3.getRightOutput(input);
-        input = rotor2.getRightOutput(input);
-        input = rotor1.getRightCharOutput(input);
-
         //Run the final rotor output through the plugboard
-        charInput = plugboard.getPairedLetter((char) input);
+        charInput = plugboard.getPairedLetter((char) (input + 65));
 
         return (charInput);
     }
@@ -199,84 +189,54 @@ public class Enigma {
         //Sanitize the label input
         labelPositions = sanitizeInput(labelPositions);
 
-        //Todo - rework for conversion to arraylist
-        if (fourthRotorUsed && labelPositions.length() != 4) {
-            //TODO - IMPLEMENT ERROR?
-            throw new UnsupportedOperationException();
-        } else if (!fourthRotorUsed && labelPositions.length() != 3) {
-            //TODO - IMPLEMENT ERROR?
-            throw new UnsupportedOperationException();
+        //If the label string is not equal in length to the number of rotors used
+        if (labelPositions.length() != rotorsUsed.size()) {
+
+            //Throw exception
+            throw new UnsupportedOperationException("Label length does not equal number of rotors used");
         } else {
 
-            int i = 0;
+            //Otherwise, start counting at the last character in the string
+            int j = labelPositions.length() - 1;
 
-            if (fourthRotorUsed) {
-
-                if (rotor4.getLabelPosition() == labelPositions.charAt(0)) {
-                    rotor4.setLabelPosition(labelPositions.charAt(0));
+            //For each rotor, set its label based on the string
+            for (int i = 0; i < rotorsUsed.size(); i++) {
+                System.out.println("rotorsUsed.get(" + i + ").getLabelPosition = " + rotorsUsed.get(i).getLabelPosition());
+                System.out.println("labelpositions.charAt(" + j + ") = " + labelPositions.charAt(j));
+                if (rotorsUsed.get(i).getLabelPosition() != labelPositions.charAt(j)) {
+                    rotorsUsed.get(i).setLabelPosition(labelPositions.charAt(j));
                 }
-
-                i = 1;
-            }
-
-            if (rotor3.getLabelPosition() != labelPositions.charAt(i)) {
-                rotor3.setLabelPosition(labelPositions.charAt(i));
-            }
-            i++;
-
-            if (rotor2.getLabelPosition() != labelPositions.charAt(i)) {
-                rotor2.setLabelPosition(labelPositions.charAt(i));
-            }
-            i++;
-
-            if (rotor1.getLabelPosition() != labelPositions.charAt(i)) {
-                rotor1.setLabelPosition(labelPositions.charAt(i));
+                
+                j--;
             }
         }
     }
 
     public void changeRotors(String rotorNames) {
+        //Can't sanitize due to similar names of historical rotors
         rotorNames = rotorNames.toUpperCase();
 
+        //Split along spacing
         String rotors[] = rotorNames.split(" ");
 
         //TODO - Implement checking of type/usage
-        //Todo - rework for conversion to arraylist
-        switch (rotors.length) {
-            case 4:
-                fourthRotorUsed = true;
+        int k = rotors.length;
 
-                for (int i = 0; i < rotorsAvailable.size(); i++) {
-                    if (rotors[0].equalsIgnoreCase(rotorsAvailable.get(i).getRotorName())) {
-                        rotor4 = rotorsAvailable.get(i);
-                    }
+        for (int i = 0; i < rotorNames.length(); i++) {
+
+            //Untested, but should add a new rotor to set if one is not available
+            if (i >= rotorsUsed.size()){
+                rotorsUsed.add(null);
+            }
+            
+            //Decrement to travel from right to left on array
+            k--;
+
+            for (int j = 0; j < rotorsAvailable.size(); j++) {
+                if (rotorsAvailable.get(j).getRotorName().equalsIgnoreCase(rotors[k])) {
+                    rotorsUsed.set(i, rotorsAvailable.get(j));
                 }
-            case 3:
-                for (int i = 0; i < rotors.length; i++) {
-
-                    for (int j = 0; j < rotorsAvailable.size(); j++) {
-
-                        if (rotors[i].equalsIgnoreCase(rotorsAvailable.get(j).getRotorName())) {
-
-                            switch (i) {
-                                case 0:
-                                    rotor3 = rotorsAvailable.get(j);
-                                    break;
-                                case 1:
-                                    rotor2 = rotorsAvailable.get(j);
-                                    break;
-                                case 2:
-                                    rotor1 = rotorsAvailable.get(j);
-                                    break;
-                            }
-
-                        }
-                    }
-                }
-
-                break;
-            default:
-                throw new UnsupportedOperationException("Too many/few rotors");
+            }
         }
     }
 
@@ -285,23 +245,14 @@ public class Enigma {
         //Sanitize key input
         rotorKeyPositions = sanitizeInput(rotorKeyPositions);
 
-        //todo - rework for conversion to arraylist
-        if (fourthRotorUsed && rotorKeyPositions.length() != 4) {
-            //TODO - IMPLEMENT ERROR?
-            throw new UnsupportedOperationException();
-        } else if (!fourthRotorUsed && rotorKeyPositions.length() != 3) {
-            //TODO - IMPLEMENT ERROR?
-            throw new UnsupportedOperationException();
+        int j = rotorKeyPositions.length() - 1;
+
+        if (rotorsUsed.size() != rotorKeyPositions.length()) {
+            throw new UnsupportedOperationException("Rotor key length does not match rotors used");
         } else {
-            if (fourthRotorUsed) {
-                rotor4.setKeyPosition(rotorKeyPositions.charAt(0));
-                rotor3.setKeyPosition(rotorKeyPositions.charAt(1));
-                rotor2.setKeyPosition(rotorKeyPositions.charAt(2));
-                rotor1.setKeyPosition(rotorKeyPositions.charAt(3));
-            } else {
-                rotor3.setKeyPosition(rotorKeyPositions.charAt(0));
-                rotor2.setKeyPosition(rotorKeyPositions.charAt(1));
-                rotor1.setKeyPosition(rotorKeyPositions.charAt(2));
+            for (int i = 0; i < rotorKeyPositions.length(); i++) {
+                rotorsUsed.get(i).setKeyPosition(rotorKeyPositions.charAt(j));
+                j--;
             }
         }
     }
@@ -355,6 +306,7 @@ public class Enigma {
      * Sanitizes the inputs for each of the enigma inputs
      *
      * @param temp - the string to sanitize
+     *
      * @return
      */
     private String sanitizeInput(String temp) {
@@ -399,7 +351,6 @@ public class Enigma {
         System.out.println("labels = " + labels);
         System.out.println("keys = " + keys);
 
-        //TODO - Fix for if GUI adds rotor then enigma adds rotor
         this.changeRotors(rotors);
         this.changeReflector(settings[rotorCount * 3]);
         this.plugboard.steckerPattern(settings[rotorCount * 3 + 1]);
@@ -414,22 +365,20 @@ public class Enigma {
      * @return - the string array of all the rotor's key positions
      */
     public String[] getCurrentKeyPositions() {
-        //todo - rework for conversion to arraylist
-        String rotorKeyPositions = rotor3.getKeyPosition() + " " + rotor2.getKeyPosition() + " " + rotor1.getKeyPosition();
 
-        if (fourthRotorUsed) {
-            rotorKeyPositions = rotor4.getKeyPosition() + " " + rotorKeyPositions;
+        String rotorKeyPositions = "";
+
+        for (int i = 0; i < rotorsUsed.size(); i++) {
+            rotorKeyPositions = rotorsUsed.get(i).getKeyPosition() + " " + rotorKeyPositions;
         }
 
-        String[] temp = rotorKeyPositions.split(" ");
-
-        return temp;
+        return rotorKeyPositions.split(" ");
     }
 
     public static boolean[] getUsageStats(int usage) {
-       
+
         boolean[] temp = new boolean[3];
-       
+
         //Initialize usage to all false
         for (int i = 0; i < temp.length; i++) {
             temp[i] = false;
@@ -449,7 +398,7 @@ public class Enigma {
         if (usage == 1) {
             temp[Rotor.WEHRMACHT] = true;
         }
-        
+
         return temp;
     }
 }
