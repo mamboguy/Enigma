@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Enigma {
 
     //<editor-fold desc="Constants">
-    private static final int MESSAGE_SPACING = 5;
+    private static final int MESSAGE_SPACING = 4;
     //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -27,7 +27,7 @@ public class Enigma {
     private ArrayList<Rotor> rotorsAvailable;
     private ArrayList<Rotor> rotorsUsed;
     private Plugboard plugboard;
-
+    
     private Reflector reflector;
 
     //</editor-fold>
@@ -61,7 +61,7 @@ public class Enigma {
         for (int i = 0; i < rotorsAvailable.size(); i++) {
             temp[i] = rotorsAvailable.get(i).getRotorName();
         }
-
+        
         return temp;
     }
 
@@ -79,10 +79,10 @@ public class Enigma {
         for (int i = 0; i < reflectorsAvailable.size(); i++) {
             temp[i] = reflectorsAvailable.get(i).getReflectorName();
         }
-
+        
         return temp;
     }
-
+    
     public void stepMachine() {
         //Always step the right-most rotor
         boolean stepNext = rotorsUsed.get(0).stepRotor();
@@ -113,7 +113,7 @@ public class Enigma {
 
         //Sanitize the message input
         message = sanitizeInput(message);
-
+        
         String plain = "";
         String cipher = "";
 
@@ -179,7 +179,7 @@ public class Enigma {
 
         //Run the final rotor output through the plugboard
         charInput = plugboard.getPairedLetter((char) (input + 65));
-
+        
         return (charInput);
     }
 
@@ -211,7 +211,7 @@ public class Enigma {
             }
         }
     }
-
+    
     public void changeRotors(String rotorNames) {
         //Can't sanitize due to similar names of historical rotors
         rotorNames = rotorNames.toUpperCase();
@@ -221,32 +221,40 @@ public class Enigma {
 
         //TODO - Implement checking of type/usage
         int k = rotors.length;
-
-        for (int i = 0; i < rotorNames.length(); i++) {
+        
+        for (int i = 0; i < rotors.length; i++) {
 
             //Untested, but should add a new rotor to set if one is not available
-            if (i >= rotorsUsed.size()){
+            if (i >= rotorsUsed.size()) {
                 rotorsUsed.add(null);
             }
-            
+
             //Decrement to travel from right to left on array
             k--;
+            
+            System.out.println("----------------------------------------");
+            System.out.println("----------------------------------------");
+            System.out.println("k = " + k);
+            System.out.println("i = " + i);
 
+            //TODO - Suspect that label changing is causing issues again, but unable to nail down
             for (int j = 0; j < rotorsAvailable.size(); j++) {
+                System.out.println("j = " + j);
                 if (rotorsAvailable.get(j).getRotorName().equalsIgnoreCase(rotors[k])) {
                     rotorsUsed.set(i, rotorsAvailable.get(j));
+                    j = rotorsAvailable.size();
                 }
             }
         }
     }
-
+    
     public void changeRotorStart(String rotorKeyPositions) {
 
         //Sanitize key input
         rotorKeyPositions = sanitizeInput(rotorKeyPositions);
-
+        
         int j = rotorKeyPositions.length() - 1;
-
+        
         if (rotorsUsed.size() != rotorKeyPositions.length()) {
             throw new UnsupportedOperationException("Rotor key length does not match rotors used");
         } else {
@@ -286,7 +294,7 @@ public class Enigma {
     public void steckerPattern(String steckeredPairs) {
         //Sanitize input for pattern
         steckeredPairs = sanitizeInput(steckeredPairs);
-
+        
         String temp = "";
 
         //For the entire pair, re-add the space sanitized earlier
@@ -313,7 +321,7 @@ public class Enigma {
         //Force uppercase and remove all spaces
         temp = temp.toUpperCase();
         temp = temp.replaceAll(" ", "");
-
+        
         return temp;
     }
 
@@ -324,33 +332,33 @@ public class Enigma {
         String rotors = "";
         String labels = "";
         String keys = "";
-
+        
         for (int i = 0; i < settings.length; i++) {
             System.out.println("Settings[" + i + "] = " + settings[i]);
         }
-
+        
         int rotorCount = (settings.length - 2) / 3;
-
+        
         for (int i = 0; i < rotorCount; i++) {
             rotors = settings[i] + " " + rotors;
         }
-
+        
         rotors = rotors.trim();
-
+        
         for (int i = rotorCount; i < rotorCount * 2; i++) {
             labels = settings[i] + labels;
         }
-
+        
         for (int i = rotorCount * 2; i < rotorCount * 3; i++) {
             keys = settings[i] + keys;
         }
-
+        
         System.out.println("rotors = " + rotors);
         System.out.println("reflector = " + settings[rotorCount * 3]);
         System.out.println("stecker pattern = " + settings[rotorCount * 3 + 1]);
         System.out.println("labels = " + labels);
         System.out.println("keys = " + keys);
-
+        
         this.changeRotors(rotors);
         this.changeReflector(settings[rotorCount * 3]);
         this.plugboard.steckerPattern(settings[rotorCount * 3 + 1]);
@@ -365,18 +373,18 @@ public class Enigma {
      * @return - the string array of all the rotor's key positions
      */
     public String[] getCurrentKeyPositions() {
-
+        
         String rotorKeyPositions = "";
-
+        
         for (int i = 0; i < rotorsUsed.size(); i++) {
             rotorKeyPositions = rotorsUsed.get(i).getKeyPosition() + " " + rotorKeyPositions;
         }
-
+        
         return rotorKeyPositions.split(" ");
     }
-
+    
     public static boolean[] getUsageStats(int usage) {
-
+        
         boolean[] temp = new boolean[3];
 
         //Initialize usage to all false
@@ -389,16 +397,16 @@ public class Enigma {
             temp[Rotor.KRIEGSMARINE] = true;
             usage -= 100;
         }
-
+        
         if (usage >= 10) {
             temp[Rotor.LUFTWAFFE] = true;
             usage -= 10;
         }
-
+        
         if (usage == 1) {
             temp[Rotor.WEHRMACHT] = true;
         }
-
+        
         return temp;
     }
 }
