@@ -5,15 +5,16 @@
  */
 package Controller;
 
+import Controller.BasicGUI.MenuController;
+import Controller.BasicGUI.ComboController;
 import Controller.File.EnigmaFileManipulation;
 import Model.Enigma.Enigma;
-import View.Basic.BasicInputScreen;
+import View.BasicGUI.BasicInputScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
@@ -23,7 +24,7 @@ import javax.swing.JTextField;
  */
 public class BasicGUIController
         implements ActionListener,
-        KeyListener {
+                   KeyListener {
 
     public static final int VALID_CHARS = 26;
 
@@ -32,23 +33,26 @@ public class BasicGUIController
     private Enigma model;
 
     //Sub-controllers
-    private BasicGUIMenuController menuController;
+    private MenuController menuController;
+    private ComboController comboController;
 
     public BasicGUIController() {
         //Initialize the model, view and any sub-controllers
         model = new Enigma();
         gui = new BasicInputScreen();
-        menuController = new BasicGUIMenuController(this);
+        menuController = new MenuController(this);
+        comboController = new ComboController(this);
 
         //Populate the combo boxes in the gui with the model's available rotors
-        gui.updateRotorCombos(model.getRotorsAvailable());
-        gui.updateReflectorCombos(model.getReflectorsAvailable());
+        gui.updateRotorComboList(model.getRotorsAvailable());
+        gui.updateReflectorComboList(model.getReflectorsAvailable());
 
         //Set the gui to its default state
-        gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
+        gui.resetToDefault();
 
         //Register all listeners to proper classes
         gui.registerMenuListeners(menuController);
+        gui.registerComboListeners(comboController);
         gui.registerListeners(this, this);
     }
 
@@ -58,40 +62,6 @@ public class BasicGUIController
         String sourceName = temp.getName();
 
         switch (sourceName) {
-
-            case "rotor1":
-            case "rotor2":
-            case "rotor3":
-            case "rotor4":
-                //todo - Split off into combo box controller
-                JComboBox rotor = (JComboBox) e.getSource();
-                String rotorName = (String) rotor.getName();
-
-                //Get the index of the rotor's duplicate location
-                int rotorDuplicateLocation = gui.isRotorAlreadySelected(rotor.getSelectedIndex());
-
-                //Get the name of the rotor at the duplicate location
-                String rotorComboBoxSelectedName = "rotor" + rotorDuplicateLocation;
-
-                //Parse the current rotor's location
-                int rotorCurrentlySelected = Integer.parseInt(rotorName.replaceAll("rotor", ""));
-
-                //If the rotor has a duplicate and it is not a duplicate with itself
-                if (rotorDuplicateLocation != 0 && !rotorComboBoxSelectedName.equalsIgnoreCase(sourceName)) {
-
-                    //If the rotor has focus (to prevent the duplicated rotor from hanging the program)
-                    if (rotor.hasFocus()) {
-
-                        //Swap the current rotor with its duplicate
-                        gui.swapRotorCombos(rotorCurrentlySelected, rotorDuplicateLocation);
-                    }
-                }
-
-                //Update all rotors selection history
-                gui.updateSelectionHistory();
-
-                break;
-
             case "encodeButton":
                 //Set the enigma model to mirror the current GUI configuration
                 model.setSettings(gui.getCurrentKeySettings());
@@ -107,7 +77,7 @@ public class BasicGUIController
             case "resetButton":
 
                 //Reset the gui to the default settings
-                gui.resetToDefault(BasicInputScreen.DEFAULT_SETTINGS);
+                gui.resetToDefault();
 
                 //todo - remove if no effect
                 //model.setSettings(gui.getCurrentKeySettings());
@@ -121,6 +91,10 @@ public class BasicGUIController
 
                 //Restore the temporarily stored key
                 gui.useSavedKeySettings();
+                break;
+
+            case "randomizeButton":
+                gui.randomizeGUI();
                 break;
             default:
                 break;
@@ -215,11 +189,25 @@ public class BasicGUIController
         EnigmaFileManipulation.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
     }
 
-    void openKeyFile(File selectedFile) {
+    public void openKeyFile(File selectedFile) {
         //Extract the key settings from the selected file
         String[] key = EnigmaFileManipulation.openKeyFile(selectedFile);
 
         //Key the GUI to the extracted key
         gui.keyGUI(key);
+    }
+
+    public void swapRotorCombos(int rotorCurrentlySelected, int rotorDuplicateLocation) {
+        //Swaps the two rotor's selections
+        gui.swapRotorCombos(rotorCurrentlySelected, rotorDuplicateLocation);
+    }
+
+    public void updateSelectionHistory() {
+        //Update all rotors selection history
+        gui.updateSelectionHistory();
+    }
+
+    public int isRotorAlreadySelected(int selectedIndex) {
+        return gui.isRotorAlreadySelected(selectedIndex);
     }
 }
