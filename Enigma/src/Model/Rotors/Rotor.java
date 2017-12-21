@@ -86,7 +86,6 @@ public class Rotor {
         this.currentKeyPosition = keyPosition;
 
         //If the rotor is started on its notch key, then set it to step next time it is used
-        //TODO - Adjust for second notch
         for (int i = 0; i < this.notchLocation.size(); i++) {
             if (this.notchLocation.get(i) == this.currentKeyPosition) {
                 this.stepNext = true;
@@ -179,7 +178,6 @@ public class Rotor {
         return temp;
     }
 
-//TODO - change variable names
     /**
      *
      * return - character at the output position on the right side of the rotor
