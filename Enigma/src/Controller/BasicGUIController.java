@@ -8,6 +8,7 @@ package Controller;
 import Controller.BasicGUI.MenuController;
 import Controller.BasicGUI.ComboController;
 import Controller.File.EnigmaFileManipulation;
+import Controller.SubFrames.RandomSettingsController;
 import Model.Enigma.Enigma;
 import View.BasicGUI.BasicInputScreen;
 import java.awt.event.ActionEvent;
@@ -35,6 +36,7 @@ public class BasicGUIController
     //Sub-controllers
     private MenuController menuController;
     private ComboController comboController;
+    private RandomSettingsController randomSettingsController;
 
     public BasicGUIController() {
         //Initialize the model, view and any sub-controllers
@@ -42,6 +44,7 @@ public class BasicGUIController
         gui = new BasicInputScreen();
         menuController = new MenuController(this);
         comboController = new ComboController(this);
+        randomSettingsController = new RandomSettingsController(this);
 
         //Populate the combo boxes in the gui with the model's available rotors
         gui.updateRotorComboList(model.getRotorsAvailable());
@@ -57,6 +60,7 @@ public class BasicGUIController
     }
 
     @Override
+    //TODO - Break out of master controller into own class
     public void actionPerformed(ActionEvent e) {
         JComponent temp = (JComponent) e.getSource();
         String sourceName = temp.getName();
@@ -207,5 +211,19 @@ public class BasicGUIController
 
     public int isRotorAlreadySelected(int selectedIndex) {
         return gui.isRotorAlreadySelected(selectedIndex);
+    }
+
+    public String[] requestRotorNames() {
+        return model.getRotorsAvailable();
+    }
+
+    public void requestRandomKeySettingsPanel() {
+        randomSettingsController.openSettingsPanel();
+        //TODO - Get requested settings and implement appropriately
+    }
+
+    public void updateRandomizationSettings(String[] settings) {
+        //TODO - Implement method updateRandomizationSettings()
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
