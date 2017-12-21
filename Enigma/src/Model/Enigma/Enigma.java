@@ -247,7 +247,6 @@ public class Enigma {
             System.out.println("k = " + k);
             System.out.println("i = " + i);
 
-            //TODO - Suspect that label changing is causing issues again, but unable to nail down
             for (int j = 0; j < rotorsAvailable.size(); j++) {
                 System.out.println("j = " + j);
                 if (rotorsAvailable.get(j).getRotorName().equalsIgnoreCase(rotors[k])) {
