@@ -4,8 +4,6 @@
 package Model.Plugboard;
 
 import Controller.BasicGUIController;
-import Controller.BasicGUIMenuController;
-import View.Basic.BasicInputScreen;
 
 /**
  * Date Created Nov 19, 2017
