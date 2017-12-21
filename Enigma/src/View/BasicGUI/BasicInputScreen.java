@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +40,7 @@ public class BasicInputScreen
     //<editor-fold desc="Constants">
     private static final Dimension STANDARD_SPACER_SIZE = new Dimension(5, 5);
     private static final int DEFAULT_ROTORS = 3;
-    public static final String[] DEFAULT_SETTINGS = {"2", "1", "0", "A", "A", "A", "A", "A", "A", "1", ""};
+    private static final String[] DEFAULT_SETTINGS = {"2", "1", "0", "A", "A", "A", "A", "A", "A", "1", ""};
     //</editor-fold>
 
     //<editor-fold desc="Private Variables">
@@ -163,17 +164,17 @@ public class BasicInputScreen
         //Create text areas
         plaintext = createTextArea("Enter plaintext to encode here");
         ciphertext = createTextArea("Encoded plaintext appears here");
-        
+
         //Create plaintext area panel
         plainPanel.setLayout(new BoxLayout(plainPanel, BoxLayout.Y_AXIS));
         plainPanel.add(centeredLabel("Input"));
-        plainPanel.add(plaintext);        
-        
+        plainPanel.add(plaintext);
+
         //Create ciphertext area panel
         cipherPanel.setLayout(new BoxLayout(cipherPanel, BoxLayout.Y_AXIS));
         cipherPanel.add(centeredLabel("Output"));
         cipherPanel.add(ciphertext);
-        
+
         //Layout the text panels horizontally
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
 
@@ -234,7 +235,7 @@ public class BasicInputScreen
         //Create both tabs
         JMenu tab1 = new JMenu("File");
         tab1.setMnemonic(KeyEvent.VK_F);
-        
+
         JMenu tab2 = new JMenu("Settings");
         tab2.setMnemonic(KeyEvent.VK_S);
 
@@ -257,6 +258,16 @@ public class BasicInputScreen
         tab1Open.setName("menu_OpenKey");
         tab1Open.setMnemonic(KeyEvent.VK_O);
         tab1Open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
+
+        JMenuItem tab2RandomSettings = new JMenuItem("Randomize Settings");
+        tab2RandomSettings.setName("menu_RandomSettings");
+        tab2RandomSettings.setMnemonic(KeyEvent.VK_R);
+        tab2RandomSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.ALT_MASK));
+
+        JMenuItem tab2EnforceHistorical = new JCheckBoxMenuItem("Enforce Historical Accuracy");
+        tab2EnforceHistorical.setName("menu_Historical");
+        tab2EnforceHistorical.setMnemonic(KeyEvent.VK_H);
+        tab2EnforceHistorical.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
         //</editor-fold>
 
         //<editor-fold desc="Menu Joining">
@@ -264,9 +275,14 @@ public class BasicInputScreen
         tab1.add(tab1Save);
         tab1.add(tab1Exit);
 
+        tab2.add(tab2EnforceHistorical);
+        tab2.add(tab2RandomSettings);        
+
         menuItems.add(tab1Open);
         menuItems.add(tab1Exit);
         menuItems.add(tab1Save);
+        menuItems.add(tab2RandomSettings);
+        menuItems.add(tab2EnforceHistorical);
 
         menuBar.add(tab1);
         menuBar.add(tab2);
@@ -382,7 +398,7 @@ public class BasicInputScreen
      *
      * @return - Initialized JLabel
      */
-    private JLabel centeredLabel(String name) {
+    public static JLabel centeredLabel(String name) {
         JLabel temp = new JLabel(name);
         temp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
