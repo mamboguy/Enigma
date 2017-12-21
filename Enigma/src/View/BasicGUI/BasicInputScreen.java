@@ -73,7 +73,7 @@ public class BasicInputScreen
         //<editor-fold desc="Rotor Component Creation">
         //Create a rotor combo box, label and key field for each default rotor
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
-            String formattedNumber = getFormattedNumber(i);
+            String formattedNumber = getFormattedNumber(i + 1);
             rotorCombos.add(basicJComboBox("rotor" + (i + 1), "Select rotor to use in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
             labelFields.add(basicJTextField("labelRotor" + i, "Label setting for rotor in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
             keyFields.add(basicJTextField("keyRotor" + i, "Key setting for rotor in " + formattedNumber + " slot", rotorFieldHeight, rotorFieldWidth));
@@ -157,18 +157,30 @@ public class BasicInputScreen
 
         //<editor-fold desc="Text Area Panel Creation">
         JPanel textPanel = new JPanel();
+        JPanel plainPanel = new JPanel();
+        JPanel cipherPanel = new JPanel();
 
         //Create text areas
         plaintext = createTextArea("Enter plaintext to encode here");
         ciphertext = createTextArea("Encoded plaintext appears here");
-
+        
+        //Create plaintext area panel
+        plainPanel.setLayout(new BoxLayout(plainPanel, BoxLayout.Y_AXIS));
+        plainPanel.add(centeredLabel("Input"));
+        plainPanel.add(plaintext);        
+        
+        //Create ciphertext area panel
+        cipherPanel.setLayout(new BoxLayout(cipherPanel, BoxLayout.Y_AXIS));
+        cipherPanel.add(centeredLabel("Output"));
+        cipherPanel.add(ciphertext);
+        
         //Layout the text panels horizontally
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
 
         //Set the final layout for the text panel
-        textPanel.add(plaintext);
+        textPanel.add(plainPanel);
         textPanel.add(standardSpacer());
-        textPanel.add(ciphertext);
+        textPanel.add(cipherPanel);
         //</editor-fold>
 
         //<editor-fold desc="Button Panel Creation">
@@ -222,9 +234,12 @@ public class BasicInputScreen
         //Create both tabs
         JMenu tab1 = new JMenu("File");
         tab1.setMnemonic(KeyEvent.VK_F);
+        
+        JMenu tab2 = new JMenu("Settings");
+        tab2.setMnemonic(KeyEvent.VK_S);
 
-        JMenu tab2 = new JMenu("About");
-        tab2.setMnemonic(KeyEvent.VK_U);
+        JMenu tab3 = new JMenu("About");
+        tab3.setMnemonic(KeyEvent.VK_U);
         //</editor-fold>
 
         //<editor-fold desc="Menu Item Creation">
@@ -255,6 +270,7 @@ public class BasicInputScreen
 
         menuBar.add(tab1);
         menuBar.add(tab2);
+        menuBar.add(tab3);
         //</editor-fold>
 
         //<editor-fold desc="Master Panel Final Joining">        
@@ -416,24 +432,29 @@ public class BasicInputScreen
 
         //TODO - check for > 10 properly
         //TODO - check for 11-13
-        switch (i) {
-            case 1:
-                end = "st";
-                break;
-            case 2:
-                end = "nd";
-                break;
-            case 3:
-                end = "rd";
-                break;
-            default:
+        if (i >= 11 && i <= 13) {
+            //Leave as default
+        } else {
+            switch (i % 10) {
+                case 1:
+                    end = "st";
+                    break;
+                case 2:
+                    end = "nd";
+                    break;
+                case 3:
+                    end = "rd";
+                    break;
+                default:
+            }
         }
 
         return (i + end);
     }
 
     /**
-     * Creates a standardized rotor panel. Allows for dynamic number of rotors
+     * Creates a standardized rotor panel. Allows for dynamic number of
+     * rotors
      *
      * @param i - The number of the rotor panel being added
      *
