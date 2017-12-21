@@ -78,9 +78,6 @@ public class BasicGUIController
 
                 //Reset the gui to the default settings
                 gui.resetToDefault();
-
-                //todo - remove if no effect
-                //model.setSettings(gui.getCurrentKeySettings());
                 break;
             case "saveButton":
 
@@ -101,6 +98,7 @@ public class BasicGUIController
         }
     }
 
+    //TODO - break out into key listener
     @Override
     public void keyTyped(KeyEvent e) {
         JTextField temp = (JTextField) e.getSource();
