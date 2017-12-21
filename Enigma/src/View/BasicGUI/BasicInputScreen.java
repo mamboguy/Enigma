@@ -1,12 +1,10 @@
 package View.BasicGUI;
 
 //<editor-fold defaultstate="collapsed" desc="Imports">
-import Controller.BasicGUI.ComboController;
 import Controller.BasicGUIController;
 import Controller.Filters.PlugboardDocumentFilter;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
