@@ -1,10 +1,6 @@
 package Controller.File;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 
 /**
  * Date Created Nov 26, 2017
@@ -116,7 +112,7 @@ public class EnigmaFileManipulation {
             //Create a fileWriter for writing into the file
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(newFile));
 
-            //Write the file in the following order: Rotor, Reflector, Label, Key and Plugboard
+            //Write the file in the following order: HistoricalRotor, Reflector, Label, Key and Plugboard
             fileWriter.write(ROTOR_HEADER + rotors);
             fileWriter.newLine();
 

@@ -12,12 +12,12 @@ public class RotorFileReader {
 
     private static final String ROTOR_SOURCE_PATH = "src/Model/Rotors/historical_rotors.txt";
 
-    public static ArrayList<Rotor> readRotorFile(String path) {
+    public static ArrayList<IRotor> readRotorFile(String path) {
         
         //TODO - Remove me when implement reading other files
         path = ROTOR_SOURCE_PATH;
 
-        ArrayList<Rotor> rotorList = new ArrayList();
+        ArrayList<IRotor> rotorList = new ArrayList();
 
         try {
             //Create a scanner from the rotor file
@@ -44,7 +44,7 @@ public class RotorFileReader {
                     int usage = lineReader.nextInt();
 
                     //Add the new rotor to the list
-                    rotorList.add(new Rotor(name, sequence, notch, usage));
+                    rotorList.add(new HistoricalRotor(name, sequence, notch, usage));
                 }
             }
         } catch (Exception e) {

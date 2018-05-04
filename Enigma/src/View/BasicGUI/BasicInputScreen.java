@@ -1,32 +1,18 @@
 package View.BasicGUI;
 
 //<editor-fold defaultstate="collapsed" desc="Imports">
+
 import Controller.BasicGUIController;
 import Controller.Filters.PlugboardDocumentFilter;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+
+import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.text.AbstractDocument;
 //</editor-fold>
 
 /**
@@ -71,7 +57,7 @@ public class BasicInputScreen
         int rotorFieldHeight = 30;
         int rotorFieldWidth = 130;
 
-        //<editor-fold desc="Rotor Component Creation">
+        //<editor-fold desc="HistoricalRotor Component Creation">
         //Create a rotor combo box, label and key field for each default rotor
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i + 1);
@@ -95,7 +81,7 @@ public class BasicInputScreen
         reflectorPanel.add(reflector);
         //</editor-fold>
 
-        //<editor-fold desc="Rotor Panel Creation">
+        //<editor-fold desc="HistoricalRotor Panel Creation">
         //Layout the rotor panel from left to right
         JPanel rotorPanels = new JPanel();
         rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -217,7 +203,7 @@ public class BasicInputScreen
         textbuttons.add(buttonPanel);
         //</editor-fold>
 
-        //<editor-fold desc="Rotor and Plugboard Panel Joining">        
+        //<editor-fold desc="HistoricalRotor and Plugboard Panel Joining">
         JPanel settingsPanel = new JPanel();
 
         //Layout the settings panel vertically
@@ -484,7 +470,7 @@ public class BasicInputScreen
         temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
 
         //Create a label and add each field in kind
-        temp.add(centeredLabel("Rotor " + (i + 1)));
+        temp.add(centeredLabel("HistoricalRotor " + (i + 1)));
         temp.add(standardSpacer());
         temp.add(rotorCombos.get(i));
         temp.add(standardSpacer());
@@ -626,7 +612,7 @@ public class BasicInputScreen
     }
     //</editor-fold>
 
-    //<editor-fold desc="Rotor Combo Selection Adjustment">   
+    //<editor-fold desc="HistoricalRotor Combo Selection Adjustment">
     /**
      * Checks to see if a rotor name is in use and if so, returns which rotor is
      * using it
@@ -984,6 +970,8 @@ public class BasicInputScreen
     }
 
     public void randomizeGUI() {
+        
+        //TODO - add support for random settings
 
         loadKeySetting(DEFAULT_SETTINGS);
 

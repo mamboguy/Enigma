@@ -9,11 +9,13 @@ package Model.Enigma;
  *
  * @author Michael C
  */
+
 import Model.Plugboard.Plugboard;
 import Model.Reflectors.Reflector;
 import Model.Reflectors.ReflectorFileReader;
-import Model.Rotors.Rotor;
+import Model.Rotors.IRotor;
 import Model.Rotors.RotorFileReader;
+
 import java.util.ArrayList;
 
 public class Enigma {
@@ -24,8 +26,8 @@ public class Enigma {
 
     //<editor-fold desc="Private Variables">
     private ArrayList<Reflector> reflectorsAvailable;
-    private ArrayList<Rotor> rotorsAvailable;
-    private ArrayList<Rotor> rotorsUsed;
+    private ArrayList<IRotor> rotorsAvailable;
+    private ArrayList<IRotor> rotorsUsed;
     private Plugboard plugboard;
 
     private Reflector reflector;
@@ -35,7 +37,7 @@ public class Enigma {
         //TODO - Fix path
         rotorsAvailable = RotorFileReader.readRotorFile("TODO - fix path");
         reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
-        rotorsUsed = new ArrayList<Rotor>();
+        rotorsUsed = new ArrayList<>();
         plugboard = new Plugboard();
 
         //Initialize rotors with first three historical rotors (in left->right order: I II III)
@@ -290,7 +292,7 @@ public class Enigma {
         int j = rotorKeyPositions.length() - 1;
 
         if (rotorsUsed.size() != rotorKeyPositions.length()) {
-            throw new UnsupportedOperationException("Rotor key length does not match rotors used");
+            throw new UnsupportedOperationException("HistoricalRotor key length does not match rotors used");
         } else {
             for (int i = 0; i < rotorKeyPositions.length(); i++) {
                 rotorsUsed.get(i).setKeyPosition(rotorKeyPositions.charAt(j));
@@ -439,20 +441,20 @@ public class Enigma {
             temp[i] = false;
         }
 
-        //Set usage flags
-        if (usage >= 100) {
-            temp[Rotor.KRIEGSMARINE] = true;
-            usage -= 100;
-        }
-
-        if (usage >= 10) {
-            temp[Rotor.LUFTWAFFE] = true;
-            usage -= 10;
-        }
-
-        if (usage == 1) {
-            temp[Rotor.WEHRMACHT] = true;
-        }
+//        //Set usage flags
+//        if (usage >= 100) {
+//            temp[HistoricalRotor.KRIEGSMARINE] = true;
+//            usage -= 100;
+//        }
+//
+//        if (usage >= 10) {
+//            temp[HistoricalRotor.LUFTWAFFE] = true;
+//            usage -= 10;
+//        }
+//
+//        if (usage == 1) {
+//            temp[HistoricalRotor.WEHRMACHT] = true;
+//        }
 
         return temp;
     }

@@ -6,10 +6,10 @@
 package Controller.BasicGUI;
 
 import Controller.BasicGUIController;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 
 /**
  * Date Created Nov 29, 2017

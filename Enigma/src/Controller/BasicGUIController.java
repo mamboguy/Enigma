@@ -5,19 +5,19 @@
  */
 package Controller;
 
-import Controller.BasicGUI.MenuController;
 import Controller.BasicGUI.ComboController;
+import Controller.BasicGUI.MenuController;
 import Controller.File.EnigmaFileManipulation;
 import Controller.SubFrames.RandomSettingsController;
 import Model.Enigma.Enigma;
 import View.BasicGUI.BasicInputScreen;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import javax.swing.JComponent;
-import javax.swing.JTextField;
 
 /**
  *
@@ -223,7 +223,6 @@ public class BasicGUIController
     }
 
     public void updateRandomizationSettings(String[] settings) {
-        //TODO - Implement method updateRandomizationSettings()
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 }

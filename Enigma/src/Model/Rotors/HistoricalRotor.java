@@ -1,6 +1,7 @@
 package Model.Rotors;
 
 import Model.Enigma.Enigma;
+
 import java.util.ArrayList;
 
 /**
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  *
  * @author Michael C
  */
-public class Rotor {
+public class HistoricalRotor implements IRotor {
 
 //TODO - Custom rotor creation
 //		- More than 26 pins (a-z,A-Z,0-9,!@#$%^&*(){}?+][=/\|-_',." <>:; etc)
@@ -16,9 +17,6 @@ public class Rotor {
 //		- Import custom rotors
 //TODO - Generate random key sheet
     //<editor-fold desc="Constants">
-    public static final int KRIEGSMARINE = 0;
-    public static final int LUFTWAFFE = 1;
-    public static final int WEHRMACHT = 2;
 
     //Used for internalWiringOffsets to determine where the internal wiring leads based off current pin input
     //LEFT is used for right side inputs and RIGHT is used for left side inputs
@@ -57,12 +55,12 @@ public class Rotor {
 
 //<editor-fold desc="Constructors">
     //Basic rotor constructor.  Calls bigger constructor to implement inputs
-    public Rotor(String rotorName, String wiringSequence, String notchLocation, int usage) {
+    public HistoricalRotor(String rotorName, String wiringSequence, String notchLocation, int usage) {
         this(rotorName, wiringSequence, notchLocation, usage, 'A', 'A');
     }
 
     //Detailed rotor constructor
-    public Rotor(String rotorName, String wiringSequence, String notchLocation, int usage, char labelPosition, char keyPosition) {
+    public HistoricalRotor(String rotorName, String wiringSequence, String notchLocation, int usage, char labelPosition, char keyPosition) {
 
         //Get usage flags
         this.usage = Enigma.getUsageStats(usage);
@@ -178,24 +176,6 @@ public class Rotor {
         return temp;
     }
 
-    /**
-     *
-     * return - character at the output position on the right side of the rotor
-     * given a left pin input
-     */
-    public char getRightCharOutput(int leftPinInput) {
-        return ((char) (65 + getRightOutput(leftPinInput)));
-    }
-
-    /**
-     *
-     * return - character at the output position on the right side of the rotor
-     * given a left pin input
-     */
-    public char getLeftCharOutput(int rightPinInput) {
-        return ((char) (65 + getLeftOutput(rightPinInput)));
-    }
-
 //Returns the current key position
     public char getKeyPosition() {
         return this.currentKeyPosition;
@@ -255,7 +235,7 @@ public class Rotor {
 
         //Set the last to the original first value, effectively wrapping the values
         internalWiringOffsets[LEFT][internalWiringOffsets[LEFT].length - 1] = tempLeft;
-        internalWiringOffsets[RIGHT][internalWiringOffsets[RIGHT].length - 1] = tempRight;       
+        internalWiringOffsets[RIGHT][internalWiringOffsets[RIGHT].length - 1] = tempRight;
 
         //If the rotor is set to step a nearby rotor
         if (this.stepNext) {
@@ -282,24 +262,24 @@ public class Rotor {
 //<editor-fold desc="Print methods">
     @Override
     public String toString() {
-        
-        
+
+
         String notches = "";
-        
+
         for (int i = 0; i < notchLocation.size(); i++) {
             notches += notchLocation.get(i) + ", ";
         }
-        
+
         notches = notches.substring(0, notches.length()-2);
 
-        return "Rotor{" + "rotorName=" + rotorName + ", baseWiringSequence=" + baseWiringSequence + ", notchLocation= "
+        return "HistoricalRotor{" + "rotorName=" + rotorName + ", baseWiringSequence=" + baseWiringSequence + ", notchLocation= "
                + notches + ", currentKeyPosition=" + currentKeyPosition + ", currentLabelPosition" + labelPosition
                + ", Kriegsmarine =" + usage[0] + ", Luftwaffe = " + usage[1] + ", Wehrmacht = " + usage[2] + "}";
     }
 
     //Simple way to print the rotor with a single call rather than creating a new System.out.println every call
     public void printRotor() {
-        System.out.println("Rotor = " + this.toString());
+        System.out.println("HistoricalRotor = " + this.toString());
     }
 
     //Prints the wiring configuration

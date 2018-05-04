@@ -1,6 +1,6 @@
-
 import Controller.BasicGUIController;
 import Model.Enigma.Enigma;
+
 import java.util.Scanner;
 
 /**
