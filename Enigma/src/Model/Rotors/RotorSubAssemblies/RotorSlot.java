@@ -1,11 +1,10 @@
-package Model.Rotors;
+package Model.Rotors.RotorSubAssemblies;
 
 public class RotorSlot {
 
     private boolean isNotch;
     private int rightToLeftOffset;
     private int leftToRightOffset;
-    private char defaultChar;
     private char currentLabel;
 
     //BUG - DOES NOT HANDLE ANYTHING ABOVE STANDARD ALPHABET
@@ -13,9 +12,9 @@ public class RotorSlot {
     public RotorSlot(char characterAtRightLocation, char characterAtLeftLocation, boolean isNotch){
         this.isNotch = isNotch;
 
-        this.rightToLeftOffset = getOffset(characterAtRightLocation, characterAtLeftLocation);
+        rightToLeftOffset = getOffset(characterAtRightLocation, characterAtLeftLocation);
 
-        this.defaultChar = characterAtRightLocation;
+        currentLabel = characterAtRightLocation;
     }
 
     private int getOffset(char characterAtRightLocation, char characterAtLeftLocation) {
@@ -37,10 +36,6 @@ public class RotorSlot {
         return isNotch;
     }
 
-    public char getDefaultChar(){
-        return defaultChar;
-    }
-
     public int getRightToLeftOffset() {
         return rightToLeftOffset;
     }
@@ -49,7 +44,7 @@ public class RotorSlot {
         return leftToRightOffset;
     }
 
-    public void resetLabel(){
-        this.currentLabel = defaultChar;
+    public char getCurrentLabel() {
+        return currentLabel;
     }
 }

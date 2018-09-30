@@ -1,4 +1,4 @@
-package Model.Rotors;
+package Model.Rotors.RotorSubAssemblies;
 
 public class CircularLinkedList<T> {
 

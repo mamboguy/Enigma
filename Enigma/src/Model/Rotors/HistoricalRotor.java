@@ -214,7 +214,7 @@ public class HistoricalRotor implements IRotor {
      *
      * @return true if rotor just stepped over notch, false if regular step
      */
-    public boolean stepRotor() {
+    public void stepRotor() {
 
         //Add one to the current key position (see ASCII table for ref)
         this.currentKeyPosition += 1;
@@ -243,7 +243,6 @@ public class HistoricalRotor implements IRotor {
 
             //Set the step flag to false and return a true value to tell the rotor's master it should step
             stepNext = false;
-            return true;
 
             //Otherwise, if the notch location equals the current key position
         }
@@ -255,19 +254,14 @@ public class HistoricalRotor implements IRotor {
                 this.stepNext = true;
             }
         }
-
-        //Otherwise, indicate no stepping needed
-        return false;
     }
 
     @Override
-    public boolean stepRotorForward() {
-        return false;
+    public void stepRotorForward() {
     }
 
     @Override
-    public boolean stepRotorBackward() {
-        return false;
+    public void stepRotorBackward() {
     }
 
     //<editor-fold desc="Print methods">

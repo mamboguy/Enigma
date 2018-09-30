@@ -87,7 +87,9 @@ public class Enigma {
 
     public void stepMachine() {
         //Always step the right-most rotor
-        boolean stepNext = rotorsUsed.get(0).stepRotor();
+        rotorsUsed.get(0).stepRotor();
+
+        boolean stepNext = rotorsUsed.get(0).willStepNextUse();
 
         //Starting at the 2nd from the right rotor, move to each rotor from right to left
         for (int i = 1; i < rotorsUsed.size(); i++) {

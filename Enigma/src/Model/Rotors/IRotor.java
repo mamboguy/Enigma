@@ -16,11 +16,11 @@ public interface IRotor {
 
     public void setLabelPosition(char position);
 
-    public boolean stepRotor();
+    public void stepRotor();
 
-    public boolean stepRotorForward();
+    public void stepRotorForward();
 
-    public boolean stepRotorBackward();
+    public void stepRotorBackward();
 
     public String getRotorName();
 }

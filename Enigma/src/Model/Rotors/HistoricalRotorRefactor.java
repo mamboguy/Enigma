@@ -1,15 +1,22 @@
 package Model.Rotors;
 
+import Model.Rotors.RotorSubAssemblies.CircularLinkedList;
+import Model.Rotors.RotorSubAssemblies.LabelSlot;
+import Model.Rotors.RotorSubAssemblies.RotorSlot;
+
 public class HistoricalRotorRefactor implements IRotor{
 
     private CircularLinkedList<RotorSlot> rotor;
-
-    private static final String BASE_SEQUENCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private CircularLinkedList<LabelSlot> label;
     private String name;
     private boolean stepNextUse;
 
+    private static final String BASE_SEQUENCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+
     public HistoricalRotorRefactor(String name, String wiringSequence, String notchLocations) {
-        rotor = new CircularLinkedList<RotorSlot>();
+        rotor = new CircularLinkedList<>();
+        label = new CircularLinkedList<>();
 
         this.name = name;
 
@@ -24,8 +31,21 @@ public class HistoricalRotorRefactor implements IRotor{
         //Now set the left offset based on right offset
         createLeftRotorHalf();
 
+        //Create label wheel
+        createLabelWheel();
+
         //Set rotor to Label = "A"
         setDefaults();
+    }
+
+    private void createLabelWheel() {
+        for (int i = 0; i < BASE_SEQUENCE.length(); i++) {
+            label.insert(new LabelSlot(BASE_SEQUENCE.charAt(i)));
+        }
+    }
+
+    public int getSize(){
+        return rotor.getSize();
     }
 
     private void createLeftRotorHalf() {
@@ -34,9 +54,9 @@ public class HistoricalRotorRefactor implements IRotor{
             System.out.println("char = " + (char)('A' + i));
 
             //Go to the next position to assign
-            while(rotor.getData().getDefaultChar() != (char)('A' + i)){
+            while(rotor.getData().getCurrentLabel() != (char)('A' + i)){
                 rotor.stepNext();
-                System.out.println("Stepping: " + rotor.getData().getDefaultChar());
+                System.out.println("Stepping: " + rotor.getData().getCurrentLabel());
             }
 
             //Get the offset at that position
@@ -57,13 +77,17 @@ public class HistoricalRotorRefactor implements IRotor{
 
     private void createRightRotorHalf(String wiringSequence, String notchLocations) {
         for (int i = 0; i < wiringSequence.length(); i++) {
-            rotor.insert(new RotorSlot(BASE_SEQUENCE.charAt(i), wiringSequence.charAt(i), notchLocations.contains(wiringSequence.charAt(i) + "")));
+            rotor.insert(new RotorSlot(BASE_SEQUENCE.charAt(i), wiringSequence.charAt(i), notchLocations.contains(BASE_SEQUENCE.charAt(i) + "")));
         }
     }
 
     private void setDefaults() {
-        while (rotor.getData().getDefaultChar() != 'A') {
+        while (rotor.getData().getCurrentLabel() != 'A') {
             rotor.stepNext();
+        }
+
+        while(label.getData().getLabel() != 'A'){
+            label.stepNext();
         }
     }
 
@@ -108,51 +132,58 @@ public class HistoricalRotorRefactor implements IRotor{
 
     @Override
     public int getRightOutput(int leftPinInput) {
-        return (rotor.getNodeAtPosition(leftPinInput).getData().getRightToLeftOffset() + leftPinInput) % 26;
+        return (rotor.getNodeAtPosition(leftPinInput).getData().getLeftToRightOffset() + leftPinInput) % 26;
     }
 
     @Override
     public char getKeyPosition() {
-        return rotor.getData().getDefaultChar();
+        return rotor.getData().getCurrentLabel();
     }
 
     @Override
     public boolean willStepNextUse() {
-        return rotor.getData().isNotch();
+        return stepNextUse;
     }
 
     @Override
     public char getLabelPosition() {
-        return 0;
+        return  label.getData().getLabel();
     }
 
     @Override
     public void setKeyPosition(char position) {
+        while (label.getData().getLabel() != position){
+            rotor.stepNext();
+            label.stepNext();
+        }
 
+        stepNextUse = rotor.getData().isNotch();
     }
 
     @Override
     public void setLabelPosition(char position) {
-
+        for (int i = 'A'; i < position; i++) {
+            label.stepNext();
+        }
     }
 
     @Override
-    public boolean stepRotor() {
-        return stepRotorForward();
+    public void stepRotor() {
+        stepRotorForward();
     }
 
     @Override
-    public boolean stepRotorForward() {
+    public void stepRotorForward() {
         rotor.stepNext();
 
-        return rotor.getData().isNotch();
+        stepNextUse = rotor.getData().isNotch();
     }
 
     @Override
-    public boolean stepRotorBackward() {
+    public void stepRotorBackward() {
         rotor.stepBack();
 
-        return rotor.getData().isNotch();
+        stepNextUse = rotor.getData().isNotch();
     }
 
     @Override
