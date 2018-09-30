@@ -18,5 +18,9 @@ public interface IRotor {
 
     public boolean stepRotor();
 
+    public boolean stepRotorForward();
+
+    public boolean stepRotorBackward();
+
     public String getRotorName();
 }

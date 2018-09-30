@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class RotorFileReader {
 
-    private static final String ROTOR_SOURCE_PATH = "src/Model/Rotors/historical_rotors.txt";
+    private static final String ROTOR_SOURCE_PATH = "Enigma/src/Model/Rotors/historical_rotors.txt";
 
     public static ArrayList<IRotor> readRotorFile(String path) {
         
@@ -45,6 +45,7 @@ public class RotorFileReader {
 
                     //Add the new rotor to the list
                     rotorList.add(new HistoricalRotor(name, sequence, notch, usage));
+                    //rotorList.add(new HistoricalRotorRefactor(name, sequence, notch));
                 }
             }
         } catch (Exception e) {

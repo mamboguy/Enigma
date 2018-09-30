@@ -1,7 +1,6 @@
 package Model.Rotors;
 
 import Model.Enigma.Enigma;
-
 import java.util.ArrayList;
 
 /**
@@ -10,6 +9,8 @@ import java.util.ArrayList;
  * @author Michael C
  */
 public class HistoricalRotor implements IRotor {
+
+    //Button to step forward or back on final design
 
 //TODO - Custom rotor creation
 //		- More than 26 pins (a-z,A-Z,0-9,!@#$%^&*(){}?+][=/\|-_',." <>:; etc)
@@ -259,7 +260,17 @@ public class HistoricalRotor implements IRotor {
         return false;
     }
 
-//<editor-fold desc="Print methods">
+    @Override
+    public boolean stepRotorForward() {
+        return false;
+    }
+
+    @Override
+    public boolean stepRotorBackward() {
+        return false;
+    }
+
+    //<editor-fold desc="Print methods">
     @Override
     public String toString() {
 
