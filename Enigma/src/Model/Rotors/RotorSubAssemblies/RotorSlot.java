@@ -5,16 +5,16 @@ public class RotorSlot {
     private boolean isNotch;
     private int rightToLeftOffset;
     private int leftToRightOffset;
-    private char currentLabel;
+    private char defaultLabel;
 
-    //BUG - DOES NOT HANDLE ANYTHING ABOVE STANDARD ALPHABET
+    // TODO: 9/30/2018 Ensure it can handle more than just standard 26 char alphabet
 
     public RotorSlot(char characterAtRightLocation, char characterAtLeftLocation, boolean isNotch){
         this.isNotch = isNotch;
 
         rightToLeftOffset = getOffset(characterAtRightLocation, characterAtLeftLocation);
 
-        currentLabel = characterAtRightLocation;
+        defaultLabel = characterAtRightLocation;
     }
 
     private int getOffset(char characterAtRightLocation, char characterAtLeftLocation) {
@@ -44,7 +44,7 @@ public class RotorSlot {
         return leftToRightOffset;
     }
 
-    public char getCurrentLabel() {
-        return currentLabel;
+    public char getDefaultLabel() {
+        return defaultLabel;
     }
 }

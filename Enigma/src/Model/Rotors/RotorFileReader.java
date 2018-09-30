@@ -44,8 +44,8 @@ public class RotorFileReader {
                     int usage = lineReader.nextInt();
 
                     //Add the new rotor to the list
-                    //rotorList.add(new HistoricalRotor(name, sequence, notch, usage));
-                    rotorList.add(new HistoricalRotorRefactor(name, sequence, notch));
+                    //rotorList.add(new HistoricalRotorDeprecated(name, sequence, notch, usage));
+                    rotorList.add(new HistoricalRotor(name, sequence, notch));
                 }
             }
         } catch (Exception e) {

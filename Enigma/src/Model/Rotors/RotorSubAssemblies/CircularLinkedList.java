@@ -61,11 +61,13 @@ public class CircularLinkedList<T> {
         this.start = start.getPrev();
     }
 
+    public Node<T> getNext(){
+        return start.getNext();
+    }
+
     public Node<T> getNodeAtPosition(int position){
-        if (position > size){
-            // TODO: 9/29/2018 FIX THIS?
-            return null;
-        }
+
+        position = position % size;
 
         Node temp = start;
 

@@ -1,6 +1,6 @@
 import Controller.BasicGUIController;
 import Model.Enigma.Enigma;
-import Model.Rotors.HistoricalRotorRefactor;
+import Model.Rotors.HistoricalRotor;
 
 import java.util.Scanner;
 
@@ -13,7 +13,7 @@ public class main {
 
     public static void main(String[] args) {
 
-        HistoricalRotorRefactor test = new HistoricalRotorRefactor("I","EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q");
+        HistoricalRotor test = new HistoricalRotor("I","EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q");
 
         test.printRotor();
 

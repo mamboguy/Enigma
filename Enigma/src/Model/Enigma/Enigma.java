@@ -10,8 +10,10 @@ package Model.Enigma;
  * @author Michael C
  */
 
-import Model.Plugboard.Plugboard;
-import Model.Reflectors.Reflector;
+import Model.Plugboard.HistoricalPlugboard;
+import Model.Plugboard.IPlugboard;
+import Model.Reflectors.HistoricalReflector;
+import Model.Reflectors.IReflector;
 import Model.Reflectors.ReflectorFileReader;
 import Model.Rotors.IRotor;
 import Model.Rotors.RotorFileReader;
@@ -25,12 +27,12 @@ public class Enigma {
     //</editor-fold>
 
     //<editor-fold desc="Private Variables">
-    private ArrayList<Reflector> reflectorsAvailable;
+    private ArrayList<IReflector> reflectorsAvailable;
     private ArrayList<IRotor> rotorsAvailable;
     private ArrayList<IRotor> rotorsUsed;
-    private Plugboard plugboard;
+    private IPlugboard plugboard;
 
-    private Reflector reflector;
+    private IReflector reflector;
 
     //</editor-fold>
     public Enigma() {
@@ -38,7 +40,9 @@ public class Enigma {
         rotorsAvailable = RotorFileReader.readRotorFile("TODO - fix path");
         reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
         rotorsUsed = new ArrayList<>();
-        plugboard = new Plugboard();
+
+        // TODO: 9/30/2018 FIX ME
+        plugboard = new HistoricalPlugboard();
 
         //Initialize rotors with first three historical rotors (in left->right order: I II III)
         rotorsUsed.add(rotorsAvailable.get(2));
@@ -95,7 +99,7 @@ public class Enigma {
         for (int i = 1; i < rotorsUsed.size(); i++) {
 
             //If the current rotor will step on the next use (this use) or if the last rotor stepped
-            if (rotorsUsed.get(i).willStepNextUse() || stepNext) {
+            if (stepNext) {
 
                 //Check to see if the next rotor should step based off this rotor config
                 stepNext = rotorsUsed.get(i).willStepNextUse();
@@ -157,11 +161,8 @@ public class Enigma {
      */
     private char inputCharacter(char charInput) {
 
-        //Run the char through the plugboard first
-        charInput = plugboard.getPairedLetter(charInput);
-
-        //Convert the plugboard output into a pin input
-        int input = charInput - 65;
+        //Get the pin output from the plugboard
+        int input = plugboard.convertInput(charInput);
 
         //Step the machine
         stepMachine();
@@ -182,7 +183,7 @@ public class Enigma {
         }
 
         //Run the final rotor output through the plugboard
-        charInput = plugboard.getPairedLetter((char) (input + 65));
+        charInput = plugboard.convertOutput(input);
 
         return (charInput);
     }
@@ -294,7 +295,7 @@ public class Enigma {
         int j = rotorKeyPositions.length() - 1;
 
         if (rotorsUsed.size() != rotorKeyPositions.length()) {
-            throw new UnsupportedOperationException("HistoricalRotor key length does not match rotors used");
+            throw new UnsupportedOperationException("HistoricalRotorDeprecated key length does not match rotors used");
         } else {
             for (int i = 0; i < rotorKeyPositions.length(); i++) {
                 rotorsUsed.get(i).setKeyPosition(rotorKeyPositions.charAt(j));
@@ -445,17 +446,17 @@ public class Enigma {
 
 //        //Set usage flags
 //        if (usage >= 100) {
-//            temp[HistoricalRotor.KRIEGSMARINE] = true;
+//            temp[HistoricalRotorDeprecated.KRIEGSMARINE] = true;
 //            usage -= 100;
 //        }
 //
 //        if (usage >= 10) {
-//            temp[HistoricalRotor.LUFTWAFFE] = true;
+//            temp[HistoricalRotorDeprecated.LUFTWAFFE] = true;
 //            usage -= 10;
 //        }
 //
 //        if (usage == 1) {
-//            temp[HistoricalRotor.WEHRMACHT] = true;
+//            temp[HistoricalRotorDeprecated.WEHRMACHT] = true;
 //        }
 
         return temp;

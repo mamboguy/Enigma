@@ -57,7 +57,7 @@ public class BasicInputScreen
         int rotorFieldHeight = 30;
         int rotorFieldWidth = 130;
 
-        //<editor-fold desc="HistoricalRotor Component Creation">
+        //<editor-fold desc="HistoricalRotorDeprecated Component Creation">
         //Create a rotor combo box, label and key field for each default rotor
         for (int i = 0; i < DEFAULT_ROTORS; i++) {
             String formattedNumber = getFormattedNumber(i + 1);
@@ -67,7 +67,7 @@ public class BasicInputScreen
         }
         //</editor-fold>
 
-        //<editor-fold desc="Reflector Panel Creation">      
+        //<editor-fold desc="HistoricalReflector Panel Creation">
         //Create the reflector panel and layout vertically
         JPanel reflectorPanel = new JPanel();
         reflectorPanel.setLayout(new BoxLayout(reflectorPanel, BoxLayout.Y_AXIS));
@@ -76,12 +76,12 @@ public class BasicInputScreen
         reflector = basicJComboBox("reflector", "Selector reflector to use", rotorFieldHeight, rotorFieldWidth);
 
         //Setup the layout of the reflector panel
-        reflectorPanel.add(centeredLabel("Reflector"));
+        reflectorPanel.add(centeredLabel("HistoricalReflector"));
         reflectorPanel.add(standardSpacer());
         reflectorPanel.add(reflector);
         //</editor-fold>
 
-        //<editor-fold desc="HistoricalRotor Panel Creation">
+        //<editor-fold desc="HistoricalRotorDeprecated Panel Creation">
         //Layout the rotor panel from left to right
         JPanel rotorPanels = new JPanel();
         rotorPanels.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -97,7 +97,7 @@ public class BasicInputScreen
         }
         //</editor-fold>
 
-        //<editor-fold desc="Plugboard GUI Creation">
+        //<editor-fold desc="HistoricalPlugboard GUI Creation">
         JPanel plugboardPanel = new JPanel();
         JPanel plugboardTopRow = new JPanel();
         JPanel plugboardBotRow = new JPanel();
@@ -135,7 +135,7 @@ public class BasicInputScreen
         }
 
         //Set the final layout of the plugboard
-        plugboardPanel.add(centeredLabel("Plugboard Settings"));
+        plugboardPanel.add(centeredLabel("HistoricalPlugboard Settings"));
         plugboardPanel.add(standardSpacer());
         plugboardPanel.add(plugboardTopRow);
         plugboardPanel.add(standardSpacer());
@@ -203,7 +203,7 @@ public class BasicInputScreen
         textbuttons.add(buttonPanel);
         //</editor-fold>
 
-        //<editor-fold desc="HistoricalRotor and Plugboard Panel Joining">
+        //<editor-fold desc="HistoricalRotorDeprecated and HistoricalPlugboard Panel Joining">
         JPanel settingsPanel = new JPanel();
 
         //Layout the settings panel vertically
@@ -470,7 +470,7 @@ public class BasicInputScreen
         temp.setLayout(new BoxLayout(temp, BoxLayout.Y_AXIS));
 
         //Create a label and add each field in kind
-        temp.add(centeredLabel("HistoricalRotor " + (i + 1)));
+        temp.add(centeredLabel("HistoricalRotorDeprecated " + (i + 1)));
         temp.add(standardSpacer());
         temp.add(rotorCombos.get(i));
         temp.add(standardSpacer());
@@ -612,7 +612,7 @@ public class BasicInputScreen
     }
     //</editor-fold>
 
-    //<editor-fold desc="HistoricalRotor Combo Selection Adjustment">
+    //<editor-fold desc="HistoricalRotorDeprecated Combo Selection Adjustment">
     /**
      * Checks to see if a rotor name is in use and if so, returns which rotor is
      * using it
@@ -673,7 +673,7 @@ public class BasicInputScreen
     }
     //</editor-fold>
 
-    //<editor-fold desc="Plugboard Textfield Manipulation">    
+    //<editor-fold desc="HistoricalPlugboard Textfield Manipulation">
     /**
      * Pairs the second letter in the plugboard with the first inputted by the
      * user

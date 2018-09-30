@@ -121,7 +121,7 @@ public class RandomSettings
 
     private void createPanel(String[] rotorNames) {
 
-        //<editor-fold defaultstate="collapsed" desc="JList of HistoricalRotor Names">
+        //<editor-fold defaultstate="collapsed" desc="JList of HistoricalRotorDeprecated Names">
         rotorSelection = new JList(rotorNames);
         rotorSelection.setToolTipText("Select all rotors that are available to be randomed");
         rotorSelection.setLayoutOrientation(JList.HORIZONTAL_WRAP);

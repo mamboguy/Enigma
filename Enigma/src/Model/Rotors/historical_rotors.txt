@@ -6,7 +6,6 @@
 #
 # Formatting below:
 #   Name    Wiring Sequence     Notch Location      Kriegsmarine/Luftwaffe/Wehrmacht
-#                               (Mult notches separated by "-")
 #                                                         (1 = used, 0 = unused)
 #       ABCDEFGHIJKLMNOPQRSTUVWXYZ
 # German Military - Rotors

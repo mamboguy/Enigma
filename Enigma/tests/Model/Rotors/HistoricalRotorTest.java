@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HistoricalRotorRefactorTest {
+class HistoricalRotorTest {
 
-    private HistoricalRotorRefactor rotor1 = new HistoricalRotorRefactor("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q");
-    private HistoricalRotorRefactor rotor2 = new HistoricalRotorRefactor("VI","JPGVOUMFYQBENHZRDKASXLICTW", "MZ");
+    private HistoricalRotor rotor1 = new HistoricalRotor("I", "EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q");
+    private HistoricalRotor rotor2 = new HistoricalRotor("VI", "JPGVOUMFYQBENHZRDKASXLICTW", "MZ");
 
     @BeforeEach
     void setUp() {
@@ -58,6 +58,9 @@ class HistoricalRotorRefactorTest {
 
     @Test
     void getRightOutput() {
+
+        // <editor-fold defaultstate="collapsed" desc="Test Initial Setup">
+
         //Initial - Top
         assertEquals(rotor1.getRightOutput(0), -6);
         assertEquals(rotor2.getRightOutput(0), -8);
@@ -77,7 +80,9 @@ class HistoricalRotorRefactorTest {
         //Stepped Once - Pin 14
         assertEquals(rotor1.getRightOutput(14), 18);
         assertEquals(rotor2.getRightOutput(14), 0);
+        // </editor-fold>
 
+        // <editor-fold defaultstate="collapsed" desc="Test after changing label and key">
         rotor1.stepRotorBackward();
         rotor2.stepRotorBackward();
 
@@ -87,13 +92,26 @@ class HistoricalRotorRefactorTest {
         rotor1.setKeyPosition('A');
         rotor2.setKeyPosition('A');
 
-        //Stepped Once - Top
+        //New Label + Key - Initial
         assertEquals(rotor1.getRightOutput(0), 10);
         assertEquals(rotor2.getRightOutput(0), -11);
 
-        //Stepped Once - Pin 14
+        //New Label + Key - Pin 14
         assertEquals(rotor1.getRightOutput(14), 11);
         assertEquals(rotor2.getRightOutput(14), 13);
+
+        //Step Both Rotors
+        rotor1.stepRotorForward();
+        rotor2.stepRotorForward();
+
+        //Stepped Once - Top
+        assertEquals(rotor1.getRightOutput(0), -6);
+        assertEquals(rotor2.getRightOutput(0), -8);
+
+        //Stepped Once - Pin 14
+        assertEquals(rotor1.getRightOutput(14), 12);
+        assertEquals(rotor2.getRightOutput(14), 4);
+        // </editor-fold>
     }
 
     @Test
@@ -106,6 +124,18 @@ class HistoricalRotorRefactorTest {
 
         assertEquals(rotor1.getKeyPosition(), 'C');
         assertEquals(rotor2.getKeyPosition(), 'F');
+
+        rotor1.setKeyPosition('L');
+        rotor2.setKeyPosition('B');
+
+        assertEquals(rotor1.getKeyPosition(), 'L');
+        assertEquals(rotor2.getKeyPosition(), 'B');
+
+        rotor1.setKeyPosition('L');
+        rotor2.setKeyPosition('B');
+
+        assertEquals(rotor1.getKeyPosition(), 'L');
+        assertEquals(rotor2.getKeyPosition(), 'B');
     }
 
     @Test
@@ -118,7 +148,7 @@ class HistoricalRotorRefactorTest {
             System.out.println("Current key = " + rotor1.getKeyPosition());
             rotor1.stepRotorForward();
 
-            if (rotor1.getKeyPosition() == 'Q'){
+            if (rotor1.getKeyPosition() == 'Q') {
                 assertEquals(rotor1.willStepNextUse(), true);
             } else {
                 assertEquals(rotor1.willStepNextUse(), false);
@@ -130,10 +160,9 @@ class HistoricalRotorRefactorTest {
 
         for (int i = 0; i < rotor2.getSize(); i++) {
 
-            System.out.println("Current key = " + rotor2.getKeyPosition());
             rotor2.stepRotorForward();
 
-            if (rotor2.getKeyPosition() == 'M' || rotor2.getKeyPosition() == 'Z'){
+            if (rotor2.getKeyPosition() == 'M' || rotor2.getKeyPosition() == 'Z') {
                 assertEquals(rotor2.willStepNextUse(), true);
             } else {
                 assertEquals(rotor2.willStepNextUse(), false);
@@ -141,7 +170,7 @@ class HistoricalRotorRefactorTest {
         }
 
     }
-    
+
     @Test
     void getLabelPosition() {
         assertEquals(rotor1.getLabelPosition(), 'A');

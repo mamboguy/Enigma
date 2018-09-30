@@ -27,7 +27,7 @@ public class EnigmaFileManipulation {
             //Create a file reader
             BufferedReader fileReader = new BufferedReader(new FileReader(path));
 
-            //Read the file in order:  Rotors, Reflectors, Labels, Keys and Plugboard
+            //Read the file in order:  Rotors, Reflectors, Labels, Keys and HistoricalPlugboard
             rotors = fileReader.readLine();
             rotors = rotors.replaceAll(ROTOR_HEADER, "");
 
@@ -112,7 +112,7 @@ public class EnigmaFileManipulation {
             //Create a fileWriter for writing into the file
             BufferedWriter fileWriter = new BufferedWriter(new FileWriter(newFile));
 
-            //Write the file in the following order: HistoricalRotor, Reflector, Label, Key and Plugboard
+            //Write the file in the following order: HistoricalRotorDeprecated, HistoricalReflector, Label, Key and HistoricalPlugboard
             fileWriter.write(ROTOR_HEADER + rotors);
             fileWriter.newLine();
 
