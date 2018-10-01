@@ -30,6 +30,7 @@ public class Enigma {
     private ArrayList<IReflector> reflectorsAvailable;
     private ArrayList<IRotor> rotorsAvailable;
     private ArrayList<IRotor> rotorsUsed;
+
     private IPlugboard plugboard;
 
     private IReflector reflector;
@@ -95,6 +96,8 @@ public class Enigma {
 
         boolean stepNext = rotorsUsed.get(0).willStepNextUse();
 
+        System.out.println("StepNext = " + stepNext);
+
         //Starting at the 2nd from the right rotor, move to each rotor from right to left
         for (int i = 1; i < rotorsUsed.size(); i++) {
 
@@ -142,11 +145,11 @@ public class Enigma {
         }
 
         //Print out plaintext and ciphertext to the console
-        System.out.println("_____________________________________________");
-        System.out.println("Input text:  " + plain.trim());
-        System.out.println("Output text: " + cipher.trim());
-        System.out.println("_____________________________________________");
-        System.out.println("");
+//        System.out.println("_____________________________________________");
+//        System.out.println("Input text:  " + plain.trim());
+//        System.out.println("Output text: " + cipher.trim());
+//        System.out.println("_____________________________________________");
+//        System.out.println("");
 
         //Return the ciphertext
         return cipher.trim();
@@ -206,9 +209,9 @@ public class Enigma {
 
             //For each rotor, set its label based on the string
             for (int i = 0; i < rotorsUsed.size(); i++) {
-                System.out.println("rotorsUsed.get(" + i + ").getLabelPosition = " + rotorsUsed.get(i).getLabelPosition());
-                System.out.println("labelpositions.charAt(" + j + ") = " + labelPositions.charAt(j));
-                System.out.println("rotorsUsed == labelPosition???: " + (rotorsUsed.get(i).getLabelPosition() != labelPositions.charAt(j)));
+//                System.out.println("rotorsUsed.get(" + i + ").getLabelPosition = " + rotorsUsed.get(i).getLabelPosition());
+//                System.out.println("labelpositions.charAt(" + j + ") = " + labelPositions.charAt(j));
+//                System.out.println("rotorsUsed == labelPosition???: " + (rotorsUsed.get(i).getLabelPosition() != labelPositions.charAt(j)));
                 if (rotorsUsed.get(i).getLabelPosition() != labelPositions.charAt(j)) {
                     rotorsUsed.get(i).setLabelPosition(labelPositions.charAt(j));
                 }
@@ -247,13 +250,13 @@ public class Enigma {
             //Decrement to travel from right to left on array
             k--;
 
-            System.out.println("----------------------------------------");
-            System.out.println("----------------------------------------");
-            System.out.println("k = " + k);
-            System.out.println("i = " + i);
+//            System.out.println("----------------------------------------");
+//            System.out.println("----------------------------------------");
+//            System.out.println("k = " + k);
+//            System.out.println("i = " + i);
 
             for (int j = 0; j < rotorsAvailable.size(); j++) {
-                System.out.println("j = " + j);
+//                System.out.println("j = " + j);
                 if (rotorsAvailable.get(j).getRotorName().equalsIgnoreCase(rotors[k])) {
                     rotorsUsed.set(i, rotorsAvailable.get(j));
                     j = rotorsAvailable.size();
@@ -295,7 +298,7 @@ public class Enigma {
         int j = rotorKeyPositions.length() - 1;
 
         if (rotorsUsed.size() != rotorKeyPositions.length()) {
-            throw new UnsupportedOperationException("HistoricalRotorDeprecated key length does not match rotors used");
+            throw new UnsupportedOperationException("HistoricalRotor key length does not match rotors used");
         } else {
             for (int i = 0; i < rotorKeyPositions.length(); i++) {
                 rotorsUsed.get(i).setKeyPosition(rotorKeyPositions.charAt(j));
@@ -373,7 +376,7 @@ public class Enigma {
         String keys = "";
 
         for (int i = 0; i < settings.length; i++) {
-            System.out.println("Settings[" + i + "] = " + settings[i]);
+//            System.out.println("Settings[" + i + "] = " + settings[i]);
         }
 
         int rotorCount = (settings.length - 2) / 3;
@@ -392,11 +395,11 @@ public class Enigma {
             keys = settings[i] + keys;
         }
 
-        System.out.println("rotors = " + rotors);
-        System.out.println("reflector = " + settings[rotorCount * 3]);
-        System.out.println("stecker pattern = " + settings[rotorCount * 3 + 1]);
-        System.out.println("labels = " + labels);
-        System.out.println("keys = " + keys);
+//        System.out.println("rotors = " + rotors);
+//        System.out.println("reflector = " + settings[rotorCount * 3]);
+//        System.out.println("stecker pattern = " + settings[rotorCount * 3 + 1]);
+//        System.out.println("labels = " + labels);
+//        System.out.println("keys = " + keys);
 
         for (int i = 0; i < rotorCount; i++) {
             if (this.changeRotor(i, settings[i])) {
@@ -443,21 +446,6 @@ public class Enigma {
         for (int i = 0; i < temp.length; i++) {
             temp[i] = false;
         }
-
-//        //Set usage flags
-//        if (usage >= 100) {
-//            temp[HistoricalRotorDeprecated.KRIEGSMARINE] = true;
-//            usage -= 100;
-//        }
-//
-//        if (usage >= 10) {
-//            temp[HistoricalRotorDeprecated.LUFTWAFFE] = true;
-//            usage -= 10;
-//        }
-//
-//        if (usage == 1) {
-//            temp[HistoricalRotorDeprecated.WEHRMACHT] = true;
-//        }
 
         return temp;
     }

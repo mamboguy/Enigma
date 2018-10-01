@@ -145,7 +145,6 @@ class HistoricalRotorTest {
 
         for (int i = 0; i < rotor1.getSize(); i++) {
 
-            System.out.println("Current key = " + rotor1.getKeyPosition());
             rotor1.stepRotorForward();
 
             if (rotor1.getKeyPosition() == 'Q') {
