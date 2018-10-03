@@ -1,6 +1,7 @@
 package Model.Reflectors;
 
 import Model.Rotors.HistoricalRotor;
+import Model.Rotors.Name;
 
 /**
  * Date Created Nov 18, 2017
@@ -33,7 +34,7 @@ public class HistoricalReflector extends HistoricalRotor implements IReflector {
      * @return - the reflector name
      */
     @Override
-    public String getReflectorName() {
+    public Name getReflectorName() {
         return super.getRotorName();
     }
 }

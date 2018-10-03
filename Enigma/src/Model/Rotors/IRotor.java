@@ -2,7 +2,7 @@ package Model.Rotors;
 
 public interface IRotor {
 
-    public String getRotorName();
+    public Name getRotorName();
 
     public int getLeftOutput(int rightPinInput);
 

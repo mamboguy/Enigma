@@ -1,8 +1,10 @@
 package Model.Reflectors;
 
+import Model.Rotors.Name;
+
 public interface IReflector {
 
     int getReflection(int input);
 
-    String getReflectorName();
+    Name getReflectorName();
 }

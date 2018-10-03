@@ -10,7 +10,7 @@ public class HistoricalRotor implements IRotor {
     private CircularLinkedList<RotorSlot> rotor;
     private CircularLinkedList<LabelSlot> label;
     private char labelPosition;
-    private String name;
+    private Name name;
     private boolean stepNextUse;
 
     public static final String BASE_SEQUENCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -21,7 +21,7 @@ public class HistoricalRotor implements IRotor {
         label = new CircularLinkedList<>();
 
         labelPosition = 'A';
-        this.name = name;
+        this.name = new Name(name);
 
         createRotor(wiringSequence, notchLocations);
     }
@@ -152,7 +152,7 @@ public class HistoricalRotor implements IRotor {
 
     @Override
     public char getKeyPosition() {
-        return rotor.getData().getDefaultLabel();
+        return label.getData().getLabel();
     }
 
     @Override
@@ -202,6 +202,7 @@ public class HistoricalRotor implements IRotor {
     @Override
     public void stepRotorForward() {
         rotor.stepNext();
+        label.stepNext();
 
         stepNextUse = rotor.getData().isNotch();
     }
@@ -209,12 +210,13 @@ public class HistoricalRotor implements IRotor {
     @Override
     public void stepRotorBackward() {
         rotor.stepBack();
+        label.stepBack();
 
         stepNextUse = rotor.getData().isNotch();
     }
 
     @Override
-    public String getRotorName() {
+    public Name getRotorName() {
         return name;
     }
 }

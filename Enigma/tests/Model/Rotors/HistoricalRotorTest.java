@@ -131,11 +131,19 @@ class HistoricalRotorTest {
         assertEquals(rotor1.getKeyPosition(), 'L');
         assertEquals(rotor2.getKeyPosition(), 'B');
 
-        rotor1.setKeyPosition('L');
-        rotor2.setKeyPosition('B');
+        rotor1.setKeyPosition('A');
+        rotor2.setKeyPosition('A');
 
-        assertEquals(rotor1.getKeyPosition(), 'L');
-        assertEquals(rotor2.getKeyPosition(), 'B');
+        assertEquals(rotor1.getKeyPosition(), 'A');
+
+        rotor1.stepRotor();
+        assertEquals(rotor1.getKeyPosition(), 'B');
+
+        rotor1.stepRotor();
+        assertEquals(rotor1.getKeyPosition(), 'C');
+
+        rotor1.stepRotor();
+        assertEquals(rotor1.getKeyPosition(), 'D');
     }
 
     @Test
@@ -231,16 +239,5 @@ class HistoricalRotorTest {
         rotor1.stepRotorBackward();
 
         assertEquals(rotor1.getKeyPosition(), 'Y');
-    }
-
-    @Test
-    void getRotorName() {
-
-        assertEquals(rotor1.getRotorName(), "I");
-        assertNotEquals(rotor1.getRotorName(), "VI");
-
-        assertEquals(rotor2.getRotorName(), "VI");
-        assertNotEquals(rotor2.getRotorName(), "I");
-
     }
 }
