@@ -4,6 +4,7 @@ package View.BasicGUI;
 
 import Controller.BasicGUIController;
 import Controller.Filters.PlugboardDocumentFilter;
+import Model.Setting.*;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -41,7 +42,7 @@ public class BasicInputScreen
 
     private JComboBox reflector;
 
-    private String[] savedKeySettings;
+    private EnigmaSetting savedKeySettings;
 
     private ArrayList<JTextField> keyFields = new ArrayList<JTextField>();
     private ArrayList<JTextField> labelFields = new ArrayList<JTextField>();
@@ -817,17 +818,8 @@ public class BasicInputScreen
      *
      * @return - The key settings with the rotor's names
      */
-    public String[] getCurrentKeySettings() {
-
-        //Get the standard key settings array
-        String[] settings = readGUISettings();
-
-        //Converts the rotor indexes in the array to the rotor's names
-        for (int i = 0; i < rotorCombos.size(); i++) {
-            settings[i] = (String) rotorCombos.get(i).getSelectedItem();
-        }
-
-        return settings;
+    public EnigmaSetting getCurrentKeySettings() {
+        return readGUISettings();
     }
 
     /**
@@ -839,32 +831,24 @@ public class BasicInputScreen
      *
      * @return - standardized array of settings
      */
-    private String[] readGUISettings() {
+    private EnigmaSetting readGUISettings() {
         String[] settings = new String[rotorCombos.size() * 3 + 2];
 
-        int j = 0;
+        RotorAssemblySetting assemblySetting = new RotorAssemblySetting(rotorCombos.size());
 
         for (int i = 0; i < rotorCombos.size(); i++) {
-            settings[j] = "" + rotorCombos.get(i).getSelectedItem();
-            j++;
+
+            String name = (String) rotorCombos.get(i).getSelectedItem();
+            char label = labelFields.get(i).getText().charAt(0);
+            char key = keyFields.get(i).getText().charAt(0);
+
+            assemblySetting.setRotorSetting(i, new RotorSetting(name, label, key));
         }
+        assemblySetting.setReflectorUsed(new ReflectorSetting((String) reflector.getSelectedItem()));
 
-        for (int i = 0; i < labelFields.size(); i++) {
-            settings[j] = labelFields.get(i).getText();
-            j++;
-        }
+        PlugboardSetting plugboardSetting = new PlugboardSetting(getPlugboardString());
 
-        for (int i = 0; i < keyFields.size(); i++) {
-            settings[j] = keyFields.get(i).getText();
-            j++;
-        }
-
-        settings[j] = "" + reflector.getSelectedItem();
-        j++;
-
-        settings[j] = getPlugboardString();
-
-        return settings;
+        return new EnigmaSetting(assemblySetting, plugboardSetting);
     }
 
     /**
@@ -915,7 +899,7 @@ public class BasicInputScreen
      * Reloads the saved key settings
      */
     public void useSavedKeySettings() {
-        loadKeySetting(savedKeySettings);
+        //loadKeySetting(savedKeySettings);
     }
 
     /**

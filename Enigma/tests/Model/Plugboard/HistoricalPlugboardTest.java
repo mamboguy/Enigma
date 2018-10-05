@@ -1,5 +1,6 @@
 package Model.Plugboard;
 
+import Model.Setting.PlugboardSetting;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +40,7 @@ class HistoricalPlugboardTest {
         assertEquals(plugboard.convertInput('Y'), 24);
         assertEquals(plugboard.convertInput('Z'), 25);
 
-        plugboard.steckerPattern("AB CD LV TK LM OW");
+        plugboard.steckerPattern(new PlugboardSetting("AB CD LV TK LM OW"));
         plugboard.resetPlugboard();
 
         assertEquals(plugboard.convertInput('A'), 0);
@@ -72,7 +73,7 @@ class HistoricalPlugboardTest {
 
     @Test
     void convertInput() {
-        plugboard.steckerPattern("AE BC ZT OR LQ");
+        plugboard.steckerPattern(new PlugboardSetting("AE BC ZT OR LQ"));
 
         assertEquals(plugboard.convertInput('A'), 4);
         assertEquals(plugboard.convertInput('B'), 2);
@@ -101,7 +102,7 @@ class HistoricalPlugboardTest {
         assertEquals(plugboard.convertInput('Y'), 24);
         assertEquals(plugboard.convertInput('Z'), 19);
 
-        plugboard.steckerPattern("AI KR XG FY ST WB CL");
+        plugboard.steckerPattern(new PlugboardSetting("AI KR XG FY ST WB CL"));
 
         assertEquals(plugboard.convertInput('A'), 8);
         assertEquals(plugboard.convertInput('B'), 22);
@@ -133,7 +134,7 @@ class HistoricalPlugboardTest {
 
     @Test
     void convertOutput() {
-        plugboard.steckerPattern("AE BC ZT OR LQ");
+        plugboard.steckerPattern(new PlugboardSetting("AE BC ZT OR LQ"));
 
         assertEquals(plugboard.convertOutput(0), 'E');
         assertEquals(plugboard.convertOutput(1), 'C');
@@ -162,7 +163,7 @@ class HistoricalPlugboardTest {
         assertEquals(plugboard.convertOutput(24),'Y');
         assertEquals(plugboard.convertOutput(25),'T');
 
-        plugboard.steckerPattern("AI KR XG FY ST WB CL");
+        plugboard.steckerPattern(new PlugboardSetting("AI KR XG FY ST WB CL"));
 
         assertEquals(plugboard.convertOutput(0), 'I');
         assertEquals(plugboard.convertOutput(1), 'W');

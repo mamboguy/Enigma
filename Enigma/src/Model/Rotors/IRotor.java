@@ -1,8 +1,11 @@
 package Model.Rotors;
 
-public interface IRotor {
+import Model.Enigma.Storages.IEnigmaComponent;
+import Model.Setting.RotorSetting;
 
-    public Name getRotorName();
+public interface IRotor extends IEnigmaComponent {
+
+    public String getName();
 
     public int getLeftOutput(int rightPinInput);
 
@@ -12,10 +15,6 @@ public interface IRotor {
 
     public char getLabelPosition();
 
-    public void setKeyPosition(char position);
-
-    public void setLabelPosition(char position);
-
     public boolean willStepNextUse();
 
     public void stepRotor();
@@ -23,4 +22,6 @@ public interface IRotor {
     public void stepRotorForward();
 
     public void stepRotorBackward();
+
+    public void keyToSetting(RotorSetting newSetting);
 }

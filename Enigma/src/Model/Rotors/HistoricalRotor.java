@@ -4,13 +4,13 @@ import Model.Rotors.RotorSubAssemblies.CircularLinkedList;
 import Model.Rotors.RotorSubAssemblies.LabelSlot;
 import Model.Rotors.RotorSubAssemblies.Node;
 import Model.Rotors.RotorSubAssemblies.RotorSlot;
+import Model.Setting.RotorSetting;
 
 public class HistoricalRotor implements IRotor {
 
     private CircularLinkedList<RotorSlot> rotor;
     private CircularLinkedList<LabelSlot> label;
-    private char labelPosition;
-    private Name name;
+    private RotorSetting settings;
     private boolean stepNextUse;
 
     public static final String BASE_SEQUENCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -20,13 +20,12 @@ public class HistoricalRotor implements IRotor {
         rotor = new CircularLinkedList<>();
         label = new CircularLinkedList<>();
 
-        labelPosition = 'A';
-        this.name = new Name(name);
+        settings = new RotorSetting(name, 'A', 'A');
 
         createRotor(wiringSequence, notchLocations);
     }
 
-    private void createRotor(String wiringSequence, String notchLocations) {
+    void createRotor(String wiringSequence, String notchLocations) {
 
         //Create right rotor from base input wiring sequence
         createRightRotorHalf(wiringSequence, notchLocations);
@@ -41,7 +40,7 @@ public class HistoricalRotor implements IRotor {
         setDefaults();
     }
 
-    private void createLabelWheel() {
+    void createLabelWheel() {
         for (int i = 0; i < BASE_SEQUENCE.length(); i++) {
             label.insert(new LabelSlot(BASE_SEQUENCE.charAt(i)));
         }
@@ -51,7 +50,7 @@ public class HistoricalRotor implements IRotor {
         return rotor.getSize();
     }
 
-    private void createLeftRotorHalf() {
+    void createLeftRotorHalf() {
         for (int i = 0; i < rotor.getSize(); i++) {
 
             //Go to the next position to assign
@@ -75,33 +74,33 @@ public class HistoricalRotor implements IRotor {
         }
     }
 
-    private void createRightRotorHalf(String wiringSequence, String notchLocations) {
+    void createRightRotorHalf(String wiringSequence, String notchLocations) {
         for (int i = 0; i < wiringSequence.length(); i++) {
             rotor.insert(new RotorSlot(BASE_SEQUENCE.charAt(i), wiringSequence.charAt(i), notchLocations.contains(BASE_SEQUENCE.charAt(i) + "")));
         }
     }
 
-    private void setDefaults() {
+    void setDefaults() {
         resetRotor();
 
         resetLabel();
     }
 
-    private void resetRotor() {
+    void resetRotor() {
         while (rotor.getData().getDefaultLabel() != 'A') {
             rotor.stepNext();
         }
     }
 
-    private void resetLabel() {
+    void resetLabel() {
 
         Node<RotorSlot> temp = rotor.getNodeAtPosition(0);
 
-        while (temp.getData().getDefaultLabel() != 'A'){
+        while (temp.getData().getDefaultLabel() != 'A') {
             temp = temp.getNext();
         }
 
-        while (label.getData().getLabel() != temp.getData().getDefaultLabel()){
+        while (label.getData().getLabel() != temp.getData().getDefaultLabel()) {
             label.stepNext();
         }
     }
@@ -125,7 +124,7 @@ public class HistoricalRotor implements IRotor {
 
     }
 
-    private void printOutAligned(int leftToRightOffset) {
+    void printOutAligned(int leftToRightOffset) {
 
         String temp = " <-> ";
 
@@ -156,9 +155,14 @@ public class HistoricalRotor implements IRotor {
     }
 
     @Override
+    public char getLabelPosition() {
+        return label.getData().getLabel();
+    }
+
+    @Override
     public boolean willStepNextUse() {
 
-        if (stepNextUse){
+        if (stepNextUse) {
             stepNextUse = false;
 
             return true;
@@ -167,13 +171,7 @@ public class HistoricalRotor implements IRotor {
         return stepNextUse;
     }
 
-    @Override
-    public char getLabelPosition() {
-        return labelPosition;
-    }
-
-    @Override
-    public void setKeyPosition(char position) {
+    void setKeyPosition(char position) {
         while (label.getData().getLabel() != position) {
             rotor.stepNext();
             label.stepNext();
@@ -182,12 +180,9 @@ public class HistoricalRotor implements IRotor {
         stepNextUse = rotor.getData().isNotch();
     }
 
-    @Override
-    public void setLabelPosition(char position) {
+    void setLabelPosition(char position) {
 
         resetLabel();
-
-        labelPosition = position;
 
         for (int i = 'A'; i < position; i++) {
             label.stepNext();
@@ -216,7 +211,16 @@ public class HistoricalRotor implements IRotor {
     }
 
     @Override
-    public Name getRotorName() {
-        return name;
+    public void keyToSetting(RotorSetting newSetting) {
+        if (!settings.equals(newSetting)) {
+            settings = newSetting;
+            setLabelPosition(settings.getLabelPosition());
+            setKeyPosition(settings.getKeyPosition());
+        }
+    }
+
+    @Override
+    public String getName() {
+        return settings.getName();
     }
 }

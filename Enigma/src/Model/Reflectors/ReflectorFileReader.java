@@ -1,7 +1,6 @@
 package Model.Reflectors;
 
-import Model.Enigma.Storages.ReflectorStorage;
-
+import Model.Enigma.Storages.ComponentStorage;
 import java.io.File;
 import java.util.Scanner;
 
@@ -14,11 +13,11 @@ public class ReflectorFileReader {
 
     private static final String REFLECTOR_SOURCE_PATH = "Enigma/src/Model/Reflectors/historical_reflectors.txt";
     
-    public static ReflectorStorage readReflectorFile(String path){
+    public static ComponentStorage readReflectorFile(String path){
         //TODO - Remove me when implement reading other files
         path = REFLECTOR_SOURCE_PATH;
 
-        ReflectorStorage reflectorList = new ReflectorStorage();
+        ComponentStorage reflectorList = new ComponentStorage();
 
         try {
             //Create a new scanner from the reflector file
@@ -44,7 +43,7 @@ public class ReflectorFileReader {
                     int usage = lineReader.nextInt();
 
                     //Add the new rotor to the list
-                    reflectorList.addReflector(new HistoricalReflector(name, sequence, ""));
+                    reflectorList.addComponent(new HistoricalReflector(name, sequence, ""));
                 }
             }
         } catch (Exception e) {

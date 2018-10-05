@@ -1,12 +1,13 @@
 package Model.Plugboard;
 
-public interface IPlugboard {
+import Model.Enigma.Storages.IEnigmaComponent;
+import Model.Setting.PlugboardSetting;
 
-    void resetPlugboard();
+public interface IPlugboard extends IEnigmaComponent {
 
     int convertInput(char charInput);
 
     char convertOutput(int pinInput);
 
-    void steckerPattern(String pattern);
+    void keyComponent(PlugboardSetting plugboardSetting);
 }

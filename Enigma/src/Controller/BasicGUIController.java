@@ -9,7 +9,7 @@ import Controller.BasicGUI.ComboController;
 import Controller.BasicGUI.MenuController;
 import Controller.File.EnigmaFileManipulation;
 import Controller.SubFrames.RandomSettingsController;
-import Model.Enigma.Enigma;
+import Model.Enigma.HistoricalEnigma;
 import View.BasicGUI.BasicInputScreen;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class BasicGUIController
 
     //The model and view
     private BasicInputScreen gui;
-    private Enigma model;
+    private HistoricalEnigma model;
 
     //Sub-controllers
     private MenuController menuController;
@@ -40,14 +40,14 @@ public class BasicGUIController
 
     public BasicGUIController() {
         //Initialize the model, view and any sub-controllers
-        model = new Enigma();
+        model = new HistoricalEnigma();
         gui = new BasicInputScreen();
         menuController = new MenuController(this);
         comboController = new ComboController(this);
         randomSettingsController = new RandomSettingsController(this);
 
         //Populate the combo boxes in the gui with the model's available rotors
-        gui.updateRotorComboList(model.getRotorsAvailable());
+        gui.updateRotorComboList(model.getRotorNames());
         gui.updateReflectorComboList(model.getReflectorsAvailable());
 
         //Set the gui to its default state
@@ -68,13 +68,13 @@ public class BasicGUIController
         switch (sourceName) {
             case "encodeButton":
                 //Set the enigma model to mirror the current GUI configuration
-                model.setSettings(gui.getCurrentKeySettings());
+                model.changeSettings(gui.getCurrentKeySettings());
 
                 //Send the entered plaintext to the model for encoding, then display on the GUI
-                gui.setCiphertext(model.inputMessage(gui.getPlaintext()));
+                gui.setCiphertext(model.processMessage(gui.getPlaintext()));
 
                 //Set the key positions to their current position after the message finishes encoding
-                gui.setCurrentKeyPosition(model.getCurrentKeyPositions());
+                gui.setCurrentKeyPosition(model.getSettings());
 
                 break;
 
@@ -188,7 +188,7 @@ public class BasicGUIController
 
     public void saveKeyFile(File selectedFile) {
         //Save the file using the current GUI settings
-        EnigmaFileManipulation.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
+        //EnigmaFileManipulation.saveKeyFile(selectedFile, gui.getCurrentKeySettings());
     }
 
     public void openKeyFile(File selectedFile) {
@@ -214,7 +214,7 @@ public class BasicGUIController
     }
 
     public String[] requestRotorNames() {
-        return model.getRotorsAvailable();
+        return model.getRotorNames();
     }
 
     public void requestRandomKeySettingsPanel() {

@@ -1,20 +1,39 @@
 package Model.Enigma;
 
+import Model.Enigma.Storages.ComponentStorage;
 import Model.Reflectors.IReflector;
+import Model.Reflectors.ReflectorFileReader;
 import Model.Rotors.IRotor;
+import Model.Rotors.RotorFileReader;
+import Model.Setting.EnigmaSetting;
+import Model.Setting.RotorAssemblySetting;
 
 import java.util.ArrayList;
 
 public class RotorAssembly {
 
-    private ArrayList<RotorSlot> rotors;
+    private ArrayList<IRotor> rotors;
     private IReflector reflector;
     private int size;
+    private RotorAssemblySetting setting;
+    private ComponentStorage components;
+
 
     public RotorAssembly(int size){
         rotors = new ArrayList<>();
         reflector = null;
         this.size = size;
+
+        components = RotorFileReader.readRotorFile("TODO - fix path");
+        ComponentStorage reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
+
+        String[] names = reflectorsAvailable.getAllNames();
+
+        for (int i = 0; i < names.length; i++) {
+            components.addComponent(reflectorsAvailable.getComponent(names[i]));
+        }
+
+        setting = new RotorAssemblySetting(size);
     }
 
     public void changeReflector(IReflector newReflector){
@@ -26,8 +45,12 @@ public class RotorAssembly {
     }
 
     public void addNewSlot(){
+        this.addNewSlot(null);
+    }
+
+    public void addNewSlot(IRotor newRotor){
         this.size++;
-        rotors.add(null);
+        rotors.add(newRotor);
     }
 
     public void removeSlot(int slot){
@@ -39,7 +62,7 @@ public class RotorAssembly {
 
     public IRotor getRotor(int slot) {
         if (isValidSlot(slot)) {
-            return rotors.get(slot).getRotor();
+            return rotors.get(slot);
         }
 
         return null;
@@ -47,7 +70,7 @@ public class RotorAssembly {
 
     public void changeRotor(IRotor newRotor, int slot) {
         if (isValidSlot(slot)) {
-            rotors.get(slot).replaceRotor(newRotor);
+            rotors.set(slot, newRotor);
         }
     }
 
@@ -64,7 +87,8 @@ public class RotorAssembly {
     }
 
     public void stepAssembly(){
-        // TODO: 10/2/2018 Implement me
+        // TODO: 10/3/2018 fix for just reaching notch??
+
         for (int i = 0; i < rotors.size(); i++) {
 
             if (hasRightRotor(i)){
@@ -83,15 +107,28 @@ public class RotorAssembly {
     public int processCharacter(int input){
 
         for (int i = 0; i < rotors.size(); i++) {
-            input = rotors.get(i).getRotor().getLeftOutput(input);
+            input = rotors.get(i).getLeftOutput(input);
         }
 
         input = reflector.getReflection(input);
 
         for (int i = rotors.size() - 1; i >= 0; i--) {
-            input = rotors.get(i).getRotor().getRightOutput(input);
+            input = rotors.get(i).getRightOutput(input);
         }
 
         return input;
+    }
+
+    public void keyComponent(EnigmaSetting newSetting) {
+
+        if (!newSetting.equals(setting)){
+
+            setting = newSetting.getAssemblySetting();
+            rotors.clear();
+
+            for (int i = 0; i < setting.getRotorCount(); i++) {
+                rotors.add((IRotor) components.getComponent(setting.getRotorNameAtSlot(i)));
+            }
+        }
     }
 }

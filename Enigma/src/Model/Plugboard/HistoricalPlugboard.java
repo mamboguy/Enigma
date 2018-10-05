@@ -3,6 +3,8 @@
  */
 package Model.Plugboard;
 
+import Model.Setting.PlugboardSetting;
+
 import java.util.ArrayList;
 
 /**
@@ -16,20 +18,39 @@ public class HistoricalPlugboard implements IPlugboard {
 
     //pairings holds the current switched letters
     private ArrayList<HistoricalPlugboardSlot> plugboard = new ArrayList<>();
+    private PlugboardSetting setting;
 
     public HistoricalPlugboard() {
         for (int i = 0; i < BASE_SEQUENCE.length(); i++) {
             plugboard.add(new HistoricalPlugboardSlot(BASE_SEQUENCE.charAt(i)));
         }
+
+        setting = new PlugboardSetting();
     }
 
     /**
      * Implementation of reset for plugboard.  Sets everything to map to itself as if no pairing existed
      */
-    @Override
-    public void resetPlugboard() {
+    void resetPlugboard() {
         for (int i = 0; i < plugboard.size(); i++) {
             plugboard.get(i).resetPairing();
+        }
+
+        setting.clear();
+    }
+
+    public PlugboardSetting getSetting() {
+        return setting;
+    }
+
+    public void keyComponent(PlugboardSetting setting) {
+        if (setting.equals(this.setting)){
+
+            this.setting = setting;
+
+            resetPlugboard();
+
+            steckerPattern(setting);
         }
     }
 
@@ -38,7 +59,12 @@ public class HistoricalPlugboard implements IPlugboard {
         return getSlot(charInput).getPinInput();
     }
 
-    private HistoricalPlugboardSlot getSlot(char charInput) {
+    @Override
+    public char convertOutput(int pinInput) {
+        return getInput(pinInput).getCharOutput();
+    }
+
+    HistoricalPlugboardSlot getSlot(char charInput) {
 
         charInput = Character.toUpperCase(charInput);
 
@@ -51,7 +77,7 @@ public class HistoricalPlugboard implements IPlugboard {
         return plugboard.get(0);
     }
 
-    private HistoricalPlugboardSlot getInput(int pinInput) {
+    HistoricalPlugboardSlot getInput(int pinInput) {
 
 
         for (int i = 0; i < plugboard.size(); i++) {
@@ -63,32 +89,17 @@ public class HistoricalPlugboard implements IPlugboard {
         return plugboard.get(0);
     }
 
-    @Override
-    public char convertOutput(int pinInput) {
-        return getInput(pinInput).getCharOutput();
-    }
-
-    /**
-     * Stecker the plugboard based off the given string
-     *
-     * @param pattern - the steckering pair string
-     */
-    public void steckerPattern(String pattern) {
+    void steckerPattern(PlugboardSetting newSetting) {
         //Resets plugboard to blank state
         resetPlugboard();
 
-        pattern = pattern.trim();
+        setting = newSetting;
 
-        //Ignore on empty pattern
-        if (pattern.length() > 0) {
+        String[] pairs = setting.getPairings();
 
-            //Split the list on spaces
-            String[] pairs = pattern.split(" ");
-
-            //Steckers individual pairs
-            for (int i = 0; i < pairs.length; i++) {
-                steckerPair(pairs[i]);
-            }
+        //Steckers individual pairs
+        for (int i = 0; i < pairs.length; i++) {
+            steckerPair(pairs[i]);
         }
     }
 
@@ -97,7 +108,7 @@ public class HistoricalPlugboard implements IPlugboard {
      *
      * @param pair - Input pair of letters.  Ex: "AE", "BC", "NR"
      */
-    private void steckerPair(String pair) {
+    void steckerPair(String pair) {
         pair = sanitize(pair);
 
         HistoricalPlugboardSlot pair1 = getSlot(pair.charAt(0));
@@ -112,7 +123,7 @@ public class HistoricalPlugboard implements IPlugboard {
      * @param pair - the string to sanitize
      * @return - sanitized string
      */
-    private String sanitize(String pair) {
+    String sanitize(String pair) {
 
         //Set all to uppercase
         pair = pair.toUpperCase();
@@ -121,5 +132,10 @@ public class HistoricalPlugboard implements IPlugboard {
         pair = pair.replaceAll(" ", "");
 
         return pair;
+    }
+
+    @Override
+    public String getName() {
+        return "Plugboard";
     }
 }

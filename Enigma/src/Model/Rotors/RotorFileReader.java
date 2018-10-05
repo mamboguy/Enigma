@@ -1,7 +1,6 @@
 package Model.Rotors;
 
-import Model.Enigma.Storages.RotorStorage;
-
+import Model.Enigma.Storages.ComponentStorage;
 import java.io.File;
 import java.util.Scanner;
 
@@ -16,12 +15,12 @@ public class RotorFileReader {
     // TODO: 10/2/2018 Write IRotor file
     // TODO: 10/2/2018 Validate IRotor file
 
-    public static RotorStorage readRotorFile(String path) {
+    public static ComponentStorage readRotorFile(String path) {
         
         //TODO - Remove me when implement reading other files
         path = ROTOR_SOURCE_PATH;
 
-        RotorStorage rotorList = new RotorStorage();
+        ComponentStorage rotorList = new ComponentStorage();
 
         try {
             //Create a scanner from the rotor file
@@ -48,7 +47,7 @@ public class RotorFileReader {
 
                     //Add the new rotor to the list
                     //rotorList.add(new HistoricalRotorDeprecated(name, sequence, notch, usage));
-                    rotorList.addRotor(new HistoricalRotor(name, sequence, notch));
+                    rotorList.addComponent(new HistoricalRotor(name, sequence, notch));
                 }
             }
         } catch (Exception e) {
