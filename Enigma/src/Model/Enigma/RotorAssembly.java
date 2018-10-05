@@ -24,8 +24,9 @@ public class RotorAssembly {
         reflector = null;
         this.size = size;
 
-        components = RotorFileReader.readRotorFile("TODO - fix path");
-        ComponentStorage reflectorsAvailable = ReflectorFileReader.readReflectorFile("TODO - fix path");
+        // TODO: 10/4/2018 FIX ME
+        components = RotorFileReader.readRotorFile();
+        ComponentStorage reflectorsAvailable = ReflectorFileReader.readReflectorFile();
 
         String[] names = reflectorsAvailable.getAllNames();
 

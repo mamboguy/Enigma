@@ -10,15 +10,16 @@ import java.util.Scanner;
  */
 public class RotorFileReader {
 
-    private static final String ROTOR_SOURCE_PATH = "Enigma/src/Model/Rotors/historical_rotors.txt";
+    private static final String ROTOR_SOURCE_PATH = "src/Model/Rotors/historical_rotors.txt";
 
     // TODO: 10/2/2018 Write IRotor file
     // TODO: 10/2/2018 Validate IRotor file
 
+    public static ComponentStorage readRotorFile(){
+        return readRotorFile(ROTOR_SOURCE_PATH);
+    }
+
     public static ComponentStorage readRotorFile(String path) {
-        
-        //TODO - Remove me when implement reading other files
-        path = ROTOR_SOURCE_PATH;
 
         ComponentStorage rotorList = new ComponentStorage();
 

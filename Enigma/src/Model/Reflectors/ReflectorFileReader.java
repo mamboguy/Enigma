@@ -11,8 +11,12 @@ import java.util.Scanner;
  */
 public class ReflectorFileReader {
 
-    private static final String REFLECTOR_SOURCE_PATH = "Enigma/src/Model/Reflectors/historical_reflectors.txt";
-    
+    private static final String REFLECTOR_SOURCE_PATH = "src/Model/Reflectors/historical_reflectors.txt";
+
+    public static ComponentStorage readReflectorFile(){
+        return readReflectorFile(REFLECTOR_SOURCE_PATH);
+    }
+
     public static ComponentStorage readReflectorFile(String path){
         //TODO - Remove me when implement reading other files
         path = REFLECTOR_SOURCE_PATH;
