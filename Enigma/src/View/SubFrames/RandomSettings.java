@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package View.BasicGUI.SubFrames;
+package View.SubFrames;
 
 import Controller.BasicGUIController;
-import View.BasicGUI.BasicInputScreen;
+import View.BasicInputScreen;
 
 import javax.swing.*;
 import java.awt.*;

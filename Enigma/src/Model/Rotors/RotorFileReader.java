@@ -1,6 +1,6 @@
 package Model.Rotors;
 
-import Model.Enigma.Storages.ComponentStorage;
+import Model.Storages.ComponentFactory;
 import java.io.File;
 import java.util.Scanner;
 
@@ -10,18 +10,16 @@ import java.util.Scanner;
  */
 public class RotorFileReader {
 
-    private static final String ROTOR_SOURCE_PATH = "src/Model/Rotors/historical_rotors.txt";
+    private static final String ROTOR_SOURCE_PATH = "Enigma/src/Model/Rotors/historical_rotors.txt";
 
     // TODO: 10/2/2018 Write IRotor file
     // TODO: 10/2/2018 Validate IRotor file
 
-    public static ComponentStorage readRotorFile(){
-        return readRotorFile(ROTOR_SOURCE_PATH);
+    public static void readRotorFile(){
+        readRotorFile(ROTOR_SOURCE_PATH);
     }
 
-    public static ComponentStorage readRotorFile(String path) {
-
-        ComponentStorage rotorList = new ComponentStorage();
+    public static void readRotorFile(String path) {
 
         try {
             //Create a scanner from the rotor file
@@ -48,14 +46,11 @@ public class RotorFileReader {
 
                     //Add the new rotor to the list
                     //rotorList.add(new HistoricalRotorDeprecated(name, sequence, notch, usage));
-                    rotorList.addComponent(new HistoricalRotor(name, sequence, notch));
+                    ComponentFactory.getInstance().addComponent(new HistoricalRotor(name, sequence, notch));
                 }
             }
         } catch (Exception e) {
             System.out.println("error = " + e);
         }
-
-        return rotorList;
     }
-
 }

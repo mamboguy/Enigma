@@ -1,4 +1,4 @@
-package Model.Enigma.Storages;
+package Model.Storages;
 
 public interface IEnigmaComponent {
 

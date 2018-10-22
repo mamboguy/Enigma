@@ -1,6 +1,6 @@
 package Model.Plugboard;
 
-import Model.Enigma.Storages.IEnigmaComponent;
+import Model.Storages.IEnigmaComponent;
 import Model.Setting.PlugboardSetting;
 
 public interface IPlugboard extends IEnigmaComponent {

@@ -55,6 +55,7 @@ class MessageTest {
         assertEquals(messagePlainTextOnly.getSpacedPlainText(4), "AOEU AOEU AOEU");
         assertEquals(messagePlainTextOnly.getSpacedPlainText(2), "AO EU AO EU AO EU");
         assertEquals(messagePlainTextOnly.getSpacedPlainText(1), "A O E U A O E U A O E U");
+        assertEquals(messagePlainTextOnly.getSpacedPlainText(0), "AOEUAOEUAOEU");
     }
 
     @Test

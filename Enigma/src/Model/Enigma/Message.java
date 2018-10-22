@@ -42,6 +42,12 @@ public class Message {
 
         String temp = "";
 
+        if (spacing == 0){
+            message = message.replace(" ", "");
+            message = message.trim();
+            return message;
+        }
+
         for (int i = 0; i < message.length(); i++) {
             //If the message is at its spacing requirement, add in a space
             if (i % spacing == 0) {

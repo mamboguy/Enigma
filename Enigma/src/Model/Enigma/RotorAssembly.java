@@ -1,13 +1,7 @@
 package Model.Enigma;
 
-import Model.Enigma.Storages.ComponentStorage;
 import Model.Reflectors.IReflector;
-import Model.Reflectors.ReflectorFileReader;
 import Model.Rotors.IRotor;
-import Model.Rotors.RotorFileReader;
-import Model.Setting.EnigmaSetting;
-import Model.Setting.RotorAssemblySetting;
-
 import java.util.ArrayList;
 
 public class RotorAssembly {
@@ -15,9 +9,6 @@ public class RotorAssembly {
     private ArrayList<IRotor> rotors;
     private IReflector reflector;
     private int size;
-    private RotorAssemblySetting setting;
-    private ComponentStorage components;
-
 
     public RotorAssembly(int size){
         rotors = new ArrayList<>();
@@ -25,20 +16,26 @@ public class RotorAssembly {
         this.size = size;
 
         // TODO: 10/4/2018 FIX ME
-        components = RotorFileReader.readRotorFile();
-        ComponentStorage reflectorsAvailable = ReflectorFileReader.readReflectorFile();
-
-        String[] names = reflectorsAvailable.getAllNames();
-
-        for (int i = 0; i < names.length; i++) {
-            components.addComponent(reflectorsAvailable.getComponent(names[i]));
-        }
-
-        setting = new RotorAssemblySetting(size);
+//        components = RotorFileReader.readRotorFile();
+//        ComponentFactory reflectorsAvailable = ReflectorFileReader.readReflectorFile();
+//
+//        String[] names = reflectorsAvailable.getAllNames();
+//
+//        for (int i = 0; i < names.length; i++) {
+//            components.addComponent(reflectorsAvailable.getComponent(names[i]));
+//        }
+//
+//        setting = new RotorAssemblySetting(size);
     }
 
-    public void changeReflector(IReflector newReflector){
+    public boolean changeReflector(IReflector newReflector){
+
+        if (newReflector == null){
+            return false;
+        }
+
         reflector = newReflector;
+        return true;
     }
 
     public IReflector getReflector(){
@@ -118,18 +115,5 @@ public class RotorAssembly {
         }
 
         return input;
-    }
-
-    public void keyComponent(EnigmaSetting newSetting) {
-
-        if (!newSetting.equals(setting)){
-
-            setting = newSetting.getAssemblySetting();
-            rotors.clear();
-
-            for (int i = 0; i < setting.getRotorCount(); i++) {
-                rotors.add((IRotor) components.getComponent(setting.getRotorNameAtSlot(i)));
-            }
-        }
     }
 }

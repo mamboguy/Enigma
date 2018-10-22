@@ -1,7 +1,7 @@
 package Controller.SubFrames;
 
 import Controller.BasicGUIController;
-import View.BasicGUI.SubFrames.RandomSettings;
+import View.SubFrames.RandomSettings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -25,7 +25,7 @@ public class RandomSettingsController
     }
 
     public void openSettingsPanel() {
-        gui.openPanel(parent.requestRotorNames());
+//        gui.openPanel(parent.requestRotorNames());
     }
 
     @Override

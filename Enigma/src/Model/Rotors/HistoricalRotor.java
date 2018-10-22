@@ -4,14 +4,17 @@ import Model.Rotors.RotorSubAssemblies.CircularLinkedList;
 import Model.Rotors.RotorSubAssemblies.LabelSlot;
 import Model.Rotors.RotorSubAssemblies.Node;
 import Model.Rotors.RotorSubAssemblies.RotorSlot;
-import Model.Setting.RotorSetting;
+import View.Observer.IObserver;
+
+import java.util.ArrayList;
 
 public class HistoricalRotor implements IRotor {
 
     private CircularLinkedList<RotorSlot> rotor;
     private CircularLinkedList<LabelSlot> label;
-    private RotorSetting settings;
     private boolean stepNextUse;
+    private String name;
+    private ArrayList<IObserver> observers;
 
     public static final String BASE_SEQUENCE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -20,7 +23,9 @@ public class HistoricalRotor implements IRotor {
         rotor = new CircularLinkedList<>();
         label = new CircularLinkedList<>();
 
-        settings = new RotorSetting(name, 'A', 'A');
+        observers = new ArrayList<IObserver>();
+
+        this.name = name;
 
         createRotor(wiringSequence, notchLocations);
     }
@@ -140,6 +145,11 @@ public class HistoricalRotor implements IRotor {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public int getLeftOutput(int rightPinInput) {
         return (rotor.getNodeAtPosition(rightPinInput).getData().getRightToLeftOffset() + rightPinInput) % 26;
     }
@@ -178,6 +188,8 @@ public class HistoricalRotor implements IRotor {
         }
 
         stepNextUse = rotor.getData().isNotch();
+
+        notifyObservers();
     }
 
     void setLabelPosition(char position) {
@@ -187,6 +199,8 @@ public class HistoricalRotor implements IRotor {
         for (int i = 'A'; i < position; i++) {
             label.stepNext();
         }
+
+        notifyObservers();
     }
 
     @Override
@@ -200,6 +214,8 @@ public class HistoricalRotor implements IRotor {
         label.stepNext();
 
         stepNextUse = rotor.getData().isNotch();
+
+        notifyObservers();
     }
 
     @Override
@@ -208,19 +224,24 @@ public class HistoricalRotor implements IRotor {
         label.stepBack();
 
         stepNextUse = rotor.getData().isNotch();
+
+        notifyObservers();
     }
 
     @Override
-    public void keyToSetting(RotorSetting newSetting) {
-        if (!settings.equals(newSetting)) {
-            settings = newSetting;
-            setLabelPosition(settings.getLabelPosition());
-            setKeyPosition(settings.getKeyPosition());
+    public void addObserver(IObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void deleteObserver(IObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).update(this);
         }
-    }
-
-    @Override
-    public String getName() {
-        return settings.getName();
     }
 }

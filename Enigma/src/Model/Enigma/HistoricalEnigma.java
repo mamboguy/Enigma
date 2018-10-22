@@ -10,13 +10,8 @@ package Model.Enigma;
  * @author Michael C
  */
 
-import Model.Enigma.Storages.ComponentStorage;
 import Model.Plugboard.HistoricalPlugboard;
 import Model.Plugboard.IPlugboard;
-import Model.Reflectors.ReflectorFileReader;
-import Model.Rotors.RotorFileReader;
-import Model.Setting.EnigmaSetting;
-import Model.Setting.RotorAssemblySetting;
 
 public class HistoricalEnigma {
 
@@ -26,12 +21,9 @@ public class HistoricalEnigma {
 
     //<editor-fold desc="Private Variables">
     //TODO - 04 Oct 2018 - Combine into one storage cache?
-    private ComponentStorage reflectorsAvailable;
-    private ComponentStorage rotorsAvailable;
     private RotorAssembly rotorAssembly;
     private IPlugboard plugboard;
     private Message message;
-    private EnigmaSetting setting;
     //</editor-fold>
 
     public HistoricalEnigma() {
@@ -43,33 +35,13 @@ public class HistoricalEnigma {
     }
 
     /**
-     * Used to populate the GUI's combo boxes with all available options for
-     * rotors
-     *
-     * @return - The list of rotor names
-     */
-    public String[] getRotorNames() {
-        return rotorsAvailable.getAllNames();
-    }
-
-    /**
-     * Used to populate the GUI's combo box with all available options for
-     * reflectors
-     *
-     * @return - The list of reflector names
-     */
-    public String[] getReflectorsAvailable() {
-        return reflectorsAvailable.getAllNames();
-    }
-
-    /**
      * Encodes messages into ciphertext
      *
      * @param message - plaintext message to encode
      *
      * @return - ciphertext of plaintext message
      */
-    public String processMessage(String message) {
+    public Message processMessage(String message) {
 
         String cipher = "";
 
@@ -80,7 +52,7 @@ public class HistoricalEnigma {
         printToConsole();
 
         //Return the ciphertext
-        return cipher.trim();
+        return new Message(message, cipher.trim());
     }
 
     private void printToConsole() {
@@ -113,18 +85,4 @@ public class HistoricalEnigma {
 
         return (charInput);
     }
-
-    //<editor-fold desc="Adjust settings methods">
-    public void changeSettings(EnigmaSetting newSetting) {
-        setting = newSetting;
-
-        rotorAssembly.keyComponent(newSetting);
-        plugboard.keyComponent(newSetting.getPlugboardSetting());
-    }
-
-    public String[] getSettings() {
-        //TODO - Implement method getSettings
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    //</editor-fold>
 }

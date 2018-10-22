@@ -1,26 +1,31 @@
-package Model.Enigma.Storages;
+package Model.Storages;
 
 import Model.Reflectors.HistoricalReflector;
 import Model.Reflectors.ReflectorFileReader;
 import Model.Rotors.HistoricalRotor;
 import Model.Rotors.RotorFileReader;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.sql.Ref;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ComponentStorageTest {
 
-    private ComponentStorage storage1 = RotorFileReader.readRotorFile();
-
     private IEnigmaComponent reflector1 = new HistoricalReflector("TestReflector1", "aoeu", "a");
     private IEnigmaComponent rotor1 = new HistoricalRotor("TestReflector1", "aoeu", "a");
 
+    private ComponentFactory storage1 = ComponentFactory.getInstance();
+
+    @BeforeAll
+    void setup(){
+        ReflectorFileReader.readReflectorFile();
+        RotorFileReader.readRotorFile();
+    }
+
     @Test
     void addComponent() {
-        storage1.addComponent(reflector1);
-        storage1.addComponent(rotor1);
+        ComponentFactory.getInstance().addComponent(reflector1);
+        ComponentFactory.getInstance().addComponent(rotor1);
 
         assertTrue(storage1.hasComponent(rotor1.getName()));
         assertTrue(storage1.hasComponent(reflector1.getName()));
@@ -44,11 +49,14 @@ class ComponentStorageTest {
     }
 
     @Test
-    void getAllNames() {
-        String[] temp = new String[]{"I", "II", "III", "IV", "V", "VI", "VII", "VIII"};
-
-        storage1.print();
-
-        assertEquals(storage1.getAllNames(), temp);
+    void compareStrings() {
+        assertTrue(storage1.testCompareStrings("III", "I"));
+        assertTrue(storage1.testCompareStrings("III", "II"));
+        assertTrue(storage1.testCompareStrings("II", "I"));
+        assertFalse(storage1.testCompareStrings("I", "IV"));
+        assertFalse(storage1.testCompareStrings("I", "I"));
+        assertFalse(storage1.testCompareStrings("I", "III"));
+        assertFalse(storage1.testCompareStrings("II", "III"));
+        assertFalse(storage1.testCompareStrings("I", "II"));
     }
 }

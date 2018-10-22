@@ -1,7 +1,7 @@
 package Model.Reflectors;
 
 
-import Model.Enigma.Storages.IEnigmaComponent;
+import Model.Storages.IEnigmaComponent;
 
 public interface IReflector extends IEnigmaComponent {
 

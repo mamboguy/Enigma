@@ -10,7 +10,7 @@ import Controller.BasicGUI.MenuController;
 import Controller.File.EnigmaFileManipulation;
 import Controller.SubFrames.RandomSettingsController;
 import Model.Enigma.HistoricalEnigma;
-import View.BasicGUI.BasicInputScreen;
+import View.BasicInputScreen;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -47,8 +47,8 @@ public class BasicGUIController
         randomSettingsController = new RandomSettingsController(this);
 
         //Populate the combo boxes in the gui with the model's available rotors
-        gui.updateRotorComboList(model.getRotorNames());
-        gui.updateReflectorComboList(model.getReflectorsAvailable());
+//        gui.updateRotorComboList(model.getRotorNames());
+//        gui.updateReflectorComboList(model.getReflectorsAvailable());
 
         //Set the gui to its default state
         gui.resetToDefault();
@@ -68,13 +68,13 @@ public class BasicGUIController
         switch (sourceName) {
             case "encodeButton":
                 //Set the enigma model to mirror the current GUI configuration
-                model.changeSettings(gui.getCurrentKeySettings());
+//                model.changeSettings(gui.getCurrentKeySettings());
 
                 //Send the entered plaintext to the model for encoding, then display on the GUI
-                gui.setCiphertext(model.processMessage(gui.getPlaintext()));
+//                gui.setCiphertext(model.processMessage(gui.getPlaintext()));
 
                 //Set the key positions to their current position after the message finishes encoding
-                gui.setCurrentKeyPosition(model.getSettings());
+//                gui.setCurrentKeyPosition(model.getSettings());
 
                 break;
 
@@ -86,7 +86,7 @@ public class BasicGUIController
             case "saveButton":
 
                 //Tell the gui to temporarily store the current key settings
-                gui.saveCurrentKeySettings();
+//                gui.saveCurrentKeySettings();
                 break;
             case "reloadButton":
 
@@ -213,9 +213,9 @@ public class BasicGUIController
         return gui.isRotorAlreadySelected(selectedIndex);
     }
 
-    public String[] requestRotorNames() {
-        return model.getRotorNames();
-    }
+//    public String[] requestRotorNames() {
+//        return model.getRotorNames();
+//    }
 
     public void requestRandomKeySettingsPanel() {
         randomSettingsController.openSettingsPanel();

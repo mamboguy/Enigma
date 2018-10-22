@@ -1,9 +1,9 @@
 package Model.Rotors;
 
-import Model.Enigma.Storages.IEnigmaComponent;
-import Model.Setting.RotorSetting;
+import Model.Storages.IEnigmaComponent;
+import View.Observer.IObservable;
 
-public interface IRotor extends IEnigmaComponent {
+public interface IRotor extends IEnigmaComponent, IObservable {
 
     public String getName();
 
@@ -22,6 +22,4 @@ public interface IRotor extends IEnigmaComponent {
     public void stepRotorForward();
 
     public void stepRotorBackward();
-
-    public void keyToSetting(RotorSetting newSetting);
 }

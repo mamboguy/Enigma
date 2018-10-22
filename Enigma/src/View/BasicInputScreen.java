@@ -1,4 +1,4 @@
-package View.BasicGUI;
+package View;
 
 //<editor-fold defaultstate="collapsed" desc="Imports">
 
@@ -41,8 +41,6 @@ public class BasicInputScreen
     private JTextArea ciphertext;
 
     private JComboBox reflector;
-
-    private EnigmaSetting savedKeySettings;
 
     private ArrayList<JTextField> keyFields = new ArrayList<JTextField>();
     private ArrayList<JTextField> labelFields = new ArrayList<JTextField>();
@@ -818,9 +816,9 @@ public class BasicInputScreen
      *
      * @return - The key settings with the rotor's names
      */
-    public EnigmaSetting getCurrentKeySettings() {
-        return readGUISettings();
-    }
+//    public EnigmaSetting getCurrentKeySettings() {
+//        return readGUISettings();
+//    }
 
     /**
      * Reads all of the GUI settings into a standardized array. Array is of size
@@ -831,25 +829,25 @@ public class BasicInputScreen
      *
      * @return - standardized array of settings
      */
-    private EnigmaSetting readGUISettings() {
-        String[] settings = new String[rotorCombos.size() * 3 + 2];
-
-        RotorAssemblySetting assemblySetting = new RotorAssemblySetting(rotorCombos.size());
-
-        for (int i = 0; i < rotorCombos.size(); i++) {
-
-            String name = (String) rotorCombos.get(i).getSelectedItem();
-            char label = labelFields.get(i).getText().charAt(0);
-            char key = keyFields.get(i).getText().charAt(0);
-
-            assemblySetting.setRotorSetting(i, new RotorSetting(name, label, key));
-        }
-        assemblySetting.setReflectorUsed(new ReflectorSetting((String) reflector.getSelectedItem()));
-
-        PlugboardSetting plugboardSetting = new PlugboardSetting(getPlugboardString());
-
-        return new EnigmaSetting(assemblySetting, plugboardSetting);
-    }
+//    private EnigmaSetting readGUISettings() {
+//        String[] settings = new String[rotorCombos.size() * 3 + 2];
+//
+//        RotorAssemblySetting assemblySetting = new RotorAssemblySetting(rotorCombos.size());
+//
+//        for (int i = 0; i < rotorCombos.size(); i++) {
+//
+//            String name = (String) rotorCombos.get(i).getSelectedItem();
+//            char label = labelFields.get(i).getText().charAt(0);
+//            char key = keyFields.get(i).getText().charAt(0);
+//
+//            assemblySetting.setRotorSetting(i, new RotorSetting(name, label, key));
+//        }
+//        assemblySetting.setReflectorUsed(new ReflectorSetting((String) reflector.getSelectedItem()));
+//
+//        PlugboardSetting plugboardSetting = new PlugboardSetting(getPlugboardString());
+//
+//        return new EnigmaSetting(assemblySetting, plugboardSetting);
+//    }
 
     /**
      * Builds the plugboard setting string based on the current plugboard
@@ -890,10 +888,10 @@ public class BasicInputScreen
     /**
      * Saves the currently configured key settings for recall
      */
-    //TODO - break off into own class?
-    public void saveCurrentKeySettings() {
-        savedKeySettings = readGUISettings();
-    }
+//    //TODO - break off into own class?
+//    public void saveCurrentKeySettings() {
+//        savedKeySettings = readGUISettings();
+//    }
 
     /**
      * Reloads the saved key settings

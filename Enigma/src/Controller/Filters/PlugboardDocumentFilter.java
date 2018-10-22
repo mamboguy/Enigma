@@ -26,9 +26,8 @@ public class PlugboardDocumentFilter extends DocumentFilter {
         
         //Destroy all non-alphabetic characters
         text = text.replaceAll("[^a-zA-Z]", "");
-        
+
         //Call super method
         fb.replace(offset, length, text, attrs);
     }
-
 }
